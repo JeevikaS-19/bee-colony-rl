@@ -1,5 +1,5 @@
 import math
-import time 
+import time
 class PheromoneTable:
     def __init__(self, grid_size=2.0):
         self.grid_size = grid_size
@@ -7,28 +7,29 @@ class PheromoneTable:
         # Key: (grid_x, grid_y) tuple
         # Value: A dictionary containing parallel, decoupled channels:
         # {
-        #     "success": {"vigor": float, "timestamp": float},
-        #     "warning": {"vigor": float, "timestamp": float}
+        #     "success": {"vigor": float, "timestamp": float, "meta": dict|None},
+        #     "warning": {"vigor": float, "timestamp": float, "meta": dict|None}
         # }
         self.table = {}
-    def _to_grid_key(self, location):
-        x,y = location[0], location[1]
 
-        grid_x = int(math.floor(x/self.grid_size))
-        grid_y = int(math.floor(y/self.grid_size))
+    def _to_grid_key(self, location):
+        x, y = location[0], location[1]
+
+        grid_x = int(math.floor(x / self.grid_size))
+        grid_y = int(math.floor(y / self.grid_size))
 
         return (grid_x, grid_y)
 
-    def write(self, location, trace_type, vigor, meta = None):
+    def write(self, location, trace_type, vigor, meta=None):
         if trace_type not in ["success", "warning"]:
             raise ValueError("trace_type must be either 'success' or 'warning'")
         key = self._to_grid_key(location)
         current_time = time.time()
 
-        if key not in self.table: 
+        if key not in self.table:
             self.table[key] = {
-                "success" : {"vigor": 0.0, "timestamp": 0.0, "meta": None},
-                "warning": {"vigor" : 0.0, "timestamp": 0.0, "meta" : None}
+                "success": {"vigor": 0.0, "timestamp": 0.0, "meta": None},
+                "warning": {"vigor": 0.0, "timestamp": 0.0, "meta": None}
             }
 
         channel = self.table[key][trace_type]
@@ -48,31 +49,30 @@ class PheromoneTable:
         else:
             return False
 
-    def read_nearby(self, location, sensro_radius=10.0, sigma = 6.0, decay_rate=0.002):
+    def read_nearby(self, location, sensor_radius=10.0, sigma=6.0, decay_rate=0.002):
         ego_x, ego_y = location[0], location[1]
         current_time = time.time()
 
         sensed = {"success": 0.0, "warning": 0.0}
 
-        #1. broad phase grid cell search
-        grid_search_range = int(math.ceil(sensro_radius/self.grid_size)) 
-        #fixed this error math.cell --> math.ceil
+        # 1. broad phase grid cell search
+        grid_search_range = int(math.ceil(sensor_radius / self.grid_size))
         center_key = self._to_grid_key(location)
 
-        for dx in range(-grid_search_range, grid_search_range+1):
-            for dy in range(-grid_search_range, grid_search_range+1):
-                key = (center_key[0]+ dx, center_key[1]+dy)
+        for dx in range(-grid_search_range, grid_search_range + 1):
+            for dy in range(-grid_search_range, grid_search_range + 1):
+                key = (center_key[0] + dx, center_key[1] + dy)
                 if key not in self.table:
                     continue
 
                 cell_center_x = (key[0] + 0.5) * self.grid_size
                 cell_center_y = (key[1] + 0.5) * self.grid_size
 
-                dist = math.sqrt((ego_x - cell_center_x)**2 + (ego_y - cell_center_y)**2)
-                if dist > sensro_radius:
+                dist = math.sqrt((ego_x - cell_center_x) ** 2 + (ego_y - cell_center_y) ** 2)
+                if dist > sensor_radius:
                     continue
-                #fixed indentation
-                spatial_weight = math.exp(-(dist**2)/(2*(sigma**2)))
+
+                spatial_weight = math.exp(-(dist ** 2) / (2 * (sigma ** 2)))
 
                 for trace_type in ["success", "warning"]:
                     channel = self.table[key][trace_type]
@@ -88,3 +88,47 @@ class PheromoneTable:
                     sensed[trace_type] = max(sensed[trace_type], effective_intensity)
 
         return sensed
+
+    def summarize(self, min_vigor=0.0):
+        """
+        Returns a list of plain-English lines describing every non-empty
+        cell in the table — a quick human-readable sanity check without
+        needing the render pipeline.
+
+        Example line:
+          "Turning guide near (9.0, 8.0) -- vigor 1.00, left by sandbox_bee
+           after a 'arrive_dest' event"
+        """
+        entries = []  # (vigor, line) pairs, so we can sort before formatting
+
+        for key, channels in self.table.items():
+            cell_x = (key[0] + 0.5) * self.grid_size
+            cell_y = (key[1] + 0.5) * self.grid_size
+
+            for trace_type in ["success", "warning"]:
+                ch = channels[trace_type]
+                if ch["vigor"] <= min_vigor:
+                    continue
+
+                meta = ch["meta"] or {}
+                worker = meta.get("worker_id", "unknown")
+                trigger = meta.get("trigger", "unknown")
+                label = "Turning guide" if trace_type == "success" else "Warning"
+
+                line = (f"{label} near ({cell_x:.1f}, {cell_y:.1f}) -- "
+                        f"vigor {ch['vigor']:.2f}, left by {worker} "
+                        f"after a '{trigger}' event")
+                entries.append((ch["vigor"], line))
+
+        # Strongest traces first
+        entries.sort(key=lambda pair: pair[0], reverse=True)
+        return [line for _, line in entries]
+
+    def print_summary(self, min_vigor=0.0):
+        """Convenience wrapper: prints summarize() output directly."""
+        lines = self.summarize(min_vigor=min_vigor)
+        if not lines:
+            print("  (pheromone table is empty)")
+            return
+        for line in lines:
+            print(" ", line)
