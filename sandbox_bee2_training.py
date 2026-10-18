@@ -338,7 +338,8 @@ def set_seeds(seed):
 
 def run_sac_training(run_name, total_steps=20000, batch_size=256, warmup_steps=5000, update_every=1,
                      seed=0, save_every=10000, half_life_frac=0.15,
-                     shaping="none", snapshot_every=10, beta=1.0, lam=1.0):
+                     shaping="none", snapshot_every=10, beta=1.0, lam=1.0,
+                     fixed_vigor=None, read_start=None):
     """
     run_name: output folder under checkpoints/. Refuses to reuse a non-empty
       folder, so a run can never overwrite another run's weights.
@@ -375,6 +376,14 @@ def run_sac_training(run_name, total_steps=20000, batch_size=256, warmup_steps=5
         raise ValueError(f"shaping must be none|snapshot|live, got {shaping}")
     if shaping == "snapshot" and snapshot_every < 1:
         raise ValueError("snapshot_every must be >= 1")
+    # Read gate: shaping is applied only after this step. Before it, Phi is still
+    # tracked (so the first shaped step is consistent) but F is 0. Default: end of warmup.
+    if read_start is None:
+        read_start = warmup_steps
+    # Pilot stub mode: every bee writes with a fixed vigor and the tracker is off.
+    # Used to test the shaping mechanism at a sane scale (spec section 10).
+    if fixed_vigor is not None and not (0.0 < fixed_vigor <= 1.0):
+        raise ValueError(f"fixed_vigor must be in (0, 1], got {fixed_vigor}")
 
     half_life_steps = half_life_frac * total_steps if half_life_frac > 0 else None
     decay_rate = decay_rate_from_half_life(half_life_steps)
@@ -409,7 +418,8 @@ def run_sac_training(run_name, total_steps=20000, batch_size=256, warmup_steps=5
                    "warmup_steps": warmup_steps, "seed": seed, "save_every": save_every,
                    "half_life_frac": half_life_frac, "decay_rate_per_step": decay_rate,
                    "shaping": shaping, "snapshot_every": snapshot_every,
-                   "shaping_beta": beta, "shaping_lambda": lam,
+                   "shaping_beta": beta, "shaping_lambda": lam, "read_start": read_start,
+                   "fixed_vigor_pilot": fixed_vigor,
                    "reputation_smoothing": REPUTATION_SMOOTHING,
                    "reputation_hysteresis": REPUTATION_HYSTERESIS,
                    "env": config}, f, indent=2)
@@ -487,6 +497,8 @@ def run_sac_training(run_name, total_steps=20000, batch_size=256, warmup_steps=5
                 phi_next = phi_at(shaping_table, (current_x, current_y), step)
                 f = shaping_term(phi_cur, phi_next, agent.gamma, next_is_terminal=is_real_terminal(info))
                 phi_cur = phi_next
+                if step <= read_start:
+                    f = 0.0  # read gate closed: Phi tracked, shaping not yet applied
             else:
                 f = 0.0
             shaped_reward_val = reward + f
@@ -524,14 +536,19 @@ def run_sac_training(run_name, total_steps=20000, batch_size=256, warmup_steps=5
 
                 # The bee drove this episode with its pre-episode caste, so write with that,
                 # then fold the outcome into E_t for the next episode.
-                bee_vigor = tracker.vigor("sandbox_bee")
-                bee_caste = tracker.caste("sandbox_bee")
-                write_episode_traces(pheromone_table, reason, episode_path, bee_vigor,
-                                     "sandbox_bee", step, bee_caste)
-                # Every episode end counts: a timeout is a failure to arrive.
-                tracker.update("sandbox_bee", reason == "arrive_dest")
-                print(f"    [Tracker] E_t={tracker.E['sandbox_bee']:.3f} | caste={tracker.caste('sandbox_bee')} "
-                      f"| next vigor={tracker.vigor('sandbox_bee'):.2f}")
+                if fixed_vigor is None:
+                    bee_vigor = tracker.vigor("sandbox_bee")
+                    bee_caste = tracker.caste("sandbox_bee")
+                    write_episode_traces(pheromone_table, reason, episode_path, bee_vigor,
+                                         "sandbox_bee", step, bee_caste)
+                    # Every episode end counts: a timeout is a failure to arrive.
+                    tracker.update("sandbox_bee", reason == "arrive_dest")
+                    print(f"    [Tracker] E_t={tracker.E['sandbox_bee']:.3f} | caste={tracker.caste('sandbox_bee')} "
+                          f"| next vigor={tracker.vigor('sandbox_bee'):.2f}")
+                else:
+                    # Pilot stub: fixed vigor, tracker off, bee always writes as SCOUT.
+                    write_episode_traces(pheromone_table, reason, episode_path, fixed_vigor,
+                                         "sandbox_bee", step, "SCOUT")
 
                 if shaping_table is not None:
                     steps_this_ep = max(1, len(episode_path))
@@ -588,8 +605,13 @@ if __name__ == "__main__":
                         help="episodes between table snapshots (snapshot arm)")
     parser.add_argument("--beta", type=float, default=1.0)
     parser.add_argument("--lam", type=float, default=1.0)
+    parser.add_argument("--fixed-vigor", type=float, default=None,
+                        help="pilot stub: fixed write vigor, tracker off (e.g. 1.0)")
+    parser.add_argument("--read-start", type=int, default=None,
+                        help="shaping applied after this step (default: end of warmup)")
     args = parser.parse_args()
     run_sac_training(run_name=args.run_name, total_steps=args.steps, seed=args.seed,
                      warmup_steps=args.warmup, half_life_frac=args.half_life_frac,
                      shaping=args.shaping, snapshot_every=args.snapshot_every,
-                     beta=args.beta, lam=args.lam)
+                     beta=args.beta, lam=args.lam,
+                     fixed_vigor=args.fixed_vigor, read_start=args.read_start)
