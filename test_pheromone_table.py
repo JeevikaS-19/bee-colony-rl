@@ -151,7 +151,18 @@ def run_tests():
     print(f"  100 steps at 0.01/step: {later['success']:.4f} (expected {math.exp(-1.0):.4f})")
     print("-> SUCCESS: Decay is driven by training steps, independent of wall-clock time!\n")
 
-    print("CONGRATULATIONS: All 6 core test cases passed with zero failures!")
+    # Test 7: zero-vigor writes are rejected, not silently stored
+    print("Test 7: Zero-vigor write is rejected")
+    zero_table = PheromoneTable(grid_size=2.0)
+    try:
+        zero_table.write((1.0, 1.0), "success", vigor=0.0, step=0)
+        raise AssertionError("FAIL: vigor=0.0 write was accepted")
+    except ValueError:
+        pass
+    assert zero_table.table == {}, "FAIL: rejected write still created a cell"
+    print("-> SUCCESS: vigor <= 0 raises and leaves the table untouched!\n")
+
+    print("CONGRATULATIONS: All 7 core test cases passed with zero failures!")
 
 
 

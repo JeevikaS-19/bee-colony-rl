@@ -26,6 +26,10 @@ class PheromoneTable:
         # steps, not seconds, so runs at different speeds decay the same way.
         if trace_type not in ["success", "warning"]:
             raise ValueError("trace_type must be either 'success' or 'warning'")
+        # read_nearby skips zero-vigor cells, so a 0.0 write would be silently
+        # invisible. Callers that have no vigor (NOVICE bees) must not write.
+        if vigor <= 0.0:
+            raise ValueError(f"vigor must be > 0 to be written, got {vigor}")
         key = self._to_grid_key(location)
 
         if key not in self.table:

@@ -291,8 +291,12 @@ def warmup_action():
     return np.array([steering, throttle], dtype=np.float32)
 
 
+HERE = os.path.dirname(os.path.abspath(__file__))  # outputs go next to this script, not the cwd
+
+
 def save_checkpoint(agent, pheromone_table,
-                    ckpt_path="sandbox_bee_checkpoint.pt", table_path="pheromone_table.pkl"):
+                    ckpt_path=os.path.join(HERE, "sandbox_bee_checkpoint.pt"),
+                    table_path=os.path.join(HERE, "pheromone_table.pkl")):
     torch.save({
         "actor": agent.actor.state_dict(),
         "critic": agent.critic.state_dict(),
@@ -352,101 +356,102 @@ def run_sac_training(total_steps=20000, batch_size=256, warmup_steps=5000, updat
     }
 
     env = MetaDriveEnv(config=config)
-    obs = env.reset()
-    if isinstance(obs, tuple) and len(obs) == 2:
-        obs, info = obs
+    try:
+        obs = env.reset()
+        if isinstance(obs, tuple) and len(obs) == 2:
+            obs, info = obs
 
-    episode_reward = 0.0
-    episode_count = 0
-    recent_episode_rewards = deque(maxlen=20)
+        episode_reward = 0.0
+        episode_count = 0
+        recent_episode_rewards = deque(maxlen=20)
 
-    episode_path = []
+        episode_path = []
 
-    # Distance travelled per episode -- lets a frozen policy show up in the
-    # training log instead of only in a rendered eval.
-    episode_distance = 0.0
-    recent_episode_distances = deque(maxlen=20)
-    prev_pos = tuple(env.agent.position)
-    episode_max_speed = 0.0
+        # Distance travelled per episode -- lets a frozen policy show up in the
+        # training log instead of only in a rendered eval.
+        episode_distance = 0.0
+        recent_episode_distances = deque(maxlen=20)
+        prev_pos = tuple(env.agent.position)
+        episode_max_speed = 0.0
 
-    outcome_counts = {}  # e.g. {"out_of_road": 12, "max_step": 40, ...} over the whole run
+        outcome_counts = {}  # e.g. {"out_of_road": 12, "max_step": 40, ...} over the whole run
 
-    print(f"Initial observation shape: {np.asarray(obs).shape}")
-    print(f"Training for {total_steps} steps | batch_size={batch_size} | seed={seed} | "
-          f"target_entropy={agent.target_entropy} | "
-          f"warmup={warmup_steps} throttle-biased random steps before updates begin\n")
+        print(f"Initial observation shape: {np.asarray(obs).shape}")
+        print(f"Training for {total_steps} steps | batch_size={batch_size} | seed={seed} | "
+              f"target_entropy={agent.target_entropy} | "
+              f"warmup={warmup_steps} throttle-biased random steps before updates begin\n")
 
-    for step in range(1, total_steps + 1):
-        in_warmup = step <= warmup_steps
-        if in_warmup:
-            action = warmup_action()
-        else:
-            action, _ = agent.actor.sample_action(obs, deterministic=False)
+        for step in range(1, total_steps + 1):
+            in_warmup = step <= warmup_steps
+            if in_warmup:
+                action = warmup_action()
+            else:
+                action, _ = agent.actor.sample_action(obs, deterministic=False)
 
-        steering, throttle = action[0], action[1]
-        assert -1.0 <= steering <= 1.0, f"Steering out of bounds: {steering}"
-        assert -1.0 <= throttle <= 1.0, f"Throttle out of bounds: {throttle}"
+            steering, throttle = action[0], action[1]
+            assert -1.0 <= steering <= 1.0, f"Steering out of bounds: {steering}"
+            assert -1.0 <= throttle <= 1.0, f"Throttle out of bounds: {throttle}"
 
-        step_results = env.step(action)
-        if len(step_results) == 5:
-            next_obs, reward, terminated, truncated, info = step_results
-            done = terminated or truncated
-        else:
-            next_obs, reward, done, info = step_results
+            step_results = env.step(action)
+            if len(step_results) == 5:
+                next_obs, reward, terminated, truncated, info = step_results
+                done = terminated or truncated
+            else:
+                next_obs, reward, done, info = step_results
 
-        current_x, current_y = env.agent.position
-        episode_path.append((current_x, current_y))
-        episode_distance += math.hypot(current_x - prev_pos[0], current_y - prev_pos[1])
-        prev_pos = (current_x, current_y)
-        episode_max_speed = max(episode_max_speed, env.agent.speed_km_h)
+            current_x, current_y = env.agent.position
+            episode_path.append((current_x, current_y))
+            episode_distance += math.hypot(current_x - prev_pos[0], current_y - prev_pos[1])
+            prev_pos = (current_x, current_y)
+            episode_max_speed = max(episode_max_speed, env.agent.speed_km_h)
 
-        # Only real terminals stop bootstrapping. A horizon timeout still
-        # episode-ends below (for reset + traces) but its next state has value.
-        buffer.push(obs, action, reward, next_obs, float(is_real_terminal(info)))
-        episode_reward += reward
-        obs = next_obs
+            # Only real terminals stop bootstrapping. A horizon timeout still
+            # episode-ends below (for reset + traces) but its next state has value.
+            buffer.push(obs, action, reward, next_obs, float(is_real_terminal(info)))
+            episode_reward += reward
+            obs = next_obs
 
-        if not in_warmup and step % update_every == 0:
-            critic_loss, actor_loss, alpha_val, entropy = agent.update_parameters(buffer, batch_size)
-            if critic_loss is not None and step % 500 == 0:
-                print(f"[Step {step:06d}] critic_loss={critic_loss:.4f} "
-                      f"actor_loss={actor_loss:.4f} alpha={alpha_val:.4f} "
-                      f"entropy={entropy:.3f} (target {agent.target_entropy})")
+            if not in_warmup and step % update_every == 0:
+                critic_loss, actor_loss, alpha_val, entropy = agent.update_parameters(buffer, batch_size)
+                if critic_loss is not None and step % 500 == 0:
+                    print(f"[Step {step:06d}] critic_loss={critic_loss:.4f} "
+                          f"actor_loss={actor_loss:.4f} alpha={alpha_val:.4f} "
+                          f"entropy={entropy:.3f} (target {agent.target_entropy})")
 
-        if done:
-            episode_count += 1
-            recent_episode_rewards.append(episode_reward)
-            avg_recent = sum(recent_episode_rewards) / len(recent_episode_rewards)
-            recent_episode_distances.append(episode_distance)
-            avg_recent_distance = sum(recent_episode_distances) / len(recent_episode_distances)
+            if done:
+                episode_count += 1
+                recent_episode_rewards.append(episode_reward)
+                avg_recent = sum(recent_episode_rewards) / len(recent_episode_rewards)
+                recent_episode_distances.append(episode_distance)
+                avg_recent_distance = sum(recent_episode_distances) / len(recent_episode_distances)
 
-            reason, fired = classify_terminal(info)
-            for flag in (fired or ["none"]):
-                outcome_counts[flag] = outcome_counts.get(flag, 0) + 1
+                reason, fired = classify_terminal(info)
+                for flag in (fired or ["none"]):
+                    outcome_counts[flag] = outcome_counts.get(flag, 0) + 1
 
-            phase = "warmup" if in_warmup else "policy"
-            print(f"  Episode {episode_count:04d} finished at step {step:06d} [{phase}] | "
-                  f"reason={reason} flags={fired} | episode_reward={episode_reward:.4f} | "
-                  f"avg_last_20={avg_recent:.4f} | distance={episode_distance:.2f} m | "
-                  f"avg_dist_last_20={avg_recent_distance:.2f} m | max_speed={episode_max_speed:.1f} km/h")
+                phase = "warmup" if in_warmup else "policy"
+                print(f"  Episode {episode_count:04d} finished at step {step:06d} [{phase}] | "
+                      f"reason={reason} flags={fired} | episode_reward={episode_reward:.4f} | "
+                      f"avg_last_20={avg_recent:.4f} | distance={episode_distance:.2f} m | "
+                      f"avg_dist_last_20={avg_recent_distance:.2f} m | max_speed={episode_max_speed:.1f} km/h")
 
-            vigor_stub = 1.0  # fixed value -- swap for tracker.vigor(worker_id) once multi-bee
-            write_episode_traces(pheromone_table, reason, episode_path, vigor_stub, "sandbox_bee", step)
+                vigor_stub = 1.0  # fixed value -- swap for tracker.vigor(worker_id) once multi-bee
+                write_episode_traces(pheromone_table, reason, episode_path, vigor_stub, "sandbox_bee", step)
 
-            episode_path = []
-            episode_reward = 0.0
-            episode_distance = 0.0
-            episode_max_speed = 0.0
-            obs = env.reset()
-            if isinstance(obs, tuple) and len(obs) == 2:
-                obs, info = obs
-            prev_pos = tuple(env.agent.position)  # new spawn point, not last episode's end
+                episode_path = []
+                episode_reward = 0.0
+                episode_distance = 0.0
+                episode_max_speed = 0.0
+                obs = env.reset()
+                if isinstance(obs, tuple) and len(obs) == 2:
+                    obs, info = obs
+                prev_pos = tuple(env.agent.position)  # new spawn point, not last episode's end
 
-        # Periodic save, so a long run that dies partway still leaves something to load.
-        if save_every and step % save_every == 0 and step != total_steps:
-            save_checkpoint(agent, pheromone_table)
-
-    env.close()
+            # Periodic save, so a long run that dies partway still leaves something to load.
+            if save_every and step % save_every == 0 and step != total_steps:
+                save_checkpoint(agent, pheromone_table)
+    finally:
+        env.close()
     print("\nSUCCESS: training loop completed.")
     print(f"Total episodes: {episode_count}")
     print(f"Terminal flag counts over the run: {outcome_counts}")

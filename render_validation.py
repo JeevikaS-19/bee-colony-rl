@@ -32,8 +32,9 @@ try:
 except ImportError:
     METADRIVE_AVAILABLE = False
 
-CHECKPOINT_PATH = "sandbox_bee_checkpoint.pt"
-PHEROMONE_PATH = "pheromone_table.pkl"
+HERE = os.path.dirname(os.path.abspath(__file__))
+CHECKPOINT_PATH = os.path.join(HERE, "sandbox_bee_checkpoint.pt")
+PHEROMONE_PATH = os.path.join(HERE, "pheromone_table.pkl")
 
 
 def load_agent(obs_dim=259, action_dim=2):
