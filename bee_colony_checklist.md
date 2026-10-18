@@ -2,6 +2,8 @@
 
 Living checklist — check things off as you go. Keep this updated across sessions since this project gets picked up and dropped for weeks at a time.
 
+> **Exploratory only:** runs logged before tag `exploratory-v0` (commit `8200c19`) are NOT comparison baselines. They time out as terminal (bootstrapping cut at horizon), decay pheromones by wall-clock time, and came partly from uncommitted code. Re-run baselines after the fixes below.
+
 ## Foundation (all done, verified)
 - [x] `reputation_tracker.py` — standalone E_t / caste / vigor tracker
 - [x] `test_sequential_envs.py` — multiple independent single-agent MetaDrive instances, clean lifecycle
