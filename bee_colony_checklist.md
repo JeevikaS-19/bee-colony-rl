@@ -89,7 +89,7 @@ Living checklist — check things off as you go. Keep this updated across sessio
 - [x] Hysteresis 0.05 added: replay flips 4 → 2 at smoothing 0.1
 - [x] Live IDM validation through the tracker: promotes at episode 5, 8/8 checks (`idm_validation_table.pkl`)
 - [x] Shaping function as pure functions with tests (`shaping.py`, `test_shaping.py`, 9 tests)
-- [~] Single-bee arms (60k steps, seed 0, background, sequential): `shaping_none_s0`, `shaping_snap10_s0`, `shaping_live_s0`. Check `logs/arms_status.txt`
+- [~] Single-bee arms (60k steps, seed 0): `shaping_none_s0` still running as the reference. `shaping_snap10_s0` and `shaping_live_s0` NOT started. Stopped on the scale check: shaping is about 700x smaller than raw reward per step while no FORAGER bee exists (spec §10 pilot finding). Needs a decision on β / novice floor / novice success writes before the shaped arms run
 - [ ] Single-bee arms: evaluate the four spec checks (no freeze, no hacking, still learns, bounded |F|) and write up
 - [ ] Decide: may NOVICE bees write faint success traces at 0.05? Reviewer proposes yes; current setting is no (option A). Changing it means re-running the arms
 - [ ] Multi-seed: each arm is one seed (seed 0). Add seeds before any claim

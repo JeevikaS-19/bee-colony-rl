@@ -137,6 +137,8 @@ Frozen before any comparison run. Changing one means the runs are redone.
 | Warmup, batch, lr, target entropy | 5000 steps (throttle-biased); 256; 3e-4; 0.0 |
 | Seed | 0 (one seed per arm; not yet multi-seed) |
 
+**Pilot finding (stop condition hit, snapshot and live arms NOT run).** Mean |F| per step on the 2000-step snapshot smoke run was 0.00014, against mean |raw reward| of 0.099 per step: a ratio of about 0.14%, roughly 700 times smaller. Cause: with no FORAGER bee there are no success traces, so Φ = −β·λ·W with W at most 0.05 (novice vigor). So |Φ| ≤ β·λ·0.05 per step, and mean |F| scales linearly with β. Under these settings the snapshot and live arms would reproduce the none arm. The none arm was left running as the reference. Decision needed on scale before any shaped arm is run: β (and/or λ), the novice floor, or whether novices may write success traces (the open question above). Rough sizing from the smoke run: about β = 70 would bring mean |F| to 10% of mean |raw|. This estimate is from 2000 steps and should be redone on the none arm's trace data.
+
 Mechanism note: the h500 replay showed the step-based rule never promoted (see §8a). The EWMA rule with smoothing 0.1 was chosen after viewing 0.05, 0.1, and 0.2 on the same outcomes. Disclose this in the manuscript.
 
 ## 9. Parameters to report
