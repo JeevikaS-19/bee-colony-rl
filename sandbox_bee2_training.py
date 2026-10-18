@@ -11,6 +11,10 @@ import torch.nn.functional as F
 from torch.distributions import Normal
 from collections import deque
 from pheromone_table import PheromoneTable, decay_rate_from_half_life
+from reputation_tracker import ReputationTracker
+
+# EWMA weight on terminal outcomes for E_t. Fixed for the comparison runs.
+REPUTATION_ALPHA = 0.1
 
 METADRIVE_AVAILABLE = False
 try:
@@ -252,7 +256,7 @@ def is_real_terminal(info):
     return any(info.get(flag, False) for flag in REAL_TERMINAL_FLAGS)
 
 
-def write_episode_traces(pheromone_table, reason, episode_path, vigor, worker_id, step):
+def write_episode_traces(pheromone_table, reason, episode_path, vigor, worker_id, step, caste):
     """
     Episode-end write hook. arrive_dest -> 'success' along the whole path;
     crash -> one 'warning' at the last position. Returns cells written.
@@ -262,6 +266,10 @@ def write_episode_traces(pheromone_table, reason, episode_path, vigor, worker_id
     if vigor <= 0:
         return 0  # muted (NOVICE) bees listen but never write
     if reason == "arrive_dest":
+        if caste == "NOVICE":
+            # Novices may warn but never write a success trace (option A).
+            print("[Write Hook] NOVICE arrival: no success trace written.")
+            return 0
         written_cells = 0
         meta = {"worker_id": worker_id, "trigger": "arrive_dest", "path_length": len(episode_path)}
         for x, y, speed, steer in episode_path:
@@ -364,6 +372,7 @@ def run_sac_training(run_name, total_steps=20000, batch_size=256, warmup_steps=5
     action_dim = 2
 
     agent = SACAgent(state_dim=obs_dim, action_dim=action_dim)
+    tracker = ReputationTracker(["sandbox_bee"], alpha=REPUTATION_ALPHA)
     buffer = ReplayBuffer(capacity=200000)
 
     pheromone_table = PheromoneTable(grid_size=2.0)
@@ -384,6 +393,7 @@ def run_sac_training(run_name, total_steps=20000, batch_size=256, warmup_steps=5
         json.dump({"run_name": run_name, "total_steps": total_steps, "batch_size": batch_size,
                    "warmup_steps": warmup_steps, "seed": seed, "save_every": save_every,
                    "half_life_frac": half_life_frac, "decay_rate_per_step": decay_rate,
+                   "reputation_alpha": REPUTATION_ALPHA,
                    "env": config}, f, indent=2)
 
     env = MetaDriveEnv(config=config)
@@ -467,8 +477,16 @@ def run_sac_training(run_name, total_steps=20000, batch_size=256, warmup_steps=5
                       f"avg_last_20={avg_recent:.4f} | distance={episode_distance:.2f} m | "
                       f"avg_dist_last_20={avg_recent_distance:.2f} m | max_speed={episode_max_speed:.1f} km/h")
 
-                vigor_stub = 1.0  # fixed value -- swap for tracker.vigor(worker_id) once multi-bee
-                write_episode_traces(pheromone_table, reason, episode_path, vigor_stub, "sandbox_bee", step)
+                # The bee drove this episode with its pre-episode caste, so write with that,
+                # then fold the outcome into E_t for the next episode.
+                bee_vigor = tracker.vigor("sandbox_bee")
+                bee_caste = tracker.caste("sandbox_bee")
+                write_episode_traces(pheromone_table, reason, episode_path, bee_vigor,
+                                     "sandbox_bee", step, bee_caste)
+                if reason in ("arrive_dest", "crash"):
+                    tracker.update("sandbox_bee", reason == "arrive_dest")
+                print(f"    [Tracker] E_t={tracker.E['sandbox_bee']:.3f} | caste={tracker.caste('sandbox_bee')} "
+                      f"| next vigor={tracker.vigor('sandbox_bee'):.2f}")
 
                 episode_path = []
                 episode_reward = 0.0

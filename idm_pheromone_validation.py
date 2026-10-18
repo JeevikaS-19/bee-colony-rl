@@ -92,7 +92,8 @@ def run_validation(num_episodes=3, render=False, max_steps=1000):
         for ep in range(1, num_episodes + 1):
             path, info = run_idm_episode(env, max_steps)
             reason, fired = classify_terminal(info)
-            write_episode_traces(table, reason, path, vigor=1.0, worker_id="idm_bee", step=ep)
+            # IDM is a fixed scripted driver used for validation, not a learning bee: write as SCOUT.
+            write_episode_traces(table, reason, path, vigor=1.0, worker_id="idm_bee", step=ep, caste="SCOUT")
             episodes.append((reason, fired, [p[:2] for p in path], len(table.table)))
             print(f"--- IDM episode {ep}: reason={reason} flags={fired} | steps={len(path)} | "
                   f"end=({path[-1][0]:.1f}, {path[-1][1]:.1f}) | table cells={len(table.table)}")
