@@ -190,6 +190,24 @@ Sensitivity note: an earlier measurement on the 20k checkpoint (53 cells, 5 roll
 
 **Static-from-gate test started (seed 0, 60k steps, fixed vigor 1.0, beta 2.86).** The table is frozen at step 5000 and never refreshed. Run name `pilot_static_s0`. If it still collapses, the next candidates are the terminal convention and the ridge shape. Output: `logs/pilot_static_s0.log`.
 
+### 10e. Valley and warnings checks (no training)
+
+- **Are the spawn-area warnings junk from warmup?** No. Within 15 m of spawn the seed-0 snapshot pilot wrote 71 warnings during the policy phase and 20 during warmup. The near-spawn warnings are mostly the policy's own crashes. That suggests a feedback loop: early exits write warnings at spawn, and those warnings keep the start state in the valley.
+- **Does forward descend into a valley?** Only slightly. Summing F over the first 15 m of six successful rollouts gives mean -0.06 (four negative, two positive, range -0.14 to +0.11). The raw reward over the same stretch is about 30. The valley exists but is too small to explain the collapse.
+- **Steps-aligned comparison** (mean distance of episodes ending in each 10k-step window):
+
+| Arm | 10k | 20k | 30k | 40k | 50k | 60k |
+|---|---|---|---|---|---|---|
+| none s0 | 35 | 12 | 69 | 153 | 138 | 207 |
+| snapshot s0 | 35 | 9 | 16 | 46 | 161 | 201 |
+| live s0 | 35 | 7 | 38 | 132 | 139 | 216 |
+| none s1 | 32 | 11 | 14 | 131 | 133 | 109 |
+| snapshot s1 | 32 | 12 | 9 | 101 | 104 | 128 |
+| live s1 | 32 | 10 | 4 | 12 | 18 | 44 |
+
+  Seed 0: both shaped arms lag the reference at 30–40k steps and catch up by 50k. Seed 1: the snapshot arm lags and recovers; the live arm stays stuck through 60k.
+- **Teacher-table test** (proposed by review, not built): a fresh learner reads a frozen table from a competent run. Not yet implemented.
+
 Mechanism note: the h500 replay showed the step-based rule never promoted (see §8a). The EWMA rule with smoothing 0.1 was chosen after viewing 0.05, 0.1, and 0.2 on the same outcomes. Disclose this in the manuscript.
 
 ## 9. Parameters to report
