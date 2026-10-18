@@ -15,7 +15,7 @@ A potential is a function of the state. Here the state is the bee's position `x_
 
   Φ_t(s) = β · ( S(x) − λ · W(x) )
 
-- `β > 0` is the scale. `λ ≥ 0` weights warnings against successes. Start with `β` chosen so that a full-strength success trace gives a shaping bonus of about 10% of a typical arrival reward, and `λ = 1`. Both are free parameters to report, not tuned on the test.
+- `β > 0` is the scale. `λ ≥ 0` weights warnings against successes. **Frozen: β = 1.0, λ = 1.0.** β is set on the per-step scale, not the episode scale: the logged environment return is about 1 per step (e.g. 240 over ~200 steps), so β = 1 makes |F| comparable to the environment reward. (An earlier draft proposed "10% of an arrival reward", which does not give a usable number on the per-step scale, so it is dropped.) Both are reported, not tuned on the test.
 - Terminal states have potential 0: `Φ(s_T) = 0` for `s_T` a real terminal (arrival, crash, out-of-road).
 - Timeouts (horizon truncation) are not absorbing. Use the actual `Φ` at the truncated state.
 
@@ -38,6 +38,8 @@ For a real terminal, `Φ(s_{t+1}) = 0`, so `F = −Φ(s_t)`.
 **Live Φ.** The table changes as the bee writes traces. Then `Φ_t` depends on `t`, and the telescoping argument fails. A bee could be rewarded for returning to a cell it has just reinforced. This breaks the invariance guarantee.
 
 **Proposed fix (recommended, to confirm):** freeze `Φ` in snapshots. The table is read-only during an interval of K episodes. At the interval boundary it is updated with the new traces and frozen again. Within each interval the static-Φ guarantee holds. Report K and the freeze rule with the results.
+
+**What this means for the arms (a consequence to report).** Over an episode that ends at a real terminal, `Φ(s_T) = 0`, so the total shaping is `Σ γ^t F_t = −Φ(s_0)`. That is the same for every path from the same spawn. The shaping therefore does not change which path has the higher *undiscounted total*. Any effect of shaping on learning comes through the per-step credit signal and the discounting, not through the episode total. Timeouts (truncations) are different: their total is `γ^T Φ(s_T) − Φ(s_0)`, which depends on the endpoint. The single-bee arms should be read with this in mind.
 
 ## 5. Checks the single-bee test must pass
 
@@ -113,6 +115,29 @@ Plot: `scratchpad\reputation_replay_h500.png` (outside the repo).
 - alpha = **0.1**. Caveat: 0.05, 0.1, and 0.2 were all replayed on the h500 outcomes before 0.1 was chosen. Replay at 0.1: first FORAGER at episode 181, 6 episodes in FORAGER, no SCOUT. Before the comparison runs, alpha must be fixed in this spec and not changed afterward.
 - NOVICE vigor 0.05 (approved). NOVICE arrivals write no success trace. NOVICE crashes still write warnings.
 - Wired into the single-bee loop (`REPUTATION_ALPHA`). Multi-bee and the uniform-weight arm are not built.
+
+## 10. Frozen settings for the single-bee arms
+
+Frozen before any comparison run. Changing one means the runs are redone.
+
+| Setting | Value |
+|---|---|
+| Reputation smoothing (EWMA weight) | 0.1 (`REPUTATION_SMOOTHING`) |
+| Reputation outcome | arrive = 1; crash, out-of-road, and horizon timeout = 0 |
+| Caste thresholds | FORAGER ≥ 0.3, SCOUT ≥ 0.8 |
+| Hysteresis | 0.05 (promote at the threshold, demote 0.05 below it) |
+| NOVICE vigor | 0.05 |
+| NOVICE success writes | **none** (option A). Reviewer proposed allowing faint novice success writes at 0.05. Not adopted; open question, see the checklist |
+| Shaping β, λ | 1.0, 1.0 |
+| Shaping arms | none; snapshot with K = 10 episodes; live (K = 1) |
+| γ | 0.99 |
+| Pheromone decay | half-life 0.15 × total steps |
+| Sensor radius, σ | 10 m, 6 m |
+| Horizon, penalties | 500; 20.0 for out-of-road, crash_vehicle, crash_object |
+| Warmup, batch, lr, target entropy | 5000 steps (throttle-biased); 256; 3e-4; 0.0 |
+| Seed | 0 (one seed per arm; not yet multi-seed) |
+
+Mechanism note: the h500 replay showed the step-based rule never promoted (see §8a). The EWMA rule with smoothing 0.1 was chosen after viewing 0.05, 0.1, and 0.2 on the same outcomes. Disclose this in the manuscript.
 
 ## 9. Parameters to report
 
