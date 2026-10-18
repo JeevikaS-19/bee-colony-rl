@@ -90,7 +90,9 @@ Living checklist — check things off as you go. Keep this updated across sessio
 - [x] Live IDM validation through the tracker: promotes at episode 5, 8/8 checks (`idm_validation_table.pkl`)
 - [x] Shaping function as pure functions with tests (`shaping.py`, `test_shaping.py`, 9 tests)
 - [~] Single-bee arms (60k steps, seed 0): `shaping_none_s0` still running as the reference. `shaping_snap10_s0` and `shaping_live_s0` NOT started. Stopped on the scale check: shaping is about 700x smaller than raw reward per step while no FORAGER bee exists (spec §10 pilot finding). Needs a decision on β / novice floor / novice success writes before the shaped arms run
-- [ ] Single-bee arms: evaluate the four spec checks (no freeze, no hacking, still learns, bounded |F|) and write up
+- [x] Pilot (stub vigor 1.0, beta 2.86, seed 0) finished: plumbing passes (identical until step 5000), scale ratio 0.11-0.13 passes
+- [ ] Pilot FAILS the freeze check in both shaped arms: early out-of-road exits within ~4 m of spawn after the gate (spec §10b). Mechanism not identified. Next: second seed, read the collapsed episodes' actions, control with the terminal convention changed
+- [ ] Hacking check needs a baseline: the none arm has no shaping log
 - [ ] Decide: may NOVICE bees write faint success traces at 0.05? Reviewer proposes yes; current setting is no (option A). Changing it means re-running the arms
 - [ ] Multi-seed: each arm is one seed (seed 0). Add seeds before any claim
 - [ ] Confirm the pheromone half-life (0.15 × steps is the first try; ablate with `--half-life-frac 0`)

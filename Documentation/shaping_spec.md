@@ -163,6 +163,16 @@ Sensitivity note: an earlier measurement on the 20k checkpoint (53 cells, 5 roll
 
 **Pilot watch-list.** The positive potential on success traces is about 2.86 per cell at full vigor. Approaching a region with a positive potential is rewarded. Entering a warning region is penalized. A "hill" just before the failure zone could bring back the freeze, because approaching it is penalized. Check distance and max speed in the pilot logs, not reward alone.
 
+### 10b. Pilot results (seed 0, 60k steps, stub vigor 1.0, beta 2.86)
+
+- **Plumbing: pass.** All 71 episodes that end before the read gate (step 5000) match exactly across `none`, `pilot_snap10_s0`, and `pilot_live_s0`. After the gate they diverge, as intended.
+- **Scale: pass.** Mean |F| / mean |raw| per step = 0.13 (snapshot) and 0.11 (live). The target was 0.10.
+- **Freeze: FAIL in both pilots.** Episodes 121-200 of the snapshot arm and 121-160 of the live arm end almost entirely by out-of-road within a few metres of spawn (median 3.5 m and 4.2 m). The `none` arm reaches a median of 155 m in its 161-200 window. Single seed, so this is not attributable yet.
+- **Mechanism: not identified.** The spawn has success and warning traces within 2 m of each other, so Phi there is near zero. The hypothesis that a negative potential at spawn makes leaving the road pay was checked and does not hold for this table. Candidate causes, not tested: (a) the terminal convention (Phi = 0 at a real terminal) paying out F = -Phi(s) when a crash ends the episode from a warned cell; (b) overlapping success and warning traces at vigor 1.0; (c) seed noise.
+- **Hacking: not measured on the `none` arm.** It has no shaping log, so the distinct-cell fraction (0.16-0.18 in the pilots) has no baseline yet.
+
+**Next (not yet run):** a second seed for both pilots; read the first steps of the collapsed episodes (steering and throttle); and a control with the terminal convention changed. No arm counts are claimed from the pilot.
+
 Mechanism note: the h500 replay showed the step-based rule never promoted (see §8a). The EWMA rule with smoothing 0.1 was chosen after viewing 0.05, 0.1, and 0.2 on the same outcomes. Disclose this in the manuscript.
 
 ## 9. Parameters to report
