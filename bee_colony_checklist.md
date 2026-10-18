@@ -84,7 +84,15 @@ Living checklist — check things off as you go. Keep this updated across sessio
 ## Decisions to make before claiming results
 - [x] **Cold start (option A, approved):** NOVICE warns at vigor 0.05, never writes success. `E_t` terminal-only (spec §8)
 - [x] **Reputation rule:** EWMA arrival rate, alpha 0.1, wired into the single-bee loop. The step-based rule never promoted on h500 outcomes (spec §8a)
-- [ ] Fix alpha in the spec before comparison runs (0.1 chosen after looking at 0.05/0.1/0.2 on the h500 outcomes)
+- [x] Smoothing frozen at 0.1 in spec §10 (renamed from alpha). Disclose that 0.05/0.1/0.2 were all viewed on the h500 outcomes before 0.1 was chosen
+- [x] Timeouts count as failures to arrive (`sandbox_bee2_training.py`, `tracker.update` on every episode end)
+- [x] Hysteresis 0.05 added: replay flips 4 → 2 at smoothing 0.1
+- [x] Live IDM validation through the tracker: promotes at episode 5, 8/8 checks (`idm_validation_table.pkl`)
+- [x] Shaping function as pure functions with tests (`shaping.py`, `test_shaping.py`, 9 tests)
+- [~] Single-bee arms (60k steps, seed 0, background, sequential): `shaping_none_s0`, `shaping_snap10_s0`, `shaping_live_s0`. Check `logs/arms_status.txt`
+- [ ] Single-bee arms: evaluate the four spec checks (no freeze, no hacking, still learns, bounded |F|) and write up
+- [ ] Decide: may NOVICE bees write faint success traces at 0.05? Reviewer proposes yes; current setting is no (option A). Changing it means re-running the arms
+- [ ] Multi-seed: each arm is one seed (seed 0). Add seeds before any claim
 - [ ] Confirm the pheromone half-life (0.15 × steps is the first try; ablate with `--half-life-frac 0`)
 - [ ] Multi-worker: the decay step counter must be one shared global env-step count across workers, not per-process. Currently single-worker only
 - [ ] Hyperparameters for the paper (warmup, throttle bias, `target_entropy=0.0`, horizon, penalties, decay, batch size) must be identical across all arms and listed in the paper
