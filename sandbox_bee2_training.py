@@ -264,16 +264,19 @@ def write_episode_traces(pheromone_table, reason, episode_path, vigor, worker_id
     if reason == "arrive_dest":
         written_cells = 0
         meta = {"worker_id": worker_id, "trigger": "arrive_dest", "path_length": len(episode_path)}
-        for pos in episode_path:
-            if pheromone_table.write(pos, "success", vigor=vigor, step=step, meta=meta):
+        for x, y, speed, steer in episode_path:
+            if pheromone_table.write((x, y), "success", vigor=vigor, step=step, meta=meta,
+                                     speed=speed, steer=steer):
                 written_cells += 1
         print(f"[Write Hook] ARRIVED! Backtraced path and updated {written_cells} grid cells with 'success'.")
         return written_cells
 
     if reason == "crash":
-        crash_pos = episode_path[-1] if episode_path else (0.0, 0.0)
+        x, y, speed, steer = episode_path[-1] if episode_path else (0.0, 0.0, 0.0, 0.0)
+        crash_pos = (x, y)
         meta = {"worker_id": worker_id, "trigger": "crash", "episode_steps": len(episode_path)}
-        committed = pheromone_table.write(crash_pos, "warning", vigor=vigor, step=step, meta=meta)
+        committed = pheromone_table.write(crash_pos, "warning", vigor=vigor, step=step, meta=meta,
+                                          speed=speed, steer=steer)
         print(f"    [Write Hook]  CRASH at {crash_pos}! Warning trace committed: {committed}")
         return 1 if committed else 0
 
@@ -428,7 +431,8 @@ def run_sac_training(run_name, total_steps=20000, batch_size=256, warmup_steps=5
                 next_obs, reward, done, info = step_results
 
             current_x, current_y = env.agent.position
-            episode_path.append((current_x, current_y))
+            # (x, y, speed_kmh, commanded steer) for this step
+            episode_path.append((current_x, current_y, env.agent.speed_km_h, float(action[0])))
             episode_distance += math.hypot(current_x - prev_pos[0], current_y - prev_pos[1])
             prev_pos = (current_x, current_y)
             episode_max_speed = max(episode_max_speed, env.agent.speed_km_h)

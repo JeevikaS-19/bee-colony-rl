@@ -31,7 +31,10 @@ class PheromoneTable:
 
         return (grid_x, grid_y)
 
-    def write(self, location, trace_type, vigor, step, meta=None):
+    def write(self, location, trace_type, vigor, step, meta=None, speed=None, steer=None):
+        # speed (km/h) and steer (-1..1) describe how the bee passed this cell.
+        # Location alone can't say how to pass: the crash spot also carries a
+        # success trace. They are replaced together with vigor/meta.
         # `step` is the training step the trace was written at. Decay counts
         # steps, not seconds, so runs at different speeds decay the same way.
         if trace_type not in ["success", "warning"]:
@@ -44,8 +47,8 @@ class PheromoneTable:
 
         if key not in self.table:
             self.table[key] = {
-                "success": {"vigor": 0.0, "timestamp": 0.0, "meta": None},
-                "warning": {"vigor": 0.0, "timestamp": 0.0, "meta": None}
+                "success": {"vigor": 0.0, "timestamp": 0.0, "meta": None, "speed": None, "steer": None},
+                "warning": {"vigor": 0.0, "timestamp": 0.0, "meta": None, "speed": None, "steer": None}
             }
 
         channel = self.table[key][trace_type]
@@ -55,6 +58,8 @@ class PheromoneTable:
             channel["vigor"] = vigor
             channel["timestamp"] = step
             channel["meta"] = meta
+            channel["speed"] = speed
+            channel["steer"] = steer
 
             worker_id = meta.get("worker_id", "Unknown") if meta else "Unknown"
             trigger = meta.get("trigger", "unspecified") if meta else "unspecified"

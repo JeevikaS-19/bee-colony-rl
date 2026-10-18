@@ -56,7 +56,9 @@ def run_idm_episode(env, max_steps):
             done = terminated or truncated
         else:
             _, _, done, info = step_results
-        path.append(tuple(env.agent.position))
+        x, y = env.agent.position
+        # IDM's steering isn't observed here, so steer is recorded as 0.0
+        path.append((x, y, env.agent.speed_km_h, 0.0))
         if done:
             break
     return path, info
@@ -91,7 +93,7 @@ def run_validation(num_episodes=3, render=False, max_steps=1000):
             path, info = run_idm_episode(env, max_steps)
             reason, fired = classify_terminal(info)
             write_episode_traces(table, reason, path, vigor=1.0, worker_id="idm_bee", step=ep)
-            episodes.append((reason, fired, path, len(table.table)))
+            episodes.append((reason, fired, [p[:2] for p in path], len(table.table)))
             print(f"--- IDM episode {ep}: reason={reason} flags={fired} | steps={len(path)} | "
                   f"end=({path[-1][0]:.1f}, {path[-1][1]:.1f}) | table cells={len(table.table)}")
     finally:

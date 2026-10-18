@@ -174,7 +174,22 @@ def run_tests():
     assert abs(halved["success"] - 0.5) < 1e-6, f"FAIL: expected 0.5 after one half-life, got {halved['success']}"
     print(f"-> SUCCESS: half-life 100 steps halves the trace to {halved['success']:.4f}!\n")
 
-    print("CONGRATULATIONS: All 8 core test cases passed with zero failures!")
+    # Test 9: each trace carries the speed and steer it was written with
+    print("Test 9: Trace carries approach speed and steering")
+    speed_table = PheromoneTable(grid_size=2.0)
+    cell = speed_table._to_grid_key((5.0, 5.0))
+    speed_table.write((5.0, 5.0), "success", vigor=0.4, step=0, speed=30.0, steer=0.2)
+    ch9 = speed_table.table[cell]["success"]
+    assert ch9["speed"] == 30.0 and ch9["steer"] == 0.2, "FAIL: speed/steer not stored"
+    # Higher vigor replaces speed and steer together with vigor
+    speed_table.write((5.0, 5.0), "success", vigor=0.8, step=1, speed=45.0, steer=-0.1)
+    assert ch9["speed"] == 45.0 and ch9["steer"] == -0.1, "FAIL: speed/steer not replaced with vigor"
+    # Lower vigor is rejected, so speed and steer stay as they were
+    speed_table.write((5.0, 5.0), "success", vigor=0.5, step=2, speed=10.0, steer=0.9)
+    assert ch9["speed"] == 45.0 and ch9["steer"] == -0.1, "FAIL: rejected write changed speed/steer"
+    print("-> SUCCESS: speed and steer travel with the trace and follow the vigor rule!\n")
+
+    print("CONGRATULATIONS: All 9 core test cases passed with zero failures!")
 
 
 
