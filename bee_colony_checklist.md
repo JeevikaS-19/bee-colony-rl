@@ -63,6 +63,8 @@ Living checklist — check things off as you go. Keep this updated across sessio
 - [ ] Re-run training with reading enabled, compare against the writing-only baseline
 
 ## Scaling to multiple bees
+- [ ] Give workers real differences (choose one): per-worker exploration temperature (scout/worker idea), different spawn points along the route, or different scenarios. Spawning some workers near the hard turn (~195–200 m along the route) exposes them to the failure zone more often
+- [ ] Add a uniform-weight guidance arm (every trace weighted equally, no reputation). Without it, the comparison cannot show that reputation carries any information
 - [ ] Wire the shared SAC actor/critic across multiple multiprocessing workers (not yet done — single worker only so far)
 - [ ] Swap the stubbed `vigor=1.0` for real `tracker.vigor(worker_id)` once there's more than one bee to have a hierarchy between
 - [ ] Confirm experienced bees' traces actually carry more weight/influence than novice bees' traces
@@ -80,7 +82,9 @@ Living checklist — check things off as you go. Keep this updated across sessio
 - [ ] Re-run IDM validation on the fixed code (writes `idm_validation_table.pkl`; currently import-checked only)
 
 ## Decisions to make before claiming results
-- [ ] **Cold start.** `E_t` starts at 0 and rises only on arrival. NOVICE bees are muted, so no traces exist until the first arrival. Options: (a) small nonzero vigor for novice warnings, (b) partial credit for route progress in `E_t`. Decide before the tracker is wired, because it determines whether guidance can speed up the first arrival at all
+- [x] **Cold start (option A, approved):** NOVICE warns at vigor 0.05, never writes success. `E_t` terminal-only (spec §8)
+- [x] **Reputation rule:** EWMA arrival rate, alpha 0.1, wired into the single-bee loop. The step-based rule never promoted on h500 outcomes (spec §8a)
+- [ ] Fix alpha in the spec before comparison runs (0.1 chosen after looking at 0.05/0.1/0.2 on the h500 outcomes)
 - [ ] Confirm the pheromone half-life (0.15 × steps is the first try; ablate with `--half-life-frac 0`)
 - [ ] Multi-worker: the decay step counter must be one shared global env-step count across workers, not per-process. Currently single-worker only
 - [ ] Hyperparameters for the paper (warmup, throttle bias, `target_entropy=0.0`, horizon, penalties, decay, batch size) must be identical across all arms and listed in the paper

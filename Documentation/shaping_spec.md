@@ -106,6 +106,14 @@ Options for the step rule (not yet chosen): (i) keep the steps, lower the FORAGE
 
 Plot: `scratchpad\reputation_replay_h500.png` (outside the repo).
 
+### 8b. Decision: option 3, exponentially weighted arrival rate
+
+- `E <- (1 - alpha) E + alpha * outcome`, outcome 1 for arrival and 0 for crash, terminal outcomes only. Timeouts do not update.
+- Castes unchanged: FORAGER at 0.3 (about a 30% recent arrival rate), SCOUT at 0.8.
+- alpha = **0.1**. Caveat: 0.05, 0.1, and 0.2 were all replayed on the h500 outcomes before 0.1 was chosen. Replay at 0.1: first FORAGER at episode 181, 6 episodes in FORAGER, no SCOUT. Before the comparison runs, alpha must be fixed in this spec and not changed afterward.
+- NOVICE vigor 0.05 (approved). NOVICE arrivals write no success trace. NOVICE crashes still write warnings.
+- Wired into the single-bee loop (`REPUTATION_ALPHA`). Multi-bee and the uniform-weight arm are not built.
+
 ## 9. Parameters to report
 
 `β`, `λ`, σ = 6 m, sensor radius = 10 m, half-life (fraction of steps), snapshot interval K, γ = 0.99, horizon 500, penalties 20.0, warmup 5000 with throttle bias, `target_entropy = 0.0`, batch 256, learning rate 3e-4, seed. All identical across arms except the shaping switch.
