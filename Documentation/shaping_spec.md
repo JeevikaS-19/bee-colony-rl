@@ -139,6 +139,30 @@ Frozen before any comparison run. Changing one means the runs are redone.
 
 **Pilot finding (stop condition hit, snapshot and live arms NOT run).** Mean |F| per step on the 2000-step snapshot smoke run was 0.00014, against mean |raw reward| of 0.099 per step: a ratio of about 0.14%, roughly 700 times smaller. Cause: with no FORAGER bee there are no success traces, so Φ = −β·λ·W with W at most 0.05 (novice vigor). So |Φ| ≤ β·λ·0.05 per step, and mean |F| scales linearly with β. Under these settings the snapshot and live arms would reproduce the none arm. The none arm was left running as the reference. Decision needed on scale before any shaped arm is run: β (and/or λ), the novice floor, or whether novices may write success traces (the open question above). Rough sizing from the smoke run: about β = 70 would bring mean |F| to 10% of mean |raw|. This estimate is from 2000 steps and should be redone on the none arm's trace data.
 
+### 10a. Beta rule (written before any shaped arm runs)
+
+**Rule.** β is set so that mean |F| per step equals 10% of mean |r| per step, measured on the **final checkpoint of the `shaping_none_s0` arm** with every trace's vigor rescaled to 1.0. Measured by `measure_beta.py` (10 rollouts, stochastic policy, seed 0; decay off; λ = 1). Because F is linear in β, one rollout at β = 1 gives β = 0.10 × mean|r| / mean|F_β=1|.
+
+**The 10% is a judgment call.** It is not derived from a theory. It sets the shaping at a small but visible fraction of the per-step reward.
+
+**Why vigor 1.0.** A single bee is NOVICE for most of a run by design, so vigor-weighted traces make the guidance tiny by construction. Rescaling isolates the mechanism's scale from the reputation mechanism, which the multi-worker stage will test.
+
+**Result (frozen):**
+
+| Quantity | Value |
+|---|---|
+| Checkpoint | `shaping_none_s0`, final (60k steps) |
+| Rollouts | 10 (4,280 steps) |
+| mean \|r\| per step | 0.5377 |
+| mean \|F\| per step at β = 1 | 0.0188 |
+| Fraction of steps with Φ ≠ 0 | 0.940 |
+| Cells in table (rescaled) | 345 |
+| **β** | **2.857 → set β = 2.86, λ = 1.0** |
+
+Sensitivity note: an earlier measurement on the 20k checkpoint (53 cells, 5 rollouts) gave β = 1.62. The value depends on the checkpoint, so the rule fixes it at the final checkpoint. Report both.
+
+**Pilot watch-list.** The positive potential on success traces is about 2.86 per cell at full vigor. Approaching a region with a positive potential is rewarded. Entering a warning region is penalized. A "hill" just before the failure zone could bring back the freeze, because approaching it is penalized. Check distance and max speed in the pilot logs, not reward alone.
+
 Mechanism note: the h500 replay showed the step-based rule never promoted (see §8a). The EWMA rule with smoothing 0.1 was chosen after viewing 0.05, 0.1, and 0.2 on the same outcomes. Disclose this in the manuscript.
 
 ## 9. Parameters to report
