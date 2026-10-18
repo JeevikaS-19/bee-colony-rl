@@ -73,11 +73,38 @@ Purpose: check §5. It is not the research claim.
 
 Options:
 
-- **(A) Novice warnings at low vigor.** NOVICE bees write warnings at a fixed vigor below the FORAGER minimum (0.1), and never write successes. `E_t` stays terminal-only. This changes the NOVICE row of the caste table.
+- **(A) Novice warnings at low vigor. APPROVED for the NOVICE row.** NOVICE bees write warnings at a fixed vigor of **0.05** (clearly below the FORAGER floor of 0.1, so the hierarchy stays visible), and never write successes. `E_t` stays terminal-only. This changes the NOVICE row of the caste table. Code not yet changed.
 - **(B) Partial credit.** `E_t` gains a small amount per unit of route progress. This breaks the "never credited per step" rule in CLAUDE.md, which was a deliberate decision.
 - **(C) Keep both rules.** Accept that guidance cannot affect time-to-first-arrival. Report the time-to-first-arrival of each arm as a separate result.
 
-Recommendation: (A) for the first multi-bee run, because it keeps the terminal-only credit rule and gives novices a warning signal from their crashes. Confirm before wiring the tracker.
+Recommendation: (A) for the first multi-bee run, because it keeps the terminal-only credit rule and gives novices a warning signal from their crashes.
+
+### 8a. Replay of the h500 outcomes through `ReputationTracker` (done, offline)
+
+Input: the 200 episode outcomes in `logs/train_100k_h500_seed0.log` (10 arrive, 164 crash, 26 timeout). Timeouts give no terminal credit. Current steps are +0.05 / −0.10 with a floor of 0.
+
+| Step sizes (up / down) | Final E | Max E | First FORAGER (≥0.3) | First SCOUT (≥0.8) |
+|---|---|---|---|---|
+| +0.05 / −0.10 (current) | 0.000 | 0.150 | never | never |
+| +0.05 / −0.05 | 0.000 | 0.150 | never | never |
+| +0.05 / −0.02 | 0.000 | 0.200 | never | never |
+| +0.05 / −0.0125 | 0.075 | 0.275 | never | never |
+| +0.10 / −0.10 | — | 0.300 | reached | never |
+| +0.10 / −0.05 | — | 0.300 | reached | never |
+| +0.10 / −0.025 | — | 0.550 | reached | reached |
+| +0.20 / −0.05 | — | 1.000 | reached | reached |
+
+Facts from the same log:
+
+- Overall arrival rate: **5%** (10/200). The best 20-episode window: **40%** (ends at episode 184). The last 20 episodes: 15%.
+- Longest run of consecutive arrivals: **3**. Arrivals are never in long runs, so "six in a row" is not the constraint; the binding constraint is the overall rate.
+- The whole run's arrivals fall in episodes 148–200. Before episode 148, E = 0 throughout.
+
+Conclusion: under this policy's outcome mix, the current steps and thresholds never promote a bee. The step sizes must be set against an outcome rate, not against an ideal streak. The thresholds (0.3 / 0.8) and the step sizes have to be fixed before the comparison runs and must not be fitted to the baseline's own outcomes, or the comparison is circular.
+
+Options for the step rule (not yet chosen): (i) keep the steps, lower the FORAGER threshold to match achievable E; (ii) raise up and lower down together so the ratio sets the drift; (iii) an exponentially weighted arrival rate, where E tracks the arrival fraction directly and FORAGER means a fixed arrival rate. Option (iii) keeps the thresholds meaningful, but a 0.3 threshold means a 30% arrival rate, which this policy reaches only in a short window.
+
+Plot: `scratchpad\reputation_replay_h500.png` (outside the repo).
 
 ## 9. Parameters to report
 
