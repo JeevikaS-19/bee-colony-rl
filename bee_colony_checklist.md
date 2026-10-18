@@ -8,7 +8,7 @@ Living checklist — check things off as you go. Keep this updated across sessio
 - [x] `reputation_tracker.py` — standalone E_t / caste / vigor tracker
 - [x] `test_sequential_envs.py` — multiple independent single-agent MetaDrive instances, clean lifecycle
 - [x] `test_parallel_plumbing.py` — real multiprocessing, N workers, genuine interleaving, clean teardown
-- [x] `pheromone_table.py` + `test_pheromone_table.py` — grid bucketing, overwrite-if-higher-vigor, two independent channels (success/warning), spatial Gaussian falloff, temporal decay — all 5 test cases passing
+- [x] `pheromone_table.py` + `test_pheromone_table.py` — grid bucketing, overwrite-if-higher-vigor, two independent channels (success/warning), spatial Gaussian falloff, step-based decay, zero-vigor rejection — all 8 test cases passing
 
 ## Single-bee training loop
 - [x] Fresh SAC actor producing valid actions in one worker (inference only — this was the "sandbox bee" that turned out to have no learning loop)
@@ -54,8 +54,8 @@ Living checklist — check things off as you go. Keep this updated across sessio
 ## Render-validation stage
 - [x] Write a small separate script: load the saved checkpoint + pheromone table (`render_validation.py`)
 - [x] Run a handful of episodes with `use_render=True` and `deterministic=True` — done on the frozen policy, which is how the freeze was found
-- [ ] Re-run on a policy that actually drives
-- [ ] Visually confirm: do warning traces actually sit at crash-prone spots? Do success traces sit on sensible turning guides?
+- [~] Re-run on a policy that actually drives: `checkpoints/h500_40k_seed0/` (pre-fix code), `python render_validation.py --run-name h500_40k_seed0`. Episodes 1–3 each crash at step 157–162 after 195–200 m, on the same route. Episode 4 stopped at step 30 with exit 0 and no error (cause unknown). Episode 5 did not run. Re-run this on the fixed code.
+- [ ] Visually confirm: do warning traces actually sit at crash-prone spots? Do success traces sit on sensible turning guides? Numeric check: the nearest warning cell is 1.04 m from the crash point, but a success cell sits on the same spot, because arrival paths drive through it. A warning does not always mean "never drive here".
 
 ## Reading-enabled stage (after render validation passes)
 - [ ] Decide/implement the step-count gate for when `read_nearby()` starts influencing reward (writing can run from step 1; reading waits)
@@ -67,11 +67,29 @@ Living checklist — check things off as you go. Keep this updated across sessio
 - [ ] Swap the stubbed `vigor=1.0` for real `tracker.vigor(worker_id)` once there's more than one bee to have a hierarchy between
 - [ ] Confirm experienced bees' traces actually carry more weight/influence than novice bees' traces
 
+## Fixes before comparison runs (done, committed)
+- [x] `.gitignore` re-saved as UTF-8, now ignores `*.pt`, `*.pkl`, `checkpoints/`, `logs/` (`8200c19`)
+- [x] Tag `exploratory-v0` = `8200c19`; runs before it marked exploratory only (`dc49fa1`)
+- [x] Replay buffer stores only real terminals (arrive / out_of_road / crash_*); horizon timeouts bootstrap (`2b56049`). Verified: 7 terminal transitions for 7 crashes, 0 for 3 timeouts
+- [x] Pheromone decay counts training steps, not wall-clock. `write(..., step)`, `read_nearby(..., step, decay_rate)`; `decay_rate` has no default (`059ab93`)
+- [x] Robustness: env in `try/finally`, outputs anchored to the script folder, zero-vigor writes rejected and skipped in `write_episode_traces` (`4822987`)
+- [x] Each run writes to `checkpoints/<run-name>/` and refuses a non-empty folder. Config saved as `run_config.json`
+- [x] Half-life is a fraction of total steps (`--half-life-frac`, default 0.15, 0 = no decay). Recorded only until reading is wired
+- [x] IDM validation output renamed to `idm_validation_table.pkl` so re-runs can't overwrite the old pickle
+- [x] Smoke run verified twice: exit 0, same terminal count and table each time, no accumulation across runs
+- [ ] Re-run IDM validation on the fixed code (writes `idm_validation_table.pkl`; currently import-checked only)
+
+## Decisions to make before claiming results
+- [ ] **Cold start.** `E_t` starts at 0 and rises only on arrival. NOVICE bees are muted, so no traces exist until the first arrival. Options: (a) small nonzero vigor for novice warnings, (b) partial credit for route progress in `E_t`. Decide before the tracker is wired, because it determines whether guidance can speed up the first arrival at all
+- [ ] Confirm the pheromone half-life (0.15 × steps is the first try; ablate with `--half-life-frac 0`)
+- [ ] Multi-worker: the decay step counter must be one shared global env-step count across workers, not per-process. Currently single-worker only
+- [ ] Hyperparameters for the paper (warmup, throttle bias, `target_entropy=0.0`, horizon, penalties, decay, batch size) must be identical across all arms and listed in the paper
+
 ## Known open items, not blocking right now
-- [ ] `.gitignore` is saved as UTF-16 so git ignores it — re-save as UTF-8 before the next commit
-- [ ] Timeouts are pushed to the replay buffer as terminal `done` (`terminated or truncated`), which cuts bootstrapping at the horizon — known simplification, worth revisiting
+- [x] (fixed `2b56049`) Timeouts were pushed to the replay buffer as terminal `done`, which cut bootstrapping at the horizon
 - [ ] Alpha optimizer is still using the same learning rate as actor/critic (the originally-planned `lr/10` separate rate was never actually applied — the floor alone fixed the visible symptom, but worth knowing if alpha needs further tuning later)
 - [ ] Future refinement, not built yet: scale deposited vigor by local maneuver difficulty (`Vdep = Vagent * (1.0 + B * |steer|)`) instead of uniform vigor across a whole successful path
+- [ ] Push to origin: hold until `Documentation/rough_draft.md` has been read. Nothing has been pushed; the repo has commits `8200c19`, `dc49fa1`, `2b56049`, `059ab93`, `4822987`
 
 ## Separate, parked conversations
 - [ ] Decide what to actually call the overall algorithm (SAC + pheromone reward-shaping — functional description settled, no name picked yet)
