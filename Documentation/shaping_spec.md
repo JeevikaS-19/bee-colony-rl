@@ -173,6 +173,14 @@ Sensitivity note: an earlier measurement on the 20k checkpoint (53 cells, 5 roll
 
 **Next (not yet run):** a second seed for both pilots; read the first steps of the collapsed episodes (steering and throttle); and a control with the terminal convention changed. No arm counts are claimed from the pilot.
 
+### 10c. Second-seed pilot (seed 1, same settings)
+
+- **Plumbing: pass again.** 74 episodes before the gate match exactly across `none_s1`, `pilot_snap10_s1`, and `pilot_live_s1`.
+- **Snapshot: no sustained freeze.** Episodes 121-200 recover to a median of 131-147 m, with max speed around 20 km/h. The seed-0 out-of-road collapse did not reproduce.
+- **Live: sustained stall.** Episodes 81-200 have mean distance 9-28 m and max speed 5-8 km/h. Most episodes end in 500-step timeouts (32 in 121-160, 37 in 161-200). This is a freeze-like pattern, and it is a different failure from seed 0's out-of-road exits.
+- **Baseline dip.** The `none` reference also slows around episodes 81-113 (mean 11 m, max speed 6 km/h), so part of the dip is not caused by shaping. The `none_s1` reference was still running at 113 episodes when this was written. Its episodes 121-200 are needed before the stall can be attributed.
+- **Summary across 4 shaped runs:** a sustained slowdown appears in 3 of 4 (seed 0 snapshot and live, seed 1 live). Seed 1 snapshot does not show it. This is not enough to attribute the cause, and the arm comparison needs more seeds.
+
 Mechanism note: the h500 replay showed the step-based rule never promoted (see §8a). The EWMA rule with smoothing 0.1 was chosen after viewing 0.05, 0.1, and 0.2 on the same outcomes. Disclose this in the manuscript.
 
 ## 9. Parameters to report
