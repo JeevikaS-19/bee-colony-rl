@@ -181,6 +181,15 @@ Sensitivity note: an earlier measurement on the 20k checkpoint (53 cells, 5 roll
 - **Baseline dip.** The `none` reference also slows around episodes 81-113 (mean 11 m, max speed 6 km/h), so part of the dip is not caused by shaping. The `none_s1` reference was still running at 113 episodes when this was written. Its episodes 121-200 are needed before the stall can be attributed.
 - **Summary across 4 shaped runs:** a sustained slowdown appears in 3 of 4 (seed 0 snapshot and live, seed 1 live). Seed 1 snapshot does not show it. This is not enough to attribute the cause, and the arm comparison needs more seeds.
 
+### 10d. Cheap checks on the seed-0 snapshot pilot (no training)
+
+- **Phi map.** Spawn (5,7) has Phi = 0.16. Success traces give positive Phi on and west of the spawn (up to about 1.1 at x = -4). Warnings give negative Phi to the east and south (down to about -1.2 near (10..14, -4..-10)). Far from any trace Phi = 0. The table carries no road geometry, so "is leaving the road uphill" cannot be read from it. None of 8 rollouts left the road, so the exit question is untested.
+- **Where |F| lives (8 rollouts, 3553 steps).** Median |F| 0.036, p99 0.25, mean 0.063. Mean |F| / mean |r| = 0.114. Steps within 10 m of spawn: 10% of steps but 1% of |F| mass.
+- **Terminal dominance.** Seven arrival steps (0.2% of steps) carry 9% of total |F|, with F = -2.85 each. The arrival cell has a success trace (Phi about +2.85), and the terminal convention sets Phi(s_T) = 0. So the shaping removes the potential on the last step, even though the bee has arrived. Mean |F| looks small, but the tail is local.
+- **Implication.** Local dominance sits at the destination, not at spawn. This is a candidate for the seed-0 collapse, but the collapse itself was not reproduced by these rollouts.
+
+**Static-from-gate test started (seed 0, 60k steps, fixed vigor 1.0, beta 2.86).** The table is frozen at step 5000 and never refreshed. Run name `pilot_static_s0`. If it still collapses, the next candidates are the terminal convention and the ridge shape. Output: `logs/pilot_static_s0.log`.
+
 Mechanism note: the h500 replay showed the step-based rule never promoted (see §8a). The EWMA rule with smoothing 0.1 was chosen after viewing 0.05, 0.1, and 0.2 on the same outcomes. Disclose this in the manuscript.
 
 ## 9. Parameters to report

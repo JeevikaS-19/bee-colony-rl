@@ -93,6 +93,9 @@ Living checklist — check things off as you go. Keep this updated across sessio
 - [x] Pilot (stub vigor 1.0, beta 2.86, seed 0) finished: plumbing passes (identical until step 5000), scale ratio 0.11-0.13 passes
 - [ ] Pilot FAILS the freeze check in both shaped arms: early out-of-road exits within ~4 m of spawn after the gate (spec §10b). Mechanism not identified. Next: second seed, read the collapsed episodes' actions, control with the terminal convention changed
 - [x] Second seed (seed 1) pilots run: snapshot shows no sustained freeze; live shows a timeout stall (spec §10c). `none_s1` reference still running at 113 episodes when recorded
+- [x] Cheap checks done (spec §10d): Phi map around spawn, |F| distribution, terminal dominance (7 arrival steps carry 9% of |F|)
+- [x] Housekeeping: tag `pilot-single-bee-v1` at 39ae790; logs and checkpoints backed up to `metadrive-sim/backups/pilot-single-bee-v1-2026-10-18/`
+- [~] Static-from-gate pilot (seed 0) running: `pilot_static_s0`. Tests whether a changing potential makes replayed shaped targets inconsistent
 - [ ] Hacking check needs a baseline: the none arm has no shaping log
 - [ ] Decide: may NOVICE bees write faint success traces at 0.05? Reviewer proposes yes; current setting is no (option A). Changing it means re-running the arms
 - [ ] Multi-seed: each arm is one seed (seed 0). Add seeds before any claim
