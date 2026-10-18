@@ -372,8 +372,8 @@ def run_sac_training(run_name, total_steps=20000, batch_size=256, warmup_steps=5
     #   none     -- no shaping (reference arm)
     #   snapshot -- potential read from a table frozen for snapshot_every episodes
     #   live     -- potential read from the table refreshed after every episode (K = 1)
-    if shaping not in ("none", "snapshot", "live"):
-        raise ValueError(f"shaping must be none|snapshot|live, got {shaping}")
+    if shaping not in ("none", "snapshot", "live", "static"):
+        raise ValueError(f"shaping must be none|snapshot|live|static, got {shaping}")
     if shaping == "snapshot" and snapshot_every < 1:
         raise ValueError("snapshot_every must be >= 1")
     # Read gate: shaping is applied only after this step. Before it, Phi is still
@@ -447,7 +447,8 @@ def run_sac_training(run_name, total_steps=20000, batch_size=256, warmup_steps=5
         # shaping_table is the table the potential is read from. It is a copy
         # refreshed only at episode ends, so within an episode Phi is fixed and
         # the shaping telescopes (spec section 4).
-        shaping_table = copy.deepcopy(pheromone_table) if shaping != "none" else None
+        # "static" copies the table once, when the read gate opens, and never refreshes it.
+        shaping_table = copy.deepcopy(pheromone_table) if shaping in ("snapshot", "live") else None
         shaped_episode_reward = 0.0
         shaping_abs_sum = 0.0
         episode_cells = set()  # distinct 2 m cells this episode (loop check)
@@ -466,6 +467,10 @@ def run_sac_training(run_name, total_steps=20000, batch_size=256, warmup_steps=5
               f"warmup={warmup_steps} throttle-biased random steps before updates begin\n")
 
         for step in range(1, total_steps + 1):
+            if shaping == "static" and shaping_table is None and step > read_start:
+                # Freeze the potential at the gate: copy once, phi_cur for the current state.
+                shaping_table = copy.deepcopy(pheromone_table)
+                phi_cur = phi_at(shaping_table, env.agent.position, step)
             in_warmup = step <= warmup_steps
             if in_warmup:
                 action = warmup_action()
@@ -556,7 +561,7 @@ def run_sac_training(run_name, total_steps=20000, batch_size=256, warmup_steps=5
                           f"| mean|F|={shaping_abs_sum / steps_this_ep:.4f} "
                           f"| distinct_cells={len(episode_cells)}/{steps_this_ep} steps")
                     # Refresh the read-only copy after this episode's writes.
-                    if shaping == "live" or episode_count % snapshot_every == 0:
+                    if shaping == "live" or (shaping == "snapshot" and episode_count % snapshot_every == 0):
                         shaping_table = copy.deepcopy(pheromone_table)
                 shaped_episode_reward = 0.0
                 shaping_abs_sum = 0.0
@@ -600,7 +605,7 @@ if __name__ == "__main__":
     parser.add_argument("--run-name", required=True, help="output folder under checkpoints/")
     parser.add_argument("--half-life-frac", type=float, default=0.15,
                         help="pheromone half-life as a fraction of --steps; 0 = no decay")
-    parser.add_argument("--shaping", choices=["none", "snapshot", "live"], default="none")
+    parser.add_argument("--shaping", choices=["none", "snapshot", "live", "static"], default="none")
     parser.add_argument("--snapshot-every", type=int, default=10,
                         help="episodes between table snapshots (snapshot arm)")
     parser.add_argument("--beta", type=float, default=1.0)
