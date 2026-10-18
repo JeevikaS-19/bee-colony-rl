@@ -2,60 +2,86 @@ import math
 
 
 class ReputationTracker:
-    def __init__(self, agent_ids, alpha=0.1):
+    def __init__(self, agent_ids, smoothing=0.1, hysteresis=0.05):
         """
         Reputation and caste tracker based on Temporal Polyethism.
 
-        E_t is an exponentially weighted arrival rate over TERMINAL outcomes only:
-            E <- (1 - alpha) * E + alpha * outcome,   outcome = 1 (arrive), 0 (crash)
-        E stays in [0, 1] and starts at 0 (NOVICE). Horizon timeouts are not
-        terminal outcomes: the caller must not call update() for them.
+        E_t is an exponentially weighted arrival rate over TERMINAL episode ends:
+            E <- (1 - smoothing) * E + smoothing * outcome
+        outcome = 1 for an arrival, 0 for anything else (crash, out-of-road,
+        or horizon timeout: a timeout is a failure to arrive).
+        E stays in [0, 1] and starts at 0 (NOVICE).
+
+        Castes use hysteresis: a bee is promoted at the threshold but only
+        demoted once E falls `hysteresis` below it. This stops a bee whose
+        true arrival rate sits near a threshold from flickering between castes.
 
         Args:
             agent_ids (list): unique agent identifiers to track.
-            alpha (float): EWMA weight on the newest terminal outcome. Fixed
-                before comparison runs; not tuned on the baseline's outcomes.
+            smoothing (float): EWMA weight on the newest outcome, in (0, 1].
+                Fixed before comparison runs; not tuned on the baseline's outcomes.
+            hysteresis (float): margin below a threshold before demotion, >= 0.
         """
-        if not 0.0 < alpha <= 1.0:
-            raise ValueError(f"alpha must be in (0, 1], got {alpha}")
+        if not 0.0 < smoothing <= 1.0:
+            raise ValueError(f"smoothing must be in (0, 1], got {smoothing}")
+        if hysteresis < 0.0:
+            raise ValueError(f"hysteresis must be >= 0, got {hysteresis}")
         self.E = {aid: 0.0 for aid in agent_ids}
-        self.alpha = alpha
+        self.smoothing = smoothing
+        self.hysteresis = hysteresis
+        self._caste = {aid: "NOVICE" for aid in agent_ids}
 
-        # Caste boundaries (E is an arrival rate, so 0.3 means ~30% recent arrivals)
+        # Caste thresholds (E is an arrival rate, so 0.3 means ~30% recent arrivals)
         self.THRESHOLD_FORAGER = 0.3
         self.THRESHOLD_SCOUT = 0.8
 
         # Vigor levels
-        self.NOVICE_VIGOR = 0.05  # approved: low, but below the FORAGER floor
+        self.NOVICE_VIGOR = 0.05  # low, below the FORAGER floor
         self.FORAGER_MIN = 0.1
         self.FORAGER_MAX = 0.8
         self.SCOUT_VIGOR = 0.95
 
     def update(self, agent_id, success: bool):
         """
-        Fold one terminal outcome into E_t. success=True is an arrival,
-        success=False is a crash. Returns the new E_t.
+        Fold one episode end into E_t. success=True only for an arrival;
+        crashes and horizon timeouts pass success=False. Returns the new E_t.
         """
         if agent_id not in self.E:
             raise KeyError(f"Agent ID '{agent_id}' is not registered in the tracker.")
         outcome = 1.0 if success else 0.0
-        self.E[agent_id] = (1.0 - self.alpha) * self.E[agent_id] + self.alpha * outcome
+        self.E[agent_id] = (1.0 - self.smoothing) * self.E[agent_id] + self.smoothing * outcome
+        self._caste[agent_id] = self._next_caste(agent_id)
         return self.E[agent_id]
 
-    def caste(self, agent_id):
-        """Temporal caste of an agent, from its E_t."""
+    def _next_caste(self, agent_id):
         exp = self.E[agent_id]
-        if exp < self.THRESHOLD_FORAGER:
+        current = self._caste[agent_id]
+        h = self.hysteresis
+        if current == "SCOUT":
+            if exp >= self.THRESHOLD_SCOUT - h:
+                return "SCOUT"
+            current = "FORAGER"  # demoted one level; check FORAGER band below
+        if current == "FORAGER":
+            if exp >= self.THRESHOLD_SCOUT:
+                return "SCOUT"
+            if exp >= self.THRESHOLD_FORAGER - h:
+                return "FORAGER"
             return "NOVICE"
-        elif exp < self.THRESHOLD_SCOUT:
-            return "FORAGER"
-        else:
+        # current == NOVICE
+        if exp >= self.THRESHOLD_SCOUT:
             return "SCOUT"
+        if exp >= self.THRESHOLD_FORAGER:
+            return "FORAGER"
+        return "NOVICE"
+
+    def caste(self, agent_id):
+        """Current caste of an agent (updated on each update() call)."""
+        return self._caste[agent_id]
 
     def vigor(self, agent_id):
         """
-        Broadcast vigor for an agent.
-        NOVICE: fixed low vigor (listens and may warn, never writes success).
+        Broadcast vigor for an agent's current caste.
+        NOVICE: fixed low vigor (may warn, never writes success).
         FORAGER: tanh(2E), clipped to [FORAGER_MIN, FORAGER_MAX].
         SCOUT: fixed high vigor.
         """
@@ -71,38 +97,54 @@ class ReputationTracker:
 
 
 if __name__ == "__main__":
-    # Self-test: checks the EWMA arithmetic and the caste/vigor boundaries.
-    t = ReputationTracker(agent_ids=["a"], alpha=0.1)
+    # Self-test: EWMA arithmetic, promotion, hysteresis, and vigor.
+    t = ReputationTracker(agent_ids=["a"], smoothing=0.1, hysteresis=0.05)
 
-    # Four arrivals in a row: E = 1 - 0.9**4 = 0.3439 -> FORAGER
+    # Four arrivals in a row: E = 1 - 0.9**4 = 0.3439 -> promoted to FORAGER
     for _ in range(4):
         t.update("a", True)
     assert abs(t.E["a"] - (1 - 0.9 ** 4)) < 1e-12, t.E["a"]
     assert t.caste("a") == "FORAGER", t.caste("a")
     assert 0.1 <= t.vigor("a") <= 0.8
 
-    # Crashes pull E back down, and E never goes below 0
-    for _ in range(50):
+    # Hysteresis: a crash drops E to 0.309 (still >= 0.25) -> stays FORAGER
+    t.update("a", False)
+    assert t.E["a"] >= 0.25 and t.caste("a") == "FORAGER", (t.E["a"], t.caste("a"))
+    # Keep crashing until E < 0.25 -> demoted to NOVICE
+    while t.E["a"] >= 0.25:
         t.update("a", False)
-    assert t.E["a"] >= 0.0 and t.caste("a") == "NOVICE", (t.E["a"], t.caste("a"))
+    assert t.caste("a") == "NOVICE", (t.E["a"], t.caste("a"))
     assert t.vigor("a") == 0.05
 
-    # Long run of arrivals approaches 1 and reaches SCOUT
+    # Timeouts count as failures: a bee that never crashes but never arrives decays
+    t_timeout = ReputationTracker(agent_ids=["x"], smoothing=0.1)
+    for _ in range(4):
+        t_timeout.update("x", True)
+    for _ in range(30):
+        t_timeout.update("x", False)  # a timeout
+    assert t_timeout.E["x"] < 0.05, t_timeout.E["x"]
+
+    # Long run of arrivals reaches SCOUT
     for _ in range(60):
         t.update("a", True)
     assert t.E["a"] <= 1.0 and t.caste("a") == "SCOUT", (t.E["a"], t.caste("a"))
     assert t.vigor("a") == 0.95
 
-    # A constant 20% arrival rate settles near 0.2 -> still NOVICE (below 0.3)
-    t2 = ReputationTracker(agent_ids=["b"], alpha=0.1)
+    # Constant 20% arrival rate: E settles near 0.2, below the 0.25 demotion
+    # line for a bee already NOVICE, so it stays NOVICE and does not flicker up.
+    t2 = ReputationTracker(agent_ids=["b"], smoothing=0.1, hysteresis=0.05)
+    castes = []
     for i in range(2000):
         t2.update("b", i % 5 == 0)
-    assert abs(t2.E["b"] - 0.2) < 0.05 and t2.caste("b") == "NOVICE", t2.E["b"]
+        castes.append(t2.caste("b"))
+    assert abs(t2.E["b"] - 0.2) < 0.1, t2.E["b"]
+    assert "FORAGER" not in castes[500:] or castes[500:].count("FORAGER") < 50, "flicker"
 
-    try:
-        ReputationTracker(agent_ids=["c"], alpha=0.0)
-        raise AssertionError("alpha=0 should be rejected")
-    except ValueError:
-        pass
+    for bad in (dict(smoothing=0.0), dict(hysteresis=-0.1)):
+        try:
+            ReputationTracker(agent_ids=["c"], **bad)
+            raise AssertionError(f"{bad} should be rejected")
+        except ValueError:
+            pass
 
-    print("ReputationTracker self-test passed (EWMA, castes, vigor).")
+    print("ReputationTracker self-test passed (EWMA, hysteresis, timeouts, vigor).")

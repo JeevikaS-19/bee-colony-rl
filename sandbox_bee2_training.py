@@ -2,6 +2,7 @@ import sys
 import os
 import math
 import random
+import copy
 import json
 import pickle
 import numpy as np
@@ -12,9 +13,12 @@ from torch.distributions import Normal
 from collections import deque
 from pheromone_table import PheromoneTable, decay_rate_from_half_life
 from reputation_tracker import ReputationTracker
+from shaping import potential, shaping_term
 
-# EWMA weight on terminal outcomes for E_t. Fixed for the comparison runs.
-REPUTATION_ALPHA = 0.1
+# E_t = EWMA arrival rate over episode ends (arrive = 1; crash and timeout = 0).
+# Fixed for the comparison runs. Thresholds are 0.3 (FORAGER) and 0.8 (SCOUT).
+REPUTATION_SMOOTHING = 0.1
+REPUTATION_HYSTERESIS = 0.05  # demote only when E_t falls this far below a threshold
 
 METADRIVE_AVAILABLE = False
 try:
@@ -333,7 +337,8 @@ def set_seeds(seed):
 
 
 def run_sac_training(run_name, total_steps=20000, batch_size=256, warmup_steps=5000, update_every=1,
-                     seed=0, save_every=10000, half_life_frac=0.15):
+                     seed=0, save_every=10000, half_life_frac=0.15,
+                     shaping="none", snapshot_every=10, beta=1.0, lam=1.0):
     """
     run_name: output folder under checkpoints/. Refuses to reuse a non-empty
       folder, so a run can never overwrite another run's weights.
@@ -362,6 +367,15 @@ def run_sac_training(run_name, total_steps=20000, batch_size=256, warmup_steps=5
 
     set_seeds(seed)
 
+    # Shaping arms (see Documentation/shaping_spec.md):
+    #   none     -- no shaping (reference arm)
+    #   snapshot -- potential read from a table frozen for snapshot_every episodes
+    #   live     -- potential read from the table refreshed after every episode (K = 1)
+    if shaping not in ("none", "snapshot", "live"):
+        raise ValueError(f"shaping must be none|snapshot|live, got {shaping}")
+    if shaping == "snapshot" and snapshot_every < 1:
+        raise ValueError("snapshot_every must be >= 1")
+
     half_life_steps = half_life_frac * total_steps if half_life_frac > 0 else None
     decay_rate = decay_rate_from_half_life(half_life_steps)
     print(f"Run '{run_name}' -> {out_dir} | pheromone half-life: "
@@ -372,7 +386,8 @@ def run_sac_training(run_name, total_steps=20000, batch_size=256, warmup_steps=5
     action_dim = 2
 
     agent = SACAgent(state_dim=obs_dim, action_dim=action_dim)
-    tracker = ReputationTracker(["sandbox_bee"], alpha=REPUTATION_ALPHA)
+    tracker = ReputationTracker(["sandbox_bee"], smoothing=REPUTATION_SMOOTHING,
+                                hysteresis=REPUTATION_HYSTERESIS)
     buffer = ReplayBuffer(capacity=200000)
 
     pheromone_table = PheromoneTable(grid_size=2.0)
@@ -393,7 +408,10 @@ def run_sac_training(run_name, total_steps=20000, batch_size=256, warmup_steps=5
         json.dump({"run_name": run_name, "total_steps": total_steps, "batch_size": batch_size,
                    "warmup_steps": warmup_steps, "seed": seed, "save_every": save_every,
                    "half_life_frac": half_life_frac, "decay_rate_per_step": decay_rate,
-                   "reputation_alpha": REPUTATION_ALPHA,
+                   "shaping": shaping, "snapshot_every": snapshot_every,
+                   "shaping_beta": beta, "shaping_lambda": lam,
+                   "reputation_smoothing": REPUTATION_SMOOTHING,
+                   "reputation_hysteresis": REPUTATION_HYSTERESIS,
                    "env": config}, f, indent=2)
 
     env = MetaDriveEnv(config=config)
@@ -414,6 +432,21 @@ def run_sac_training(run_name, total_steps=20000, batch_size=256, warmup_steps=5
         recent_episode_distances = deque(maxlen=20)
         prev_pos = tuple(env.agent.position)
         episode_max_speed = 0.0
+
+        # --- Shaping state ---
+        # shaping_table is the table the potential is read from. It is a copy
+        # refreshed only at episode ends, so within an episode Phi is fixed and
+        # the shaping telescopes (spec section 4).
+        shaping_table = copy.deepcopy(pheromone_table) if shaping != "none" else None
+        shaped_episode_reward = 0.0
+        shaping_abs_sum = 0.0
+        episode_cells = set()  # distinct 2 m cells this episode (loop check)
+
+        def phi_at(table, xy, now):
+            r = table.read_nearby(xy, step=now, decay_rate=decay_rate)
+            return potential(r["success"], r["warning"], beta, lam)
+
+        phi_cur = phi_at(shaping_table, env.agent.position, 0) if shaping_table is not None else 0.0
 
         outcome_counts = {}  # e.g. {"out_of_road": 12, "max_step": 40, ...} over the whole run
 
@@ -449,7 +482,19 @@ def run_sac_training(run_name, total_steps=20000, batch_size=256, warmup_steps=5
 
             # Only real terminals stop bootstrapping. A horizon timeout still
             # episode-ends below (for reset + traces) but its next state has value.
-            buffer.push(obs, action, reward, next_obs, float(is_real_terminal(info)))
+            # Shaped reward for the replay buffer: r' = r + F. The episode log keeps the raw reward.
+            if shaping_table is not None:
+                phi_next = phi_at(shaping_table, (current_x, current_y), step)
+                f = shaping_term(phi_cur, phi_next, agent.gamma, next_is_terminal=is_real_terminal(info))
+                phi_cur = phi_next
+            else:
+                f = 0.0
+            shaped_reward_val = reward + f
+            shaped_episode_reward += shaped_reward_val
+            shaping_abs_sum += abs(f)
+            episode_cells.add(pheromone_table._to_grid_key((current_x, current_y)))
+
+            buffer.push(obs, action, shaped_reward_val, next_obs, float(is_real_terminal(info)))
             episode_reward += reward
             obs = next_obs
 
@@ -483,10 +528,22 @@ def run_sac_training(run_name, total_steps=20000, batch_size=256, warmup_steps=5
                 bee_caste = tracker.caste("sandbox_bee")
                 write_episode_traces(pheromone_table, reason, episode_path, bee_vigor,
                                      "sandbox_bee", step, bee_caste)
-                if reason in ("arrive_dest", "crash"):
-                    tracker.update("sandbox_bee", reason == "arrive_dest")
+                # Every episode end counts: a timeout is a failure to arrive.
+                tracker.update("sandbox_bee", reason == "arrive_dest")
                 print(f"    [Tracker] E_t={tracker.E['sandbox_bee']:.3f} | caste={tracker.caste('sandbox_bee')} "
                       f"| next vigor={tracker.vigor('sandbox_bee'):.2f}")
+
+                if shaping_table is not None:
+                    steps_this_ep = max(1, len(episode_path))
+                    print(f"    [Shaping] raw_return={episode_reward:.2f} shaped_return={shaped_episode_reward:.2f} "
+                          f"| mean|F|={shaping_abs_sum / steps_this_ep:.4f} "
+                          f"| distinct_cells={len(episode_cells)}/{steps_this_ep} steps")
+                    # Refresh the read-only copy after this episode's writes.
+                    if shaping == "live" or episode_count % snapshot_every == 0:
+                        shaping_table = copy.deepcopy(pheromone_table)
+                shaped_episode_reward = 0.0
+                shaping_abs_sum = 0.0
+                episode_cells = set()
 
                 episode_path = []
                 episode_reward = 0.0
@@ -496,6 +553,7 @@ def run_sac_training(run_name, total_steps=20000, batch_size=256, warmup_steps=5
                 if isinstance(obs, tuple) and len(obs) == 2:
                     obs, info = obs
                 prev_pos = tuple(env.agent.position)  # new spawn point, not last episode's end
+                phi_cur = phi_at(shaping_table, env.agent.position, step) if shaping_table is not None else 0.0
 
             # Periodic save, so a long run that dies partway still leaves something to load.
             if save_every and step % save_every == 0 and step != total_steps:
@@ -525,6 +583,13 @@ if __name__ == "__main__":
     parser.add_argument("--run-name", required=True, help="output folder under checkpoints/")
     parser.add_argument("--half-life-frac", type=float, default=0.15,
                         help="pheromone half-life as a fraction of --steps; 0 = no decay")
+    parser.add_argument("--shaping", choices=["none", "snapshot", "live"], default="none")
+    parser.add_argument("--snapshot-every", type=int, default=10,
+                        help="episodes between table snapshots (snapshot arm)")
+    parser.add_argument("--beta", type=float, default=1.0)
+    parser.add_argument("--lam", type=float, default=1.0)
     args = parser.parse_args()
     run_sac_training(run_name=args.run_name, total_steps=args.steps, seed=args.seed,
-                     warmup_steps=args.warmup, half_life_frac=args.half_life_frac)
+                     warmup_steps=args.warmup, half_life_frac=args.half_life_frac,
+                     shaping=args.shaping, snapshot_every=args.snapshot_every,
+                     beta=args.beta, lam=args.lam)
