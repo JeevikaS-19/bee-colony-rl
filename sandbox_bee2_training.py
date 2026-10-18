@@ -2,6 +2,7 @@ import sys
 import os
 import math
 import random
+import json
 import pickle
 import numpy as np
 import torch
@@ -9,7 +10,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.distributions import Normal
 from collections import deque
-from pheromone_table import PheromoneTable
+from pheromone_table import PheromoneTable, decay_rate_from_half_life
 
 METADRIVE_AVAILABLE = False
 try:
@@ -258,6 +259,8 @@ def write_episode_traces(pheromone_table, reason, episode_path, vigor, worker_id
     Shared by the training loop and idm_pheromone_validation.py, so the
     validation exercises this exact code rather than a copy of it.
     """
+    if vigor <= 0:
+        return 0  # muted (NOVICE) bees listen but never write
     if reason == "arrive_dest":
         written_cells = 0
         meta = {"worker_id": worker_id, "trigger": "arrive_dest", "path_length": len(episode_path)}
@@ -294,9 +297,9 @@ def warmup_action():
 HERE = os.path.dirname(os.path.abspath(__file__))  # outputs go next to this script, not the cwd
 
 
-def save_checkpoint(agent, pheromone_table,
-                    ckpt_path=os.path.join(HERE, "sandbox_bee_checkpoint.pt"),
-                    table_path=os.path.join(HERE, "pheromone_table.pkl")):
+def save_checkpoint(agent, pheromone_table, out_dir):
+    ckpt_path = os.path.join(out_dir, "sandbox_bee_checkpoint.pt")
+    table_path = os.path.join(out_dir, "pheromone_table.pkl")
     torch.save({
         "actor": agent.actor.state_dict(),
         "critic": agent.critic.state_dict(),
@@ -318,8 +321,15 @@ def set_seeds(seed):
         torch.cuda.manual_seed_all(seed)
 
 
-def run_sac_training(total_steps=20000, batch_size=256, warmup_steps=5000, update_every=1,
-                     seed=0, save_every=10000):
+def run_sac_training(run_name, total_steps=20000, batch_size=256, warmup_steps=5000, update_every=1,
+                     seed=0, save_every=10000, half_life_frac=0.15):
+    """
+    run_name: output folder under checkpoints/. Refuses to reuse a non-empty
+      folder, so a run can never overwrite another run's weights.
+    half_life_frac: pheromone half-life as a fraction of total_steps (0 = no decay).
+      The decay is in training steps, counted on this process's env only. With
+      several workers this must become one shared global env-step counter.
+    """
     """
     Real single-worker SAC training loop for the sandbox bee.
     Pheromone table write-side wired in (vigor stubbed at 1.0 --
@@ -334,7 +344,18 @@ def run_sac_training(total_steps=20000, batch_size=256, warmup_steps=5000, updat
         print("CRITICAL: MetaDrive is not installed in this environment.")
         return
 
+    out_dir = os.path.join(HERE, "checkpoints", run_name)
+    if os.path.isdir(out_dir) and os.listdir(out_dir):
+        raise FileExistsError(f"{out_dir} already has files. Pick a new --run-name.")
+    os.makedirs(out_dir, exist_ok=True)
+
     set_seeds(seed)
+
+    half_life_steps = half_life_frac * total_steps if half_life_frac > 0 else None
+    decay_rate = decay_rate_from_half_life(half_life_steps)
+    print(f"Run '{run_name}' -> {out_dir} | pheromone half-life: "
+          f"{'none' if half_life_steps is None else f'{half_life_steps:.0f} steps'} "
+          f"(decay_rate={decay_rate:.6f}/step; used once reading is wired in)")
 
     obs_dim = 259
     action_dim = 2
@@ -354,6 +375,13 @@ def run_sac_training(total_steps=20000, batch_size=256, warmup_steps=5000, updat
         "crash_vehicle_penalty": 20.0,
         "crash_object_penalty": 20.0,
     }
+
+    # Record exactly what this run used, so an ablation can be checked later.
+    with open(os.path.join(out_dir, "run_config.json"), "w", encoding="utf-8") as f:
+        json.dump({"run_name": run_name, "total_steps": total_steps, "batch_size": batch_size,
+                   "warmup_steps": warmup_steps, "seed": seed, "save_every": save_every,
+                   "half_life_frac": half_life_frac, "decay_rate_per_step": decay_rate,
+                   "env": config}, f, indent=2)
 
     env = MetaDriveEnv(config=config)
     try:
@@ -449,7 +477,7 @@ def run_sac_training(total_steps=20000, batch_size=256, warmup_steps=5000, updat
 
             # Periodic save, so a long run that dies partway still leaves something to load.
             if save_every and step % save_every == 0 and step != total_steps:
-                save_checkpoint(agent, pheromone_table)
+                save_checkpoint(agent, pheromone_table, out_dir)
     finally:
         env.close()
     print("\nSUCCESS: training loop completed.")
@@ -463,7 +491,7 @@ def run_sac_training(total_steps=20000, batch_size=256, warmup_steps=5000, updat
     pheromone_table.print_summary()
 
     # --- Persist the trained agent and the pheromone table ---
-    save_checkpoint(agent, pheromone_table)
+    save_checkpoint(agent, pheromone_table, out_dir)
 
 
 if __name__ == "__main__":
@@ -472,5 +500,9 @@ if __name__ == "__main__":
     parser.add_argument("--steps", type=int, default=20000)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--warmup", type=int, default=5000)
+    parser.add_argument("--run-name", required=True, help="output folder under checkpoints/")
+    parser.add_argument("--half-life-frac", type=float, default=0.15,
+                        help="pheromone half-life as a fraction of --steps; 0 = no decay")
     args = parser.parse_args()
-    run_sac_training(total_steps=args.steps, seed=args.seed, warmup_steps=args.warmup)
+    run_sac_training(run_name=args.run_name, total_steps=args.steps, seed=args.seed,
+                     warmup_steps=args.warmup, half_life_frac=args.half_life_frac)

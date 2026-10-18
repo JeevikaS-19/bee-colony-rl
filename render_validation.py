@@ -133,4 +133,12 @@ def run_render_validation(num_episodes=5, step_delay=0.02, print_every=10):
 
 
 if __name__ == "__main__":
-    run_render_validation()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--run-name", required=True, help="folder under checkpoints/ to load")
+    parser.add_argument("--episodes", type=int, default=5)
+    args = parser.parse_args()
+    run_dir = os.path.join(HERE, "checkpoints", args.run_name)
+    CHECKPOINT_PATH = os.path.join(run_dir, "sandbox_bee_checkpoint.pt")
+    PHEROMONE_PATH = os.path.join(run_dir, "pheromone_table.pkl")
+    run_render_validation(num_episodes=args.episodes)

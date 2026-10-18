@@ -38,7 +38,8 @@ try:
 except ImportError:
     METADRIVE_AVAILABLE = False
 
-OUTPUT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "idm_pheromone_table.pkl")
+# Renamed from idm_pheromone_table.pkl so a re-run can't overwrite the old pickle.
+OUTPUT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "idm_validation_table.pkl")
 SENSOR_RADIUS = 10.0
 SIGMA = 6.0
 
