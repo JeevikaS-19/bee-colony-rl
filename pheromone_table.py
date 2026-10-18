@@ -1,5 +1,6 @@
 import math
-import time
+
+
 class PheromoneTable:
     def __init__(self, grid_size=2.0):
         self.grid_size = grid_size
@@ -20,11 +21,12 @@ class PheromoneTable:
 
         return (grid_x, grid_y)
 
-    def write(self, location, trace_type, vigor, meta=None):
+    def write(self, location, trace_type, vigor, step, meta=None):
+        # `step` is the training step the trace was written at. Decay counts
+        # steps, not seconds, so runs at different speeds decay the same way.
         if trace_type not in ["success", "warning"]:
             raise ValueError("trace_type must be either 'success' or 'warning'")
         key = self._to_grid_key(location)
-        current_time = time.time()
 
         if key not in self.table:
             self.table[key] = {
@@ -37,7 +39,7 @@ class PheromoneTable:
         if vigor >= channel["vigor"]:
             old_vigor = channel["vigor"]
             channel["vigor"] = vigor
-            channel["timestamp"] = current_time
+            channel["timestamp"] = step
             channel["meta"] = meta
 
             worker_id = meta.get("worker_id", "Unknown") if meta else "Unknown"
@@ -49,9 +51,9 @@ class PheromoneTable:
         else:
             return False
 
-    def read_nearby(self, location, sensor_radius=10.0, sigma=6.0, decay_rate=0.002):
+    def read_nearby(self, location, step, sensor_radius=10.0, sigma=6.0, decay_rate=0.002):
+        # decay_rate is per training step: 0.002 -> a trace halves in ~350 steps.
         ego_x, ego_y = location[0], location[1]
-        current_time = time.time()
 
         sensed = {"success": 0.0, "warning": 0.0}
 
@@ -81,7 +83,7 @@ class PheromoneTable:
                     if raw_vigor == 0.0:
                         continue
 
-                    delta_t = max(0.0, current_time - channel["timestamp"])
+                    delta_t = max(0.0, step - channel["timestamp"])
                     temporal_decay = math.exp(-decay_rate * delta_t)
 
                     effective_intensity = raw_vigor * spatial_weight * temporal_decay

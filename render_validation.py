@@ -108,7 +108,8 @@ def run_render_validation(num_episodes=5, step_delay=0.02, print_every=10):
                 prev_pos = pos
 
                 if step % print_every == 0:
-                    sensed = table.read_nearby(pos, decay_rate=0.0)
+                    # decay off: stored steps are training steps, not render steps
+                    sensed = table.read_nearby(pos, step=0, decay_rate=0.0)
                     speed = getattr(env.agent, "speed_km_h", float("nan"))
                     print(f"  step {step:03d} | pos=({pos[0]:.2f}, {pos[1]:.2f}) | "
                           f"speed={speed:.1f} km/h | action=({action[0]:+.2f}, {action[1]:+.2f}) | "

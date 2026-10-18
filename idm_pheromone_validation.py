@@ -89,7 +89,7 @@ def run_validation(num_episodes=3, render=False, max_steps=1000):
         for ep in range(1, num_episodes + 1):
             path, info = run_idm_episode(env, max_steps)
             reason, fired = classify_terminal(info)
-            write_episode_traces(table, reason, path, vigor=1.0, worker_id="idm_bee")
+            write_episode_traces(table, reason, path, vigor=1.0, worker_id="idm_bee", step=ep)
             episodes.append((reason, fired, path, len(table.table)))
             print(f"--- IDM episode {ep}: reason={reason} flags={fired} | steps={len(path)} | "
                   f"end=({path[-1][0]:.1f}, {path[-1][1]:.1f}) | table cells={len(table.table)}")
@@ -116,7 +116,7 @@ def run_validation(num_episodes=3, render=False, max_steps=1000):
                          f"{len(success_cells)} success cells, {len(path_cells)} driven cells, "
                          f"{len(success_cells ^ path_cells)} mismatched"))
 
-    on_path = [table.read_nearby(p, sensor_radius=SENSOR_RADIUS, sigma=SIGMA, decay_rate=0.0)["success"]
+    on_path = [table.read_nearby(p, step=0, sensor_radius=SENSOR_RADIUS, sigma=SIGMA, decay_rate=0.0)["success"]
                for p in path]
     # Worst case on-path: ~1.41 m from a cell centre -> exp(-2/72) ~= 0.97
     results.append(check("strong success reading everywhere on the path", min(on_path) >= 0.9,
@@ -127,7 +127,7 @@ def run_validation(num_episodes=3, render=False, max_steps=1000):
     ys = [p[1] for p in path]
     off_route = (min(xs) - 60.0, min(ys) - 60.0)
     nearest = min(math.dist(off_route, p) for p in path)
-    off_reading = table.read_nearby(off_route, sensor_radius=SENSOR_RADIUS, sigma=SIGMA, decay_rate=0.0)
+    off_reading = table.read_nearby(off_route, step=0, sensor_radius=SENSOR_RADIUS, sigma=SIGMA, decay_rate=0.0)
     results.append(check("nothing sensed well off the route", off_reading["success"] == 0.0,
                          f"point {off_route} is {nearest:.1f} m from the path, "
                          f"sensed success={off_reading['success']:.3f}"))

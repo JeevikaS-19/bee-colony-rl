@@ -251,7 +251,7 @@ def is_real_terminal(info):
     return any(info.get(flag, False) for flag in REAL_TERMINAL_FLAGS)
 
 
-def write_episode_traces(pheromone_table, reason, episode_path, vigor, worker_id):
+def write_episode_traces(pheromone_table, reason, episode_path, vigor, worker_id, step):
     """
     Episode-end write hook. arrive_dest -> 'success' along the whole path;
     crash -> one 'warning' at the last position. Returns cells written.
@@ -262,7 +262,7 @@ def write_episode_traces(pheromone_table, reason, episode_path, vigor, worker_id
         written_cells = 0
         meta = {"worker_id": worker_id, "trigger": "arrive_dest", "path_length": len(episode_path)}
         for pos in episode_path:
-            if pheromone_table.write(pos, "success", vigor=vigor, meta=meta):
+            if pheromone_table.write(pos, "success", vigor=vigor, step=step, meta=meta):
                 written_cells += 1
         print(f"[Write Hook] ARRIVED! Backtraced path and updated {written_cells} grid cells with 'success'.")
         return written_cells
@@ -270,7 +270,7 @@ def write_episode_traces(pheromone_table, reason, episode_path, vigor, worker_id
     if reason == "crash":
         crash_pos = episode_path[-1] if episode_path else (0.0, 0.0)
         meta = {"worker_id": worker_id, "trigger": "crash", "episode_steps": len(episode_path)}
-        committed = pheromone_table.write(crash_pos, "warning", vigor=vigor, meta=meta)
+        committed = pheromone_table.write(crash_pos, "warning", vigor=vigor, step=step, meta=meta)
         print(f"    [Write Hook]  CRASH at {crash_pos}! Warning trace committed: {committed}")
         return 1 if committed else 0
 
@@ -431,7 +431,7 @@ def run_sac_training(total_steps=20000, batch_size=256, warmup_steps=5000, updat
                   f"avg_dist_last_20={avg_recent_distance:.2f} m | max_speed={episode_max_speed:.1f} km/h")
 
             vigor_stub = 1.0  # fixed value -- swap for tracker.vigor(worker_id) once multi-bee
-            write_episode_traces(pheromone_table, reason, episode_path, vigor_stub, "sandbox_bee")
+            write_episode_traces(pheromone_table, reason, episode_path, vigor_stub, "sandbox_bee", step)
 
             episode_path = []
             episode_reward = 0.0
