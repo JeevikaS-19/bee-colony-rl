@@ -1,6 +1,16 @@
 import math
 
 
+def decay_rate_from_half_life(half_life_steps):
+    """
+    Per-training-step decay rate so a trace halves after `half_life_steps`.
+    None or 0 means no decay.
+    """
+    if not half_life_steps:
+        return 0.0
+    return math.log(2) / half_life_steps
+
+
 class PheromoneTable:
     def __init__(self, grid_size=2.0):
         self.grid_size = grid_size
@@ -55,8 +65,9 @@ class PheromoneTable:
         else:
             return False
 
-    def read_nearby(self, location, step, sensor_radius=10.0, sigma=6.0, decay_rate=0.002):
-        # decay_rate is per training step: 0.002 -> a trace halves in ~350 steps.
+    def read_nearby(self, location, step, decay_rate, sensor_radius=10.0, sigma=6.0):
+        # decay_rate is per training step (see decay_rate_from_half_life).
+        # Required on purpose: a silent default is how the old 0.002 leaked in.
         ego_x, ego_y = location[0], location[1]
 
         sensed = {"success": 0.0, "warning": 0.0}

@@ -12,7 +12,7 @@ import unittest.mock as mock
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
-from pheromone_table import PheromoneTable
+from pheromone_table import PheromoneTable, decay_rate_from_half_life
 
 def run_tests():
     print("=== Testing Step 2: Stigmergic Pheromone Table Validation ===\n")
@@ -125,7 +125,7 @@ def run_tests():
     empty_coord = (-500.0, -500.0)
 
     #Read sitting in clean territory
-    sensed_empty = table.read_nearby(empty_coord, step=0, sensor_radius=10.0)
+    sensed_empty = table.read_nearby(empty_coord, step=0, sensor_radius=10.0, decay_rate=0.0)
     print(f"  Sensed in clean air: Success: {sensed_empty['success']:.1f} | Warning: {sensed_empty['warning']:.1f}")
     assert sensed_empty["success"] == 0.0
     assert sensed_empty["warning"] == 0.0
@@ -162,7 +162,19 @@ def run_tests():
     assert zero_table.table == {}, "FAIL: rejected write still created a cell"
     print("-> SUCCESS: vigor <= 0 raises and leaves the table untouched!\n")
 
-    print("CONGRATULATIONS: All 7 core test cases passed with zero failures!")
+    # Test 8: half-life -> per-step rate. Half-life of 100 steps must halve a trace at step 100.
+    print("Test 8: Half-life to per-step decay rate")
+    rate = decay_rate_from_half_life(100)
+    assert abs(rate - math.log(2) / 100) < 1e-12, f"FAIL: rate {rate}"
+    assert decay_rate_from_half_life(None) == 0.0, "FAIL: None should mean no decay"
+    assert decay_rate_from_half_life(0) == 0.0, "FAIL: 0 should mean no decay"
+    half_table = PheromoneTable(grid_size=2.0)
+    half_table.write((5.0, 5.0), "success", vigor=1.0, step=0)
+    halved = half_table.read_nearby((5.0, 5.0), step=100, decay_rate=rate, sensor_radius=10.0)
+    assert abs(halved["success"] - 0.5) < 1e-6, f"FAIL: expected 0.5 after one half-life, got {halved['success']}"
+    print(f"-> SUCCESS: half-life 100 steps halves the trace to {halved['success']:.4f}!\n")
+
+    print("CONGRATULATIONS: All 8 core test cases passed with zero failures!")
 
 
 
