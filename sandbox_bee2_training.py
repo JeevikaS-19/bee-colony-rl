@@ -239,6 +239,18 @@ def classify_terminal(info):
     return reason, fired
 
 
+
+# Flags that end an episode for real. Only these mark a transition as terminal
+# for the critic (no bootstrapping past them). A horizon timeout (max_step) is a
+# truncation, not a terminal: the next state still has value, so it must NOT be
+# in this list.
+REAL_TERMINAL_FLAGS = ["arrive_dest", "out_of_road", "crash_vehicle", "crash_object", "crash_building"]
+
+
+def is_real_terminal(info):
+    return any(info.get(flag, False) for flag in REAL_TERMINAL_FLAGS)
+
+
 def write_episode_traces(pheromone_table, reason, episode_path, vigor, worker_id):
     """
     Episode-end write hook. arrive_dest -> 'success' along the whole path;
@@ -388,7 +400,9 @@ def run_sac_training(total_steps=20000, batch_size=256, warmup_steps=5000, updat
         prev_pos = (current_x, current_y)
         episode_max_speed = max(episode_max_speed, env.agent.speed_km_h)
 
-        buffer.push(obs, action, reward, next_obs, float(done))
+        # Only real terminals stop bootstrapping. A horizon timeout still
+        # episode-ends below (for reset + traces) but its next state has value.
+        buffer.push(obs, action, reward, next_obs, float(is_real_terminal(info)))
         episode_reward += reward
         obs = next_obs
 
@@ -436,6 +450,8 @@ def run_sac_training(total_steps=20000, batch_size=256, warmup_steps=5000, updat
     print("\nSUCCESS: training loop completed.")
     print(f"Total episodes: {episode_count}")
     print(f"Terminal flag counts over the run: {outcome_counts}")
+    terminal_transitions = sum(1 for t in buffer.buffer if t[4] == 1.0)
+    print(f"Replay buffer: {len(buffer)} transitions, {terminal_transitions} marked terminal")
 
     # --- Pheromone table summary (plain-English readout) ---
     print("\n--- Pheromone Table Summary ---")
