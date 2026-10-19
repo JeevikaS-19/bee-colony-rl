@@ -213,3 +213,25 @@ Mechanism note: the h500 replay showed the step-based rule never promoted (see �
 ## 9. Parameters to report
 
 `β`, `λ`, σ = 6 m, sensor radius = 10 m, half-life (fraction of steps), snapshot interval K, γ = 0.99, horizon 500, penalties 20.0, warmup 5000 with throttle bias, `target_entropy = 0.0`, batch 256, learning rate 3e-4, seed. All identical across arms except the shaping switch.
+
+---
+
+## Addendum (2026-10-19)
+
+Appended by the owner. Existing sections above are unchanged.
+
+**Pilot result (single bee, 2 seeds x none/snapshot/live, stub vigor 1.0, beta 2.86):**
+- Plumbing and scale pass. All shaped arms lag the reference when aligned by env steps (seed 0: lag at 30-40k steps, caught up by 50k; seed 1: snapshot lags then recovers, live stuck at 60k). No evidence of benefit; weak evidence of delay. Reference-to-reference variance (none_s0 vs none_s1) not yet measured.
+- Hypotheses not supported: junk warmup warnings near spawn (71 policy-phase vs 20 warmup warnings within 15 m), a valley at the start (a path-sum of F telescopes, so use min(Phi(s_t) - Phi(s_0)); depth about 1.4, small next to the -20 crash penalty). Arrival costs -2.85 on the last step (terminal convention), parked.
+- pilot_static_s0 (table frozen at step 5000) is confounded: it holds only early warnings, no success ridge.
+
+**New plan from the owner (no external teacher):**
+1. Elder bee trains alone until average route completion >= 30%.
+2. Then 3-5 learners are introduced and eventually become the teachers.
+3. Small event bonus when a bee crosses a warned spot without crashing (not potential-based; define precisely).
+
+Proposed, awaiting the owner's decision: reputation = EMA of per-episode route completion (arrival = 1.0; FORAGER 0.3 matches the 30%); write passed-safely success traces for progress made; cohort shares one fresh brain while the elder keeps her own.
+
+First experiment: freeze the elder's table, then one fresh bee with vs without it across seeds; count the elder's steps separately.
+
+Owner is taking over the coding. Claude Code: review and debug on request only.
