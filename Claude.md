@@ -47,6 +47,8 @@ Planned refinement, not built: scale deposited vigor by local maneuver difficult
 
 ## Current state (update this section as it changes)
 
+- **Where we are:** read `docs/STATUS.md` first. It holds the observations, the decisions, the open items, and the commands.
+
 - Baseline SAC loop runs end to end. Fixed so far: alpha/entropy collapse (alpha floored at 0.03 via in-place `log_alpha.data.clamp_` AFTER the alpha optimizer step); reward hacking (MetaDrive defaults of 5.0 crash/out-of-road penalty let fast-then-crash episodes bank 20-30 reward).
 - As of commit `4822987`. Tag `exploratory-v0` (`8200c19`) marks the pre-fix code. Runs made before it are exploratory, not comparison baselines.
 - Penalty history: 40.0 froze the policy (historical). Current value is **20.0** for out_of_road, crash_vehicle, and crash_object. Horizon **500**. Map C. Traffic density, `num_scenarios` (1), and `start_seed` (0) are MetaDrive defaults. Every episode is Scenario Index 0, so the policy learns one fixed route.
