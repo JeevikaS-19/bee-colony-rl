@@ -1,20 +1,53 @@
-# TODO: broken until v2 is wired in. read_cell_dances() now returns a 3-tuple
-# (success, crash_vehicle, crash_offroad), and read_corridor() must apply decayed_vigor().
 import math
 from typing import Dict, List, Tuple, Any, Optional
-from pheromone_table_v2 import PheromoneTableV2
+
+from config import default_config
+from pheromone_table_v2 import PheromoneTableV2, decayed_vigor
+
 
 class DanceReader:
-    def __init__(self, table: PheromoneTableV2, num_lookahead_cells: int = 3, sigma: float = 6.0):
+    """
+    Reads the corridor ahead and applies temporal decay. This is the only place decay
+    is applied on the read side. Shaping receives already-decayed dances and no step.
+    """
+    def __init__(self, table: PheromoneTableV2,
+                 num_lookahead_cells: int = default_config.lookahead_cells,
+                 sigma: float = default_config.gaussian_sigma,
+                 min_vigor: float = default_config.min_vigor):
         self.table = table
         self.num_cells = num_lookahead_cells
         self.sigma = sigma
+        self.min_vigor = min_vigor
+
+    def _live(self, dance: Optional[Dict[str, Any]], step_now: int, decay_rate: float) -> Optional[Dict[str, Any]]:
+        """Copy of the dance with 'vigor_now' added, or None if empty or faded below min_vigor."""
+        if dance is None:
+            return None
+        vigor_now = decayed_vigor(dance, step_now, decay_rate)
+        if vigor_now < self.min_vigor:
+            return None
+        return dict(dance, vigor_now=vigor_now)
+
+    def _empty_readout(self) -> Dict[str, Any]:
+        return {
+            'corridor_cells': [],
+            'raw_success_dances': [],
+            'raw_crash_dances': [],
+            'consensus_steer_log': None,
+        }
 
     def read_corridor(
             self,
             position: Tuple[float, float],
-            heading_angle: float
+            heading_angle: Optional[float],
+            step_now: int,
+            decay_rate: float,
+            reading_enabled: bool = True,
     ) -> Dict[str, Any]:
+
+        # Reading off, or no heading to read along: report an empty corridor.
+        if not reading_enabled or heading_angle is None:
+            return self._empty_readout()
 
         lookahead_keys = self.table.get_lookahead_keys(
             position=position,
@@ -24,48 +57,56 @@ class DanceReader:
 
         corridor_cells = []
         raw_success = []
-        raw_warning = []
+        raw_crash = []
 
         total_s_weight = 0.0
         weighted_steer_sum = 0.0
 
         for key, dist_m in lookahead_keys:
             w_spatial = math.exp(-(dist_m ** 2) / (2.0 * (self.sigma ** 2)))
-            s_dance, w_dance = self.table.read_cell_dances(key, heading_angle)
+            s_raw, v_raw, o_raw = self.table.read_cell_dances(key, heading_angle)
+            s_dance = self._live(s_raw, step_now, decay_rate)
+            v_dance = self._live(v_raw, step_now, decay_rate)
+            o_dance = self._live(o_raw, step_now, decay_rate)
 
             corridor_cells.append({
                 'cell_key': key,
                 'distance_m': dist_m,
                 'spatial_weight': w_spatial,
                 'success_dance': s_dance,
-                'warning_dance': w_dance
+                'crash_vehicle_dance': v_dance,
+                'crash_offroad_dance': o_dance,
             })
 
             if s_dance is not None:
-                eff_w = w_spatial * s_dance['vigor']
-                raw_success.append((dist_m, w_spatial, s_dance))
-                total_s_weight += eff_w
-                weighted_steer_sum += s_dance['steer'] * eff_w
+                weight = w_spatial * s_dance['vigor_now']
+                raw_success.append((dist_m, weight, s_dance))
+                total_s_weight += weight
+                weighted_steer_sum += s_dance['steer'] * weight
 
-            if w_dance is not None:
-                raw_warning.append((dist_m, w_spatial, w_dance))
+            for crash_dance in (v_dance, o_dance):
+                if crash_dance is not None:
+                    raw_crash.append((dist_m, w_spatial * crash_dance['vigor_now'], crash_dance))
 
-        consensus_steer_log = (weighted_steer_sum / total_s_weight) if total_s_weight > 0.0 else 0.0
+        # None, not 0.0, when there is no success guidance: 0.0 is a real steer value.
+        consensus_steer_log = (weighted_steer_sum / total_s_weight) if total_s_weight > 0.0 else None
 
         return {
             'corridor_cells': corridor_cells,
             'raw_success_dances': raw_success,
-            'raw_warning_dances': raw_warning,
+            'raw_crash_dances': raw_crash,
             'consensus_steer_log': consensus_steer_log
         }
+
 
 if __name__ == "__main__":
     table = PheromoneTableV2()
     # Write a dummy success dance at world (6.0, 20.0) -> grid cell (3, 10)
-    table.write_dance((6.0, 20.0), heading=0.0, channel="success", steer=0.25, vigor=0.9, step=0, speed=10.0, progress_after=4.5)
+    table.write_dance((6.0, 20.0), heading=0.0, channel="success", steer=0.25, vigor=0.9,
+                      step=0, decay_rate=0.0, speed=10.0, progress_after=4.5)
 
     reader = DanceReader(table, num_lookahead_cells=3)
-    readout = reader.read_corridor((0.0, 20.0), heading_angle=0.0)
+    readout = reader.read_corridor((0.0, 20.0), heading_angle=0.0, step_now=0, decay_rate=0.0)
 
     print("Corridor Cells:", len(readout['corridor_cells']))
     print("Raw Success Dances:", len(readout['raw_success_dances']))

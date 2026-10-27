@@ -6,6 +6,8 @@ class BeeConfig:
     map_type: str = "C"
     use_render: bool = False
     horizon: int = 500
+    penalty: float = 20.0  # out_of_road / crash_vehicle / crash_object; matches sandbox_bee2_training.py
+    reward_scale: float = 1.0  # multiplies everything pushed to the buffer, penalties included; 1.0 = unscaled
     obs_dim: int = 259
     action_dim: int = 2
 
@@ -13,9 +15,10 @@ class BeeConfig:
     hidden_dim: int = 256
     actor_lr: float = 3e-4
     critic_lr: float = 3e-4
-    alpha_lr: float = 3e-5
+    alpha_lr: float = 3e-4  # matches sandbox_bee2_training.py
     alpha_init: float = 1.0
     alpha_floor: float = 0.03
+    target_entropy: float = 0.0  # matches sandbox_bee2_training.py (SAC default would be -action_dim)
     gamma: float = 0.99
     tau: float = 0.005
     batch_size: int = 256
@@ -28,6 +31,7 @@ class BeeConfig:
     lookahead_cells: int = 3
     heading_bins: int = 8
     gaussian_sigma: float = 6.0
+    min_vigor: float = 0.01  # decayed dances below this are treated as empty cells
     half_life_frac: float = 0.15  # fraction of total training steps; 0 = no decay (same as sandbox_bee2_training.py)
 
     #stigmergic reward shaping weights 
@@ -36,6 +40,7 @@ class BeeConfig:
 
     #phase execution and gating 
     phase1_total_steps: int = 20000
+    read_start_step: int = 50000  # reading and shaping switch on at this training step
     phase1_target_success_rate: float = 0.30
     phase2_target_dance_entries: int = 75
     phase3_gate_eval_episodes: int = 10

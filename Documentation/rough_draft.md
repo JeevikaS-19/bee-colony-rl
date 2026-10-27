@@ -1,4 +1,4 @@
-# Rough draft - Article 1 
+# Rough draft - checkpoint 1
 
 ## Starting point
 
