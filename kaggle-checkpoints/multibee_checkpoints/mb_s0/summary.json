@@ -1,0 +1,99 @@
+{
+  "elapsed_s": 3468.5757007598877,
+  "steps_per_s": 17.29903141132387,
+  "transitions": 60003,
+  "updates": 55016,
+  "episodes": 175,
+  "first_arrival": null,
+  "arrivals": 0,
+  "terminal_counts": {
+    "out_of_road": 66,
+    "timeout": 109
+  },
+  "windows": [
+    {
+      "steps": "0-10000",
+      "episodes": 76,
+      "arrival_rate": 0.0,
+      "terminals": {
+        "out_of_road": 65,
+        "timeout": 11
+      },
+      "mean_path_m": 19.002795917549985,
+      "max_path_m": 78.61097538688907,
+      "mean_raw_return": 1.6297204216834487
+    },
+    {
+      "steps": "10000-20000",
+      "episodes": 20,
+      "arrival_rate": 0.0,
+      "terminals": {
+        "timeout": 20
+      },
+      "mean_path_m": 6.843558528755105,
+      "max_path_m": 8.774215083472253,
+      "mean_raw_return": 6.315268326136654
+    },
+    {
+      "steps": "20000-30000",
+      "episodes": 20,
+      "arrival_rate": 0.0,
+      "terminals": {
+        "timeout": 20
+      },
+      "mean_path_m": 6.799521408534266,
+      "max_path_m": 8.224498672427718,
+      "mean_raw_return": 6.2485502204931915
+    },
+    {
+      "steps": "30000-40000",
+      "episodes": 19,
+      "arrival_rate": 0.0,
+      "terminals": {
+        "out_of_road": 1,
+        "timeout": 18
+      },
+      "mean_path_m": 6.935053493069329,
+      "max_path_m": 8.971749174416919,
+      "mean_raw_return": 5.379889196436813
+    },
+    {
+      "steps": "40000-50000",
+      "episodes": 20,
+      "arrival_rate": 0.0,
+      "terminals": {
+        "timeout": 20
+      },
+      "mean_path_m": 7.170886138764371,
+      "max_path_m": 8.591482603485597,
+      "mean_raw_return": 6.707055423717963
+    },
+    {
+      "steps": "50000-60000",
+      "episodes": 20,
+      "arrival_rate": 0.0,
+      "terminals": {
+        "timeout": 20
+      },
+      "mean_path_m": 6.858985298590397,
+      "max_path_m": 8.43219746598438,
+      "mean_raw_return": 6.344129613982898
+    }
+  ],
+  "per_bee": {
+    "0": {
+      "E": 0.0,
+      "caste": "NOVICE"
+    },
+    "1": {
+      "E": 0.0,
+      "caste": "NOVICE"
+    },
+    "2": {
+      "E": 0.0,
+      "caste": "NOVICE"
+    }
+  },
+  "pheromone_cells": 35,
+  "worker_errors": []
+}

@@ -70,6 +70,10 @@ Top-level `sandbox_bee_checkpoint.pt` and `pheromone_table.pkl` are copies of `c
 - Proposed (not decided): reputation as an EMA of per-episode route completion (arrival = 1.0, FORAGER 0.3 matches 30%). Passed-safely success traces for progress made. The cohort shares one fresh brain, and the elder keeps her own.
 - First experiment (proposed): freeze the elder's table, then one fresh bee with vs without it across seeds. Count the elder's steps separately.
 
+## Multi-bee run 1 (added 2026-11-01)
+
+First multi-worker run (`mb_s0`, 3 bees, 60k steps, Kaggle): **0 arrivals**, stalled in timeouts from step 5.2k to the end, never promoted, success channel never written. Full observations and hypotheses: `docs/multi_bee_run1_observations.md`. Results are in `kaggle-checkpoints/`. Next: a no-shaping control (`--read-start 999999`), then a second seed.
+
 ## Open items
 
 - Novice success writes (option A says no; the reviewer proposed faint writes at 0.05). Decide for multi-worker.

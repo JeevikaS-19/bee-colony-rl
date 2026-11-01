@@ -1,0 +1,36 @@
+BEFORE RUNNING:
+☐ Verify imports in multi_bee.py
+  ☐ SACAgent, ReplayBuffer, write_success_path, write_crash_point from single_bee_training
+  ☐ SACActor, DEVICE from single_bee_training
+  ☐ All config items referenced (reward_scale, read_start_step, etc.)
+
+☐ Check function signatures match
+  ☐ write_success_path(table, path, vigor, step, decay_rate)
+  ☐ write_crash_point(table, path, crash_type, vigor, step, decay_rate)
+  ☐ SACAgent.update_parameters(buffer, batch_size) returns (critic_loss, actor_loss, alpha_loss, entropy, alpha)
+
+☐ Verify PheromoneTableV2 can be pickled (for queue passing)
+
+FIRST RUN (test harness):
+☐ Run with num_bees=2, budget=10000 (short test)
+  ☐ Check all workers spawn
+  ☐ Check no crash on first episode
+  ☐ Verify weights broadcast works
+  ☐ Verify table broadcast works
+  ☐ Check result_q messages arrive correctly
+
+DIAGNOSTICS:
+☐ Log: path distance per episode (expect ~3-10 m initially)
+☐ Log: crashes vs timeouts (expect mostly crashes with scale=10)
+☐ Log: pheromone table size (expect growth as episodes accumulate)
+☐ Log: caste changes (expect workers to stay NOVICE if no arrivals)
+☐ Check: any worker process dies (check for error messages in result_q)
+
+SHAPING TEST:
+☐ Once pheromone has ~50+ entries, check if phi values are nonzero
+☐ Log phi_s and phi_next per step to confirm shaping is flowing through
+
+TUNING (after first run):
+☐ Adjust reward_scale if critic loss is too high or too low
+☐ Adjust read_start_step if you want shaping earlier
+☐ Increase num_bees to 4-5 once 3 works
