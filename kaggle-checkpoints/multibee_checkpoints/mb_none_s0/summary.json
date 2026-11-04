@@ -1,0 +1,104 @@
+{
+  "elapsed_s": 3275.1280121803284,
+  "steps_per_s": 18.38737288314709,
+  "transitions": 60221,
+  "updates": 55389,
+  "episodes": 172,
+  "first_arrival": null,
+  "arrivals": 0,
+  "terminal_counts": {
+    "out_of_road": 62,
+    "timeout": 110
+  },
+  "windows": [
+    {
+      "steps": "0-10000",
+      "episodes": 72,
+      "arrival_rate": 0.0,
+      "terminals": {
+        "out_of_road": 61,
+        "timeout": 11
+      },
+      "mean_path_m": 20.059458050902364,
+      "max_path_m": 78.61097538688907,
+      "mean_raw_return": 2.7940725121331678
+    },
+    {
+      "steps": "10000-20000",
+      "episodes": 20,
+      "arrival_rate": 0.0,
+      "terminals": {
+        "timeout": 20
+      },
+      "mean_path_m": 6.801385939420716,
+      "max_path_m": 8.691246581915637,
+      "mean_raw_return": 6.270835339275818
+    },
+    {
+      "steps": "20000-30000",
+      "episodes": 20,
+      "arrival_rate": 0.0,
+      "terminals": {
+        "timeout": 20
+      },
+      "mean_path_m": 6.83661830467225,
+      "max_path_m": 8.262613190168533,
+      "mean_raw_return": 6.299768292419275
+    },
+    {
+      "steps": "30000-40000",
+      "episodes": 20,
+      "arrival_rate": 0.0,
+      "terminals": {
+        "timeout": 20
+      },
+      "mean_path_m": 7.0854983024152975,
+      "max_path_m": 8.909455159321913,
+      "mean_raw_return": 6.58393830434318
+    },
+    {
+      "steps": "40000-50000",
+      "episodes": 21,
+      "arrival_rate": 0.0,
+      "terminals": {
+        "timeout": 21
+      },
+      "mean_path_m": 6.953048667505788,
+      "max_path_m": 8.62843687003716,
+      "mean_raw_return": 6.464063197490242
+    },
+    {
+      "steps": "50000-60000",
+      "episodes": 19,
+      "arrival_rate": 0.0,
+      "terminals": {
+        "timeout": 18,
+        "out_of_road": 1
+      },
+      "mean_path_m": 6.981401626047749,
+      "max_path_m": 8.306631173710691,
+      "mean_raw_return": 5.412543780570938
+    }
+  ],
+  "per_bee": {
+    "0": {
+      "E": 0.0,
+      "caste": "NOVICE"
+    },
+    "1": {
+      "E": 0.0,
+      "caste": "NOVICE"
+    },
+    "2": {
+      "E": 0.0,
+      "caste": "NOVICE"
+    }
+  },
+  "pheromone_cells": 34,
+  "stall_rescue": {
+    "enabled": false,
+    "config": null,
+    "activated_at_step": null
+  },
+  "worker_errors": []
+}

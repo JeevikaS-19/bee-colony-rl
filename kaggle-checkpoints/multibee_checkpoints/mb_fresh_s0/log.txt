@@ -1,0 +1,232 @@
+================================================================================
+MULTI-BEE | 1 workers | budget 30000 steps | seed 0 | run dir /kaggle/working/multibee_checkpoints/mb_fresh_s0
+warmup 5000 | reading from step 999999 | half-life 4500 steps | penalty 20.0 | horizon 500 | learner device cuda=False
+stall rescue: OFF
+================================================================================
+  Ep    1 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 61 | path=  27.0m | R=    7.3 | read=0 F/r=0.00 | cells=1 | step=60
+  Ep    2 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=115 | path=  83.8m | R=   65.8 | read=0 F/r=0.00 | cells=2 | step=176
+  Ep    3 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=104 | path=  72.5m | R=   53.7 | read=0 F/r=0.00 | cells=3 | step=276
+  Ep    4 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 57 | path=  24.8m | R=    5.1 | read=0 F/r=0.00 | cells=4 | step=335
+  Ep    5 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 97 | path=  59.7m | R=   41.2 | read=0 F/r=0.00 | cells=5 | step=432
+  Ep    6 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 32 | path=   7.3m | R=  -12.8 | read=0 F/r=0.00 | cells=6 | step=464
+  Ep    7 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 93 | path=  58.6m | R=   39.3 | read=0 F/r=0.00 | cells=7 | step=556
+  Ep    8 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 78 | path=  43.5m | R=   24.4 | read=0 F/r=0.00 | cells=8 | step=634
+  Ep    9 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 31 | path=   7.3m | R=  -12.8 | read=0 F/r=0.00 | cells=8 | step=667
+  Ep   10 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 96 | path=  63.8m | R=   44.9 | read=0 F/r=0.00 | cells=9 | step=763
+  Ep   11 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 43 | path=  15.0m | R=   -5.0 | read=0 F/r=0.00 | cells=10 | step=804
+  Ep   12 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 40 | path=  11.6m | R=   -8.5 | read=0 F/r=0.00 | cells=11 | step=847
+  Ep   13 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 76 | path=  40.8m | R=   21.0 | read=0 F/r=0.00 | cells=12 | step=922
+  Ep   14 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 85 | path=  44.6m | R=   24.7 | read=0 F/r=0.00 | cells=13 | step=1008
+  Ep   15 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 33 | path=   7.7m | R=  -12.4 | read=0 F/r=0.00 | cells=13 | step=1038
+  Ep   16 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 58 | path=  23.8m | R=    4.0 | read=0 F/r=0.00 | cells=13 | step=1096
+  Ep   17 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 63 | path=  28.5m | R=    8.8 | read=0 F/r=0.00 | cells=14 | step=1159
+  Ep   18 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 71 | path=  33.5m | R=   12.8 | read=0 F/r=0.00 | cells=15 | step=1232
+  Ep   19 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 37 | path=  10.3m | R=   -9.8 | read=0 F/r=0.00 | cells=16 | step=1268
+  Ep   20 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 53 | path=  22.3m | R=    2.4 | read=0 F/r=0.00 | cells=17 | step=1320
+  Ep   21 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 46 | path=  15.3m | R=   -4.7 | read=0 F/r=0.00 | cells=18 | step=1368
+  Ep   22 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 88 | path=  45.9m | R=   26.9 | read=0 F/r=0.00 | cells=19 | step=1454
+  Ep   23 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 96 | path=  63.4m | R=   44.3 | read=0 F/r=0.00 | cells=19 | step=1552
+  Ep   24 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 87 | path=  50.3m | R=   31.1 | read=0 F/r=0.00 | cells=20 | step=1638
+  Ep   25 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 40 | path=  11.2m | R=   -8.8 | read=0 F/r=0.00 | cells=20 | step=1680
+  Ep   26 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 62 | path=  28.9m | R=    9.4 | read=0 F/r=0.00 | cells=20 | step=1740
+  Ep   27 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=139 | path= 112.3m | R=   94.6 | read=0 F/r=0.00 | cells=21 | step=1877
+  Ep   28 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=113 | path=  80.1m | R=   62.6 | read=0 F/r=0.00 | cells=22 | step=1991
+  Ep   29 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=103 | path=  69.5m | R=   50.8 | read=0 F/r=0.00 | cells=23 | step=2094
+  Ep   30 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 33 | path=   8.5m | R=  -11.6 | read=0 F/r=0.00 | cells=23 | step=2127
+  Ep   31 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 86 | path=  49.4m | R=   29.7 | read=0 F/r=0.00 | cells=24 | step=2215
+  Ep   32 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 30 | path=   7.3m | R=  -12.9 | read=0 F/r=0.00 | cells=24 | step=2246
+  Ep   33 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=106 | path=  71.0m | R=   52.9 | read=0 F/r=0.00 | cells=24 | step=2351
+  Ep   34 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 73 | path=  34.2m | R=   13.7 | read=0 F/r=0.00 | cells=24 | step=2422
+  Ep   35 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 28 | path=   6.3m | R=  -13.9 | read=0 F/r=0.00 | cells=25 | step=2450
+  Ep   36 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 63 | path=  28.9m | R=    8.3 | read=0 F/r=0.00 | cells=26 | step=2513
+  Ep   37 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=115 | path=  83.8m | R=   63.9 | read=0 F/r=0.00 | cells=27 | step=2631
+  Ep   38 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 31 | path=   7.7m | R=  -12.4 | read=0 F/r=0.00 | cells=27 | step=2661
+  Ep   39 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 93 | path=  56.4m | R=   37.8 | read=0 F/r=0.00 | cells=28 | step=2752
+  Ep   40 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 56 | path=  24.2m | R=    4.5 | read=0 F/r=0.00 | cells=28 | step=2810
+  Ep   41 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 81 | path=  43.4m | R=   24.1 | read=0 F/r=0.00 | cells=28 | step=2891
+  Ep   42 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 70 | path=  33.0m | R=   12.6 | read=0 F/r=0.00 | cells=29 | step=2962
+  Ep   43 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 74 | path=  39.1m | R=   19.1 | read=0 F/r=0.00 | cells=30 | step=3032
+  Ep   44 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=112 | path=  77.4m | R=   58.6 | read=0 F/r=0.00 | cells=31 | step=3146
+  Ep   45 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 93 | path=  59.9m | R=   41.5 | read=0 F/r=0.00 | cells=31 | step=3238
+  Ep   46 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 90 | path=  52.1m | R=   32.1 | read=0 F/r=0.00 | cells=32 | step=3331
+  Ep   47 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 69 | path=  32.3m | R=   12.8 | read=0 F/r=0.00 | cells=33 | step=3396
+  Ep   48 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 53 | path=  18.0m | R=   -2.0 | read=0 F/r=0.00 | cells=34 | step=3450
+  Ep   49 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=113 | path=  79.2m | R=   59.6 | read=0 F/r=0.00 | cells=34 | step=3563
+  Ep   50 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 38 | path=  10.9m | R=   -9.2 | read=0 F/r=0.00 | cells=34 | step=3601
+  Ep   51 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 49 | path=  17.7m | R=   -2.2 | read=0 F/r=0.00 | cells=34 | step=3649
+  Ep   52 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 45 | path=  16.6m | R=   -3.4 | read=0 F/r=0.00 | cells=34 | step=3698
+  Ep   53 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 32 | path=   7.4m | R=  -12.8 | read=0 F/r=0.00 | cells=34 | step=3728
+  Ep   54 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=122 | path=  91.7m | R=   72.7 | read=0 F/r=0.00 | cells=35 | step=3850
+  Ep   55 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 99 | path=  63.0m | R=   44.8 | read=0 F/r=0.00 | cells=36 | step=3947
+  Ep   56 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=122 | path=  92.0m | R=   73.1 | read=0 F/r=0.00 | cells=37 | step=4071
+  Ep   57 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 93 | path=  56.9m | R=   38.3 | read=0 F/r=0.00 | cells=37 | step=4163
+  Ep   58 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 88 | path=  53.0m | R=   34.1 | read=0 F/r=0.00 | cells=38 | step=4251
+  Ep   59 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 91 | path=  56.2m | R=   37.2 | read=0 F/r=0.00 | cells=38 | step=4344
+  Ep   60 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 26 | path=   5.0m | R=  -15.1 | read=0 F/r=0.00 | cells=39 | step=4370
+  Ep   61 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=100 | path=  63.6m | R=   44.6 | read=0 F/r=0.00 | cells=39 | step=4471
+  Ep   62 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 86 | path=  48.9m | R=   29.0 | read=0 F/r=0.00 | cells=39 | step=4556
+  Ep   63 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 64 | path=  27.1m | R=    7.5 | read=0 F/r=0.00 | cells=39 | step=4617
+  Ep   64 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 27 | path=   5.7m | R=  -14.5 | read=0 F/r=0.00 | cells=39 | step=4646
+  Ep   65 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=113 | path=  86.0m | R=   67.2 | read=0 F/r=0.00 | cells=40 | step=4758
+  Ep   66 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=106 | path=  74.7m | R=   54.4 | read=0 F/r=0.00 | cells=41 | step=4866
+  Ep   67 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 30 | path=   7.4m | R=  -12.8 | read=0 F/r=0.00 | cells=41 | step=4897
+  Ep   68 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 43 | path=  14.3m | R=   -5.7 | read=0 F/r=0.00 | cells=41 | step=4937
+  Ep   69 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 71 | path=  34.5m | R=   15.2 | read=0 F/r=0.00 | cells=42 | step=5010
+    [Update    500 | step   5496 |    52s] critic=   24.53 actor= -5.9176 entropy= 1.377 alpha=0.861 lag=1
+  Ep   70 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=   6.3m | R=    5.5 | read=0 F/r=0.00 | cells=42 | step=5511
+    [Update   1000 | step   5996 |    70s] critic=   17.84 actor= -8.3619 entropy= 1.370 alpha=0.741 lag=16
+  Ep   71 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=   7.2m | R=    6.6 | read=0 F/r=0.00 | cells=42 | step=6011
+    [Update   1500 | step   6496 |    87s] critic=   27.49 actor=-10.1386 entropy= 1.306 alpha=0.639 lag=16
+  Ep   72 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=   8.3m | R=    7.9 | read=0 F/r=0.00 | cells=42 | step=6511
+    [Update   2000 | step   6996 |   104s] critic=   15.81 actor=-11.8635 entropy= 1.294 alpha=0.550 lag=16
+  Ep   73 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  11.1m | R=   10.3 | read=0 F/r=0.00 | cells=42 | step=7011
+    [Update   2500 | step   7496 |   121s] critic=   25.55 actor=-13.4532 entropy= 1.330 alpha=0.475 lag=16
+  Ep   74 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=   8.7m | R=    8.2 | read=0 F/r=0.00 | cells=42 | step=7511
+    [Update   3000 | step   7996 |   138s] critic=    9.50 actor=-14.1144 entropy= 1.327 alpha=0.410 lag=16
+  Ep   75 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  11.4m | R=   10.3 | read=0 F/r=0.00 | cells=42 | step=8011
+  Ep   76 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=375 | path=  12.5m | R=   -9.6 | read=0 F/r=0.00 | cells=43 | step=8386
+    [Update   3500 | step   8496 |   156s] critic=    9.67 actor=-15.4748 entropy= 1.257 alpha=0.354 lag=16
+  Ep   77 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  13.4m | R=   12.3 | read=0 F/r=0.00 | cells=43 | step=8886
+    [Update   4000 | step   8996 |   173s] critic=   12.26 actor=-16.1963 entropy= 1.226 alpha=0.306 lag=16
+  Ep   78 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  14.6m | R=   13.0 | read=0 F/r=0.00 | cells=43 | step=9386
+    [Update   4500 | step   9496 |   190s] critic=   25.98 actor=-16.3678 entropy= 1.197 alpha=0.265 lag=16
+  Ep   79 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=378 | path=  13.9m | R=   -8.1 | read=0 F/r=0.00 | cells=44 | step=9761
+    [Update   5000 | step   9999 |   208s] critic=   10.25 actor=-16.9508 entropy= 1.148 alpha=0.230 lag=17
+  -- checkpoint saved at step 10004
+  Ep   80 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=475 | path=  12.4m | R=  -10.0 | read=0 F/r=0.00 | cells=44 | step=10239
+    [Update   5500 | step  10499 |   224s] critic=   15.89 actor=-17.3076 entropy= 1.112 alpha=0.199 lag=19
+  Ep   81 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=320 | path=  11.3m | R=  -11.1 | read=0 F/r=0.00 | cells=45 | step=10559
+  Ep   82 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=412 | path=  12.6m | R=   -9.4 | read=0 F/r=0.00 | cells=45 | step=10969
+    [Update   6000 | step  10996 |   242s] critic=   18.95 actor=-17.6865 entropy= 1.103 alpha=0.172 lag=19
+  Ep   83 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=268 | path=  11.0m | R=  -11.6 | read=0 F/r=0.00 | cells=45 | step=11236
+    [Update   6500 | step  11499 |   259s] critic=    0.63 actor=-17.8101 entropy= 0.961 alpha=0.150 lag=17
+  Ep   84 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=408 | path=  11.3m | R=  -11.3 | read=0 F/r=0.00 | cells=45 | step=11644
+  Ep   85 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=342 | path=  11.1m | R=  -11.3 | read=0 F/r=0.00 | cells=45 | step=11987
+    [Update   7000 | step  11999 |   276s] critic=   38.73 actor=-17.1462 entropy= 1.193 alpha=0.130 lag=18
+  Ep   86 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=367 | path=  14.2m | R=   -7.4 | read=0 F/r=0.00 | cells=45 | step=12354
+    [Update   7500 | step  12496 |   293s] critic=   22.17 actor=-17.5930 entropy= 1.007 alpha=0.113 lag=18
+  Ep   87 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=434 | path=  15.5m | R=   -6.6 | read=0 F/r=0.00 | cells=45 | step=12786
+    [Update   8000 | step  12995 |   311s] critic=   18.10 actor=-17.9276 entropy= 0.872 alpha=0.099 lag=18
+  Ep   88 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=378 | path=  13.2m | R=   -9.0 | read=0 F/r=0.00 | cells=45 | step=13165
+    [Update   8500 | step  13498 |   331s] critic=   20.11 actor=-17.3031 entropy= 0.892 alpha=0.086 lag=19
+  Ep   89 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=474 | path=  16.5m | R=   -5.0 | read=0 F/r=0.00 | cells=46 | step=13638
+    [Update   9000 | step  13997 |   350s] critic=   39.63 actor=-17.6831 entropy= 0.965 alpha=0.075 lag=17
+  Ep   90 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=459 | path=  20.2m | R=   -1.2 | read=0 F/r=0.00 | cells=47 | step=14097
+    [Update   9500 | step  14496 |   370s] critic=   12.38 actor=-17.4808 entropy= 0.641 alpha=0.066 lag=16
+  Ep   91 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=422 | path=  24.9m | R=    4.2 | read=0 F/r=0.00 | cells=48 | step=14521
+  Ep   92 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=300 | path=  25.8m | R=    5.0 | read=0 F/r=0.00 | cells=48 | step=14823
+    [Update  10000 | step  14998 |   387s] critic=   41.56 actor=-17.5252 entropy= 0.701 alpha=0.059 lag=18
+  Ep   93 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=242 | path=  20.9m | R=   -0.4 | read=0 F/r=0.00 | cells=48 | step=15063
+  Ep   94 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 67 | path=   4.7m | R=  -15.3 | read=0 F/r=0.00 | cells=48 | step=15130
+  Ep   95 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 20 | path=   2.1m | R=  -18.0 | read=0 F/r=0.00 | cells=49 | step=15152
+  Ep   96 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 30 | path=   1.7m | R=  -18.4 | read=0 F/r=0.00 | cells=49 | step=15182
+  Ep   97 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 39 | path=   4.0m | R=  -16.1 | read=0 F/r=0.00 | cells=49 | step=15217
+  Ep   98 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 33 | path=   1.9m | R=  -18.3 | read=0 F/r=0.00 | cells=49 | step=15251
+  Ep   99 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 27 | path=   1.6m | R=  -18.5 | read=0 F/r=0.00 | cells=49 | step=15279
+  Ep  100 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 14 | path=   1.0m | R=  -19.1 | read=0 F/r=0.00 | cells=50 | step=15291
+  Ep  101 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 35 | path=   2.0m | R=  -18.1 | read=0 F/r=0.00 | cells=50 | step=15330
+  Ep  102 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 32 | path=   2.2m | R=  -18.0 | read=0 F/r=0.00 | cells=50 | step=15360
+  Ep  103 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 36 | path=   2.6m | R=  -17.3 | read=0 F/r=0.00 | cells=50 | step=15397
+  Ep  104 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 27 | path=   3.8m | R=  -16.2 | read=0 F/r=0.00 | cells=50 | step=15423
+  Ep  105 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 35 | path=   2.4m | R=  -17.8 | read=0 F/r=0.00 | cells=50 | step=15460
+    [Update  10500 | step  15495 |   405s] critic=   12.30 actor=-17.5616 entropy= 0.464 alpha=0.054 lag=18
+  Ep  106 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=278 | path=  43.0m | R=   22.5 | read=0 F/r=0.00 | cells=51 | step=15735
+  Ep  107 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 24 | path=   2.1m | R=  -17.9 | read=0 F/r=0.00 | cells=51 | step=15758
+    [Update  11000 | step  15997 |   423s] critic=   21.90 actor=-17.4720 entropy= 1.041 alpha=0.048 lag=18
+  Ep  108 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=254 | path=  17.3m | R=   -3.9 | read=0 F/r=0.00 | cells=52 | step=16012
+  Ep  109 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=109 | path=   3.9m | R=  -16.0 | read=0 F/r=0.00 | cells=52 | step=16121
+    [Update  11500 | step  16495 |   442s] critic=   11.14 actor=-16.5765 entropy= 0.914 alpha=0.040 lag=19
+  Ep  110 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=483 | path=  22.1m | R=    1.1 | read=0 F/r=0.00 | cells=53 | step=16605
+  Ep  111 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=374 | path=  31.2m | R=   10.9 | read=0 F/r=0.00 | cells=54 | step=16978
+    [Update  12000 | step  16997 |   459s] critic=   10.96 actor=-16.3951 entropy= 0.184 alpha=0.035 lag=18
+  Ep  112 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=259 | path=  16.0m | R=   -5.5 | read=0 F/r=0.00 | cells=54 | step=17237
+    [Update  12500 | step  17496 |   477s] critic=   28.91 actor=-15.5372 entropy= 0.622 alpha=0.030 lag=17
+  Ep  113 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=476 | path=  21.8m | R=    0.9 | read=0 F/r=0.00 | cells=55 | step=17716
+  Ep  114 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=145 | path=  19.0m | R=   -2.2 | read=0 F/r=0.00 | cells=56 | step=17862
+  Ep  115 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 60 | path=  11.0m | R=  -12.2 | read=0 F/r=0.00 | cells=56 | step=17922
+    [Update  13000 | step  17997 |   495s] critic=    8.93 actor=-15.2411 entropy= 0.093 alpha=0.030 lag=16
+  Ep  116 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=223 | path=  18.2m | R=   -3.0 | read=0 F/r=0.00 | cells=57 | step=18142
+    [Update  13500 | step  18495 |   512s] critic=   24.90 actor=-14.6796 entropy= 0.645 alpha=0.030 lag=19
+  Ep  117 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=497 | path=  29.7m | R=    9.4 | read=0 F/r=0.00 | cells=58 | step=18640
+    [Update  14000 | step  18997 |   529s] critic=    0.19 actor=-15.0134 entropy= 0.592 alpha=0.030 lag=18
+  Ep  118 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  30.2m | R=   30.2 | read=0 F/r=0.00 | cells=58 | step=19142
+    [Update  14500 | step  19497 |   547s] critic=   24.51 actor=-14.7203 entropy= 0.378 alpha=0.030 lag=17
+  Ep  119 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  19.8m | R=   19.5 | read=0 F/r=0.00 | cells=58 | step=19642
+  Ep  120 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=208 | path=   5.1m | R=  -15.1 | read=0 F/r=0.00 | cells=58 | step=19847
+    [Update  15000 | step  19995 |   564s] critic=   19.30 actor=-14.5551 entropy= 0.405 alpha=0.030 lag=18
+  -- checkpoint saved at step 20000
+  Ep  121 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=201 | path=  49.5m | R=   30.2 | read=0 F/r=0.00 | cells=58 | step=20050
+    [Update  15500 | step  20496 |   581s] critic=    8.89 actor=-14.3144 entropy= 0.142 alpha=0.030 lag=16
+  Ep  122 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  38.3m | R=   38.9 | read=0 F/r=0.00 | cells=58 | step=20551
+    [Update  16000 | step  20996 |   598s] critic=   10.00 actor=-14.4725 entropy= 0.080 alpha=0.030 lag=16
+  Ep  123 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=449 | path=  54.6m | R=   35.1 | read=0 F/r=0.00 | cells=59 | step=20996
+  Ep  124 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 42 | path=   3.3m | R=  -16.9 | read=0 F/r=0.00 | cells=59 | step=21040
+  Ep  125 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 89 | path=   4.2m | R=  -15.7 | read=0 F/r=0.00 | cells=59 | step=21127
+  Ep  126 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 95 | path=   2.3m | R=  -17.7 | read=0 F/r=0.00 | cells=59 | step=21226
+  Ep  127 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=156 | path=  38.6m | R=   18.1 | read=0 F/r=0.00 | cells=60 | step=21381
+    [Update  16500 | step  21497 |   617s] critic=   26.21 actor=-13.9468 entropy=-0.312 alpha=0.031 lag=17
+  Ep  128 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=126 | path=  59.8m | R=   39.6 | read=0 F/r=0.00 | cells=61 | step=21507
+  Ep  129 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=133 | path=  56.0m | R=   34.6 | read=0 F/r=0.00 | cells=61 | step=21638
+  Ep  130 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=132 | path=  51.6m | R=   30.6 | read=0 F/r=0.00 | cells=62 | step=21771
+  Ep  131 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 27 | path=   4.4m | R=  -15.7 | read=0 F/r=0.00 | cells=62 | step=21798
+  Ep  132 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 26 | path=   4.1m | R=  -16.0 | read=0 F/r=0.00 | cells=62 | step=21825
+  Ep  133 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 51 | path=   7.1m | R=  -12.8 | read=0 F/r=0.00 | cells=62 | step=21876
+  Ep  134 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 15 | path=   0.9m | R=  -19.2 | read=0 F/r=0.00 | cells=62 | step=21892
+  Ep  135 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 15 | path=   1.7m | R=  -18.4 | read=0 F/r=0.00 | cells=62 | step=21907
+    [Update  17000 | step  21997 |   634s] critic=    1.11 actor=-14.0458 entropy= 0.318 alpha=0.033 lag=17
+  Ep  136 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  53.5m | R=   54.5 | read=0 F/r=0.00 | cells=62 | step=22407
+    [Update  17500 | step  22497 |   651s] critic=   10.36 actor=-13.9604 entropy= 0.535 alpha=0.030 lag=17
+  Ep  137 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=408 | path=  53.3m | R=   32.7 | read=0 F/r=0.00 | cells=62 | step=22812
+    [Update  18000 | step  22995 |   668s] critic=    2.14 actor=-14.1515 entropy= 0.061 alpha=0.030 lag=18
+  Ep  138 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 147.5m | R=  149.1 | read=0 F/r=0.00 | cells=62 | step=23315
+    [Update  18500 | step  23495 |   686s] critic=    7.88 actor=-13.6069 entropy= 0.211 alpha=0.030 lag=20
+  Ep  139 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=366 | path= 155.7m | R=  137.9 | read=0 F/r=0.00 | cells=63 | step=23680
+  Ep  140 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=232 | path= 135.7m | R=  116.7 | read=0 F/r=0.00 | cells=64 | step=23911
+    [Update  19000 | step  23998 |   704s] critic=    0.64 actor=-13.5775 entropy=-0.073 alpha=0.033 lag=18
+  Ep  141 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=221 | path= 138.8m | R=  121.0 | read=0 F/r=0.00 | cells=65 | step=24133
+    [Update  19500 | step  24499 |   721s] critic=    8.07 actor=-13.7070 entropy=-0.148 alpha=0.038 lag=19
+  *** FIRST ARRIVAL: episode 142, bee 0, step 24524
+  Ep  142 | bee 0 | NOVICE  E=0.00 | arrive_dest    | steps=390 | path= 230.7m | R=  245.6 | read=0 F/r=0.00 | cells=65 | step=24524
+  Ep  143 | bee 0 | NOVICE  E=0.10 | out_of_road    | steps=255 | path= 124.0m | R=  107.6 | read=0 F/r=0.00 | cells=66 | step=24779
+    [Update  20000 | step  24999 |   740s] critic=    1.36 actor=-13.6957 entropy=-0.367 alpha=0.041 lag=19
+  Ep  144 | bee 0 | NOVICE  E=0.09 | out_of_road    | steps=307 | path= 142.1m | R=  125.5 | read=0 F/r=0.00 | cells=67 | step=25084
+  Ep  145 | bee 0 | NOVICE  E=0.08 | out_of_road    | steps=239 | path= 135.6m | R=  116.8 | read=0 F/r=0.00 | cells=68 | step=25321
+    [Update  20500 | step  25495 |   758s] critic=   16.61 actor=-13.8445 entropy=-0.151 alpha=0.047 lag=18
+  Ep  146 | bee 0 | NOVICE  E=0.07 | out_of_road    | steps=265 | path= 146.3m | R=  129.4 | read=0 F/r=0.00 | cells=69 | step=25590
+  Ep  147 | bee 0 | NOVICE  E=0.07 | out_of_road    | steps=287 | path= 138.5m | R=  120.3 | read=0 F/r=0.00 | cells=70 | step=25875
+    [Update  21000 | step  25997 |   776s] critic=    5.22 actor=-13.8231 entropy=-0.028 alpha=0.051 lag=19
+  Ep  148 | bee 0 | NOVICE  E=0.06 | out_of_road    | steps=223 | path= 135.5m | R=  118.0 | read=0 F/r=0.00 | cells=70 | step=26097
+  Ep  149 | bee 0 | NOVICE  E=0.05 | out_of_road    | steps=276 | path= 136.2m | R=  118.6 | read=0 F/r=0.00 | cells=70 | step=26375
+  Ep  150 | bee 0 | NOVICE  E=0.05 | out_of_road    | steps= 30 | path=   4.2m | R=  -15.9 | read=0 F/r=0.00 | cells=70 | step=26406
+    [Update  21500 | step  26496 |   797s] critic=   19.52 actor=-13.9288 entropy=-0.142 alpha=0.053 lag=18
+  Ep  151 | bee 0 | NOVICE  E=0.04 | out_of_road    | steps=171 | path= 120.0m | R=  102.2 | read=0 F/r=0.00 | cells=71 | step=26576
+  Ep  152 | bee 0 | NOVICE  E=0.04 | out_of_road    | steps= 25 | path=   2.8m | R=  -17.4 | read=0 F/r=0.00 | cells=71 | step=26602
+  Ep  153 | bee 0 | NOVICE  E=0.03 | out_of_road    | steps=238 | path= 128.2m | R=  110.3 | read=0 F/r=0.00 | cells=72 | step=26837
+    [Update  22000 | step  26995 |   819s] critic=   10.23 actor=-14.8335 entropy=-0.326 alpha=0.061 lag=18
+  Ep  154 | bee 0 | NOVICE  E=0.03 | out_of_road    | steps=226 | path= 143.1m | R=  126.0 | read=0 F/r=0.00 | cells=73 | step=27065
+  Ep  155 | bee 0 | NOVICE  E=0.03 | out_of_road    | steps=284 | path= 134.8m | R=  117.1 | read=0 F/r=0.00 | cells=73 | step=27346
+    [Update  22500 | step  27495 |   839s] critic=    0.88 actor=-15.1462 entropy=-0.237 alpha=0.066 lag=18
+  Ep  156 | bee 0 | NOVICE  E=0.03 | out_of_road    | steps=225 | path= 138.5m | R=  121.1 | read=0 F/r=0.00 | cells=73 | step=27575
+  Ep  157 | bee 0 | NOVICE  E=0.02 | out_of_road    | steps=280 | path= 141.1m | R=  123.3 | read=0 F/r=0.00 | cells=73 | step=27855
+    [Update  23000 | step  27995 |   859s] critic=   16.78 actor=-14.6782 entropy=-0.066 alpha=0.072 lag=20
+  Ep  158 | bee 0 | NOVICE  E=0.02 | out_of_road    | steps=304 | path= 147.3m | R=  129.0 | read=0 F/r=0.00 | cells=73 | step=28155
+  Ep  159 | bee 0 | NOVICE  E=0.02 | out_of_road    | steps=305 | path= 126.9m | R=  109.3 | read=0 F/r=0.00 | cells=73 | step=28464
+    [Update  23500 | step  28499 |   878s] critic=   18.14 actor=-15.0990 entropy=-0.020 alpha=0.069 lag=19
+  Ep  160 | bee 0 | NOVICE  E=0.02 | out_of_road    | steps=272 | path= 140.0m | R=  123.3 | read=0 F/r=0.00 | cells=73 | step=28734
+    [Update  24000 | step  28996 |   896s] critic=    0.39 actor=-15.9432 entropy=-0.025 alpha=0.074 lag=17
+  Ep  161 | bee 0 | NOVICE  E=0.02 | out_of_road    | steps=309 | path= 149.6m | R=  132.5 | read=0 F/r=0.00 | cells=74 | step=29041
+  Ep  162 | bee 0 | NOVICE  E=0.01 | out_of_road    | steps=228 | path= 116.4m | R=   98.0 | read=0 F/r=0.00 | cells=74 | step=29270
+    [Update  24500 | step  29498 |   914s] critic=    7.83 actor=-15.2892 entropy=-0.039 alpha=0.079 lag=19
+  Ep  163 | bee 0 | NOVICE  E=0.01 | out_of_road    | steps=345 | path= 163.5m | R=  145.3 | read=0 F/r=0.00 | cells=75 | step=29618
+    [Update  25000 | step  29998 |   932s] critic=   17.79 actor=-15.8723 entropy= 0.262 alpha=0.083 lag=18
+  -- checkpoint saved at step 30003
+
+Shutting down workers...
+
+Run finished in 934s (32.1 steps/s)
+Transitions 30003 | updates 25008 | episodes 163 | arrivals 1 | first arrival {'episode': 142, 'bee': 0, 'global_step': 24524}
+Terminals: {'arrive_dest': 1, 'out_of_road': 149, 'timeout': 13}
+Castes: ['NOVICE'] | table cells 75
+  steps       0-10000:  79 eps | arrival 0.00 | max path  112.3 m | {'out_of_road': 71, 'timeout': 8}
+  steps   10000-20000:  41 eps | arrival 0.00 | max path   43.0 m | {'out_of_road': 39, 'timeout': 2}
+  steps   20000-30000:  43 eps | arrival 0.02 | max path  230.7 m | {'out_of_road': 39, 'timeout': 3, 'arrive_dest': 1}

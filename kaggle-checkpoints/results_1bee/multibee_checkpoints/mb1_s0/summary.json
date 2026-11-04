@@ -1,0 +1,105 @@
+{
+  "elapsed_s": 1224.480191707611,
+  "steps_per_s": 49.002017677659296,
+  "transitions": 60002,
+  "updates": 55007,
+  "episodes": 248,
+  "first_arrival": {
+    "episode": 143,
+    "bee": 0,
+    "global_step": 29119
+  },
+  "arrivals": 77,
+  "terminal_counts": {
+    "arrive_dest": 77,
+    "out_of_road": 144,
+    "timeout": 27
+  },
+  "windows": [
+    {
+      "steps": "0-10000",
+      "episodes": 79,
+      "arrival_rate": 0.0,
+      "terminals": {
+        "out_of_road": 71,
+        "timeout": 8
+      },
+      "mean_path_m": 36.8442191013744,
+      "max_path_m": 112.34557438005622,
+      "mean_raw_return": 19.16196916404654
+    },
+    {
+      "steps": "10000-20000",
+      "episodes": 38,
+      "arrival_rate": 0.0,
+      "terminals": {
+        "timeout": 6,
+        "out_of_road": 32
+      },
+      "mean_path_m": 10.791465251679705,
+      "max_path_m": 29.568576014345904,
+      "mean_raw_return": -7.36504537828642
+    },
+    {
+      "steps": "20000-30000",
+      "episodes": 28,
+      "arrival_rate": 0.07142857142857142,
+      "terminals": {
+        "out_of_road": 13,
+        "timeout": 13,
+        "arrive_dest": 2
+      },
+      "mean_path_m": 60.192503014948436,
+      "max_path_m": 228.9934413742208,
+      "mean_raw_return": 52.08864518379852
+    },
+    {
+      "steps": "30000-40000",
+      "episodes": 41,
+      "arrival_rate": 0.5365853658536586,
+      "terminals": {
+        "arrive_dest": 22,
+        "out_of_road": 19
+      },
+      "mean_path_m": 170.53158388295822,
+      "max_path_m": 230.5827705575156,
+      "mean_raw_return": 170.7652236833263
+    },
+    {
+      "steps": "40000-50000",
+      "episodes": 31,
+      "arrival_rate": 0.7096774193548387,
+      "terminals": {
+        "out_of_road": 9,
+        "arrive_dest": 22
+      },
+      "mean_path_m": 203.20266171309993,
+      "max_path_m": 230.21539912814362,
+      "mean_raw_return": 209.65597115471402
+    },
+    {
+      "steps": "50000-60000",
+      "episodes": 31,
+      "arrival_rate": 1.0,
+      "terminals": {
+        "arrive_dest": 31
+      },
+      "mean_path_m": 228.52454388829662,
+      "max_path_m": 229.6881391332032,
+      "mean_raw_return": 245.07807240315054
+    }
+  ],
+  "per_bee": {
+    "0": {
+      "E": 0.9947993538321107,
+      "caste": "SCOUT"
+    }
+  },
+  "pheromone_cells": 368,
+  "stall_rescue": {
+    "enabled": false,
+    "config": null,
+    "activated_at_step": null
+  },
+  "worker_errors": []
+}

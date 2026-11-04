@@ -1,0 +1,63 @@
+{
+  "elapsed_s": 921.8628554344177,
+  "steps_per_s": 32.5428015926109,
+  "transitions": 30000,
+  "updates": 25003,
+  "episodes": 137,
+  "first_arrival": null,
+  "arrivals": 0,
+  "terminal_counts": {
+    "out_of_road": 96,
+    "timeout": 41
+  },
+  "windows": [
+    {
+      "steps": "0-10000",
+      "episodes": 84,
+      "arrival_rate": 0.0,
+      "terminals": {
+        "out_of_road": 75,
+        "timeout": 9
+      },
+      "mean_path_m": 32.426796425707394,
+      "max_path_m": 92.24947494462137,
+      "mean_raw_return": 14.737744627362636
+    },
+    {
+      "steps": "10000-20000",
+      "episodes": 33,
+      "arrival_rate": 0.0,
+      "terminals": {
+        "timeout": 12,
+        "out_of_road": 21
+      },
+      "mean_path_m": 7.89354996405829,
+      "max_path_m": 15.778681807099131,
+      "mean_raw_return": -6.283740079025352
+    },
+    {
+      "steps": "20000-30000",
+      "episodes": 20,
+      "arrival_rate": 0.0,
+      "terminals": {
+        "timeout": 20
+      },
+      "mean_path_m": 13.381940666505278,
+      "max_path_m": 36.7879534991713,
+      "mean_raw_return": 12.495882753407907
+    }
+  ],
+  "per_bee": {
+    "0": {
+      "E": 0.0,
+      "caste": "NOVICE"
+    }
+  },
+  "pheromone_cells": 47,
+  "stall_rescue": {
+    "enabled": false,
+    "config": null,
+    "activated_at_step": null
+  },
+  "worker_errors": []
+}

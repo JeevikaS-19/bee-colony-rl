@@ -69,8 +69,11 @@ from shaping_calculator import ShapingCalculator
 # re-imports this module on Windows/Linux-spawn, and MetaDrive must not load at module level.
 
 
-def env_config(config):
+def env_config(config, start_seed=0):
+    """start_seed picks the MetaDrive scenario (road geometry + traffic); num_scenarios stays 1."""
     return {
+        "start_seed": start_seed,
+        "num_scenarios": 1,
         "map": config.map_type,
         "use_render": config.use_render,
         "horizon": config.horizon,
@@ -80,9 +83,10 @@ def env_config(config):
     }
 
 
-def read_state(env, reader, shaping, step, config, decay_rate):
-    """Position, heading, speed, and the corridor read at the env's current state."""
-    reading = step >= config.read_start_step
+def read_state(env, reader, shaping, step, config, decay_rate, allow_read=True):
+    """Position, heading, speed, and the corridor read at the env's current state.
+    allow_read=False (phase 2, unseen road) forces reading off; the table stays in memory."""
+    reading = allow_read and step >= config.read_start_step
     shaping.set_reading_enabled(reading)
     pos = tuple(env.agent.position)
     heading = env.agent.heading_theta
@@ -92,12 +96,17 @@ def read_state(env, reader, shaping, step, config, decay_rate):
     return pos, heading, speed, readout
 
 
-def run_episode(env, actor, reader, shaping, counter, config, decay_rate, warmup):
+def run_episode(env, actor, reader, shaping, counter, config, decay_rate, warmup,
+                chunk_steps=0, flush=None, warmup_steer=1.0, warmup_throttle_min=0.3,
+                allow_read=True):
+    """chunk_steps > 0: every chunk_steps transitions, hand the chunk to flush(chunk). flush returns
+    True when the worker was told to stop; the episode is then abandoned and (None, None) returned.
+    The returned transitions are only the unflushed remainder (all of them when chunk_steps == 0)."""
     from single_bee_training import reset_env, is_real_terminal, CRASH_FLAGS
 
     obs, _ = reset_env(env)
     start_step = counter.value
-    pos0, heading, speed, readout = read_state(env, reader, shaping, start_step, config, decay_rate)
+    pos0, heading, speed, readout = read_state(env, reader, shaping, start_step, config, decay_rate, allow_read)
     start_state = (pos0, heading, speed)  # state BEFORE the first action (stall rescue needs it)
     phi_s = shaping.compute_potential(heading, speed, readout)
 
@@ -107,7 +116,8 @@ def run_episode(env, actor, reader, shaping, counter, config, decay_rate, warmup
     info = {}
     while not done:
         if warmup:
-            action = np.array([np.random.uniform(-1, 1), np.random.uniform(0.3, 1.0)])
+            action = np.array([np.random.uniform(-warmup_steer, warmup_steer),
+                               np.random.uniform(warmup_throttle_min, 1.0)])
         else:
             action, _ = actor.sample_action(obs)
 
@@ -119,7 +129,7 @@ def run_episode(env, actor, reader, shaping, counter, config, decay_rate, warmup
             next_obs, reward, done, info = step_res
 
         # Potential at the state after the step. Zero at a real terminal.
-        pos, heading, speed, readout = read_state(env, reader, shaping, counter.value, config, decay_rate)
+        pos, heading, speed, readout = read_state(env, reader, shaping, counter.value, config, decay_rate, allow_read)
         path.append((pos, heading, float(action[0]), speed))
         actions.append((float(action[0]), float(action[1])))
         terminal = is_real_terminal(info)
@@ -127,6 +137,10 @@ def run_episode(env, actor, reader, shaping, counter, config, decay_rate, warmup
         shaped = config.reward_scale * shaping.compute_shaped_reward(reward, phi_s, phi_next, gamma=config.gamma)
         # Only a real terminal is done=1. A horizon timeout still bootstraps.
         transitions.append((obs, action, shaped, next_obs, float(terminal)))
+        if chunk_steps and len(transitions) >= chunk_steps:
+            if flush(transitions):
+                return None, None
+            transitions = []
 
         raw_return += reward
         reward_abs += abs(reward)
@@ -142,15 +156,23 @@ def run_episode(env, actor, reader, shaping, counter, config, decay_rate, warmup
         "crash_type": next((f for f in CRASH_FLAGS if info.get(f, False)), None),
         "steps": len(path),
         "raw_return": raw_return,
-        "reading_on": bool(start_step >= config.read_start_step),
+        "reading_on": bool(allow_read and start_step >= config.read_start_step),
+        "route_completion": float(info.get("route_completion", 0.0)),  # MetaDrive: 0 = start, 1 = destination
         # mean |F| / mean |r| for this episode; the single-bee pilots saw 0.11-0.13
         "shaping_ratio": (shaping_abs / reward_abs) if reward_abs > 0 else 0.0,
     }
     return transitions, summary
 
 
-def worker_main(worker_id, control_q, result_q, counter, config, seed):
-    """Worker process. CPU only: hide CUDA BEFORE torch is imported anywhere in this process."""
+def worker_main(worker_id, control_q, result_q, counter, produced, config, seed,
+                chunk_steps=0, max_lag=0, warmup_steer=1.0, warmup_throttle_min=0.3,
+                switch_step=None, phase2_seed=1):
+    """Worker process. CPU only: hide CUDA BEFORE torch is imported anywhere in this process.
+
+    chunk_steps > 0: send transitions every chunk_steps steps and pick up new weights between chunks
+    (the learner can then train while an episode is still running). max_lag > 0: after each chunk,
+    wait until the learner is within max_lag transitions of everything the workers have produced
+    (backpressure, so the acting policy cannot run far ahead of the learner)."""
     os.environ["CUDA_VISIBLE_DEVICES"] = ""
     env = None
     try:
@@ -169,29 +191,59 @@ def worker_main(worker_id, control_q, result_q, counter, config, seed):
         shaping = ShapingCalculator(config)
         decay_rate = decay_rate_from_half_life(config.half_life_frac * config.phase1_total_steps)
 
-        while True:
-            stop = False
-            while True:  # apply the newest control messages, stop on None
+        state = {"version": 0, "switched": False}  # learner update count that produced the weights in use
+
+        def apply_control():
+            """Apply every waiting control message. True = the learner told us to stop."""
+            while True:
                 try:
                     msg = control_q.get_nowait()
                 except queue.Empty:
-                    break
+                    return False
                 if msg is None:
-                    stop = True
-                    break
+                    return True
                 kind, payload = msg
                 if kind == "weights":
-                    actor.load_state_dict(payload)
+                    state["version"], weights = payload
+                    actor.load_state_dict(weights)
                 elif kind == "table":
                     reader.table = payload
-            if stop:
-                break
 
+        def send(chunk):
+            if not chunk:
+                return
+            result_q.put(("transitions", worker_id, (state["version"], chunk)))
+            with produced.get_lock():
+                produced.value += len(chunk)
+
+        def flush(chunk):
+            send(chunk)
+            while max_lag > 0 and produced.value - counter.value > max_lag:
+                if apply_control():
+                    return True
+                time.sleep(0.005)
+            return apply_control()
+
+        while True:
+            if apply_control():
+                break
             warmup = counter.value < config.warmup_steps
+            # Scenario switch happens only at an episode boundary, so an episode never mixes roads.
+            in_phase2 = switch_step is not None and counter.value >= switch_step
+            if in_phase2 and not state["switched"]:
+                env.close()  # the engine is a singleton: close before building the next env
+                env = MetaDriveEnv(config=env_config(config, phase2_seed))
+                state["switched"] = True
             transitions, summary = run_episode(env, actor, reader, shaping, counter, config,
-                                               decay_rate, warmup)
+                                               decay_rate, warmup, chunk_steps, flush,
+                                               warmup_steer, warmup_throttle_min,
+                                               allow_read=not in_phase2)
+            if summary is None:  # told to stop mid-episode
+                break
+            summary["phase"] = 2 if in_phase2 else 1
+            summary["scenario_seed"] = phase2_seed if in_phase2 else 0
             result_q.put(("episode", worker_id, summary))
-            result_q.put(("transitions", worker_id, transitions))
+            send(transitions)
     except Exception:
         result_q.put(("error", worker_id, traceback.format_exc()))
     finally:
@@ -239,10 +291,38 @@ def window_stats(rows, budget, window):
     return out
 
 
+def phase_summaries(rows, phase1_cells):
+    """Per-phase arrivals, first arrival, mean distance covered (route_completion), terminal counts."""
+    out = []
+    for ph in (1, 2):
+        w = [r for r in rows if r.get("phase", 1) == ph]
+        if not w:
+            continue
+        arr = [r for r in w if r["terminal"] == "arrive_dest"]
+        d = {"phase": ph, "episodes": len(w), "arrivals": len(arr),
+             "first_arrival_step": min((r["global_step"] for r in arr), default=None),
+             "avg_distance_covered_pct": round(100 * sum(r["rc"] for r in w) / len(w), 1),
+             "crashes": sum(1 for r in w if r["terminal"] not in ("arrive_dest", "timeout")),
+             "timeouts": sum(1 for r in w if r["terminal"] == "timeout")}
+        if ph == 1:
+            d["table_cells_at_switch"] = phase1_cells if phase1_cells is not None else "n/a"
+        out.append(d)
+    return out
+
+
 def run_multi_bee(config=default_config, num_bees=3, run_dir="multi_bee_run", seed=0,
                   sync_every_updates=200, table_every_episodes=10, ckpt_every=10000,
-                  window=10000, rescue_cfg=None):
-    """rescue_cfg: None = plain run. A dict of StallRescue kwargs turns the stall rescue on."""
+                  window=10000, rescue_cfg=None, buffer_capacity=50000, chunk_steps=0, max_lag=0,
+                  warmup_steer=1.0, warmup_throttle_min=0.3, novice_writes=False,
+                  novice_success_vigor=None, switch_step=None, phase2_seed=1):
+    """switch_step: None = single scenario (old behaviour). N = once N transitions are in, each worker
+    rebuilds its env on start_seed=phase2_seed at its next episode boundary, with reading off and no
+    table writes. Learning continues in phase 2 (adaptation, not a frozen zero-shot test).
+    rescue_cfg: None = plain run. A dict of StallRescue kwargs turns the stall rescue on.
+    chunk_steps / max_lag: see worker_main. Chunking is incompatible with the rescue (the rescue
+    scores a whole episode before its transitions are stored)."""
+    if chunk_steps and rescue_cfg is not None:
+        raise SystemExit("--chunk-steps cannot be combined with --stall-rescue")
     from single_bee_training import SACAgent, ReplayBuffer, write_success_path, write_crash_point
     from stall_rescue import StallRescue
     import torch
@@ -263,7 +343,14 @@ def run_multi_bee(config=default_config, num_bees=3, run_dir="multi_bee_run", se
     budget = config.phase1_total_steps
 
     run_cfg = dataclasses.asdict(config)
-    run_cfg.update({"num_bees": num_bees, "seed": seed, "buffer_capacity_used": 50000,
+    run_cfg.update({"num_bees": num_bees, "seed": seed, "buffer_capacity_used": buffer_capacity,
+                    "chunk_steps": chunk_steps, "max_lag": max_lag,
+                    "warmup_steer": warmup_steer, "warmup_throttle_min": warmup_throttle_min,
+                    "novice_writes": novice_writes, "novice_success_vigor": novice_success_vigor,
+                    "eta_success": config.eta_success,
+                    "switch_step": switch_step, "phase2_seed": phase2_seed,
+                    "distance_covered_metric": "MetaDrive info['route_completion'] at episode end",
+                    "sync_every_updates": sync_every_updates,
                     "sync_every_updates": sync_every_updates,
                     "table_every_episodes": table_every_episodes,
                     "budget_steps": budget, "decay_rate": decay_rate,
@@ -274,24 +361,28 @@ def run_multi_bee(config=default_config, num_bees=3, run_dir="multi_bee_run", se
 
     ctx = mp.get_context("spawn")
     counter = ctx.Value("l", 0)  # learner's transition count; workers read it for the reading gate
+    produced = ctx.Value("l", 0)  # transitions the workers have sent (for the max_lag backpressure)
     result_q = ctx.Queue()
     control_qs = [ctx.Queue() for _ in range(num_bees)]
     workers = [ctx.Process(target=worker_main,
-                           args=(i, control_qs[i], result_q, counter, config, seed), daemon=True)
+                           args=(i, control_qs[i], result_q, counter, produced, config, seed,
+                                 chunk_steps, max_lag, warmup_steer, warmup_throttle_min,
+                                 switch_step, phase2_seed), daemon=True)
                for i in range(num_bees)]
 
     agent = SACAgent(config)
-    buffer = ReplayBuffer(capacity=50000)
+    buffer = ReplayBuffer(capacity=buffer_capacity)
     table = PheromoneTableV2(grid_size=config.grid_size)
     tracker = ReputationTracker(agent_ids=list(range(num_bees)))
     rescue = (StallRescue(num_bees, warmup_steps=config.warmup_steps, **rescue_cfg)
               if rescue_cfg is not None else None)
     pending_bonus = {}  # worker_id -> per-step bonuses for the episode whose transitions are next
 
-    def broadcast_weights():
+    def broadcast_weights(version):
+        """version = learner update count; workers tag their transitions with it so we can log lag."""
         state = {k: v.detach().cpu().clone() for k, v in agent.actor.state_dict().items()}
         for q in control_qs:
-            q.put(("weights", state))
+            q.put(("weights", (version, state)))
 
     def broadcast_table():
         snapshot = copy.deepcopy(table)  # a fresh copy, so queue pickling never races a write
@@ -311,22 +402,26 @@ def run_multi_bee(config=default_config, num_bees=3, run_dir="multi_bee_run", se
     ep_w.writerow(["episode", "bee", "caste", "E_before", "vigor", "terminal", "steps", "path_m",
                    "raw_return", "global_step", "elapsed_s", "reading_on", "shaping_ratio",
                    "table_cells", "wrote", "stall_active", "forward_sum", "diversity_sum",
-                   "explore_sum", "bonus_total", "max_abs_step_bonus"])
+                   "explore_sum", "bonus_total", "max_abs_step_bonus", "phase", "scenario_seed",
+                   "route_completion"])
     up_f = open(os.path.join(run_dir, "updates.csv"), "w", newline="")
     up_w = csv.writer(up_f)
     up_w.writerow(["update", "global_step", "elapsed_s", "critic_loss", "actor_loss", "entropy",
-                   "alpha", "buffer"])
+                   "alpha", "buffer", "mean_lag"])
 
     rows = []
     first_arrival = None
     start_time = time.time()
     for p in workers:
         p.start()
-    broadcast_weights()
+    broadcast_weights(0)
     broadcast_table()
 
     total_steps, updates, episodes, active = 0, 0, 0, num_bees
+    lag_sum, lag_n = 0, 0  # policy lag in updates: learner's update count minus the weights' version
     next_ckpt = ckpt_every
+    switch_logged = False
+    phase1_cells = None
     errors = []
     try:
         while active > 0 and total_steps < budget:
@@ -347,6 +442,9 @@ def run_multi_bee(config=default_config, num_bees=3, run_dir="multi_bee_run", se
                 log(f"  [BEE {worker_id}] finished | {active} workers remain")
 
             elif kind == "transitions":
+                version, payload = payload
+                lag_sum += (updates - version) * len(payload)
+                lag_n += len(payload)
                 bonus = pending_bonus.pop(worker_id, None)  # this worker's episode message came first
                 if bonus is not None:
                     assert len(bonus) == len(payload), (len(bonus), len(payload))
@@ -356,6 +454,13 @@ def run_multi_bee(config=default_config, num_bees=3, run_dir="multi_bee_run", se
                     buffer.push(*t)
                 total_steps += len(payload)
                 counter.value = total_steps
+                if switch_step is not None and not switch_logged and total_steps >= switch_step:
+                    switch_logged = True
+                    phase1_cells = len(table.table)
+                    log(f"\n{'#' * 80}\nStep {total_steps}: switching scenario 0 -> scenario {phase2_seed}, "
+                        f"pheromone reading OFF (table kept, {phase1_cells} cells, no phase-2 writes)\n{'#' * 80}")
+                    save_checkpoint(os.path.join(run_dir, "checkpoint_phase1_end"),
+                                    agent, table, tracker, num_bees, total_steps, episodes)
 
                 for _ in range(len(payload)):  # one update per transition, as in single-bee
                     if len(buffer) < config.warmup_steps:
@@ -366,16 +471,18 @@ def run_multi_bee(config=default_config, num_bees=3, run_dir="multi_bee_run", se
                         break
                     updates += 1
                     if updates % sync_every_updates == 0:
-                        broadcast_weights()
+                        broadcast_weights(updates)
                     if updates % 500 == 0:
                         el = time.time() - start_time
+                        mean_lag = lag_sum / lag_n if lag_n else 0.0
+                        lag_sum, lag_n = 0, 0
                         up_w.writerow([updates, total_steps, f"{el:.0f}", f"{critic_loss:.4f}",
                                        f"{actor_loss:.4f}", f"{entropy:.4f}", f"{alpha:.4f}",
-                                       len(buffer)])
+                                       len(buffer), f"{mean_lag:.0f}"])
                         up_f.flush()
                         log(f"    [Update {updates:6d} | step {total_steps:6d} | {el:5.0f}s] "
                             f"critic={critic_loss:8.2f} actor={actor_loss:8.4f} "
-                            f"entropy={entropy:6.3f} alpha={alpha:.3f}")
+                            f"entropy={entropy:6.3f} alpha={alpha:.3f} lag={mean_lag:.0f}")
 
                 if total_steps >= next_ckpt:
                     save_checkpoint(os.path.join(run_dir, f"checkpoint_{next_ckpt // 1000}k"),
@@ -392,8 +499,15 @@ def run_multi_bee(config=default_config, num_bees=3, run_dir="multi_bee_run", se
                 vigor = tracker.vigor(worker_id)
                 e_before = tracker.E[worker_id]
 
+                phase = payload.get("phase", 1)
+                rc = payload.get("route_completion", 0.0)
                 wrote = "none"
-                if arrived and caste != "NOVICE":
+                novice_ok = novice_writes or novice_success_vigor is not None
+                if phase == 2:
+                    pass  # unseen road: its positions mean nothing in the scenario-0 table
+                elif arrived and (caste != "NOVICE" or novice_ok):
+                    if caste == "NOVICE" and novice_success_vigor is not None:
+                        vigor = novice_success_vigor  # stronger trace for a NOVICE arrival
                     write_success_path(table, path, vigor, total_steps, decay_rate)
                     wrote = "success"
                 elif crash_type is not None:
@@ -432,7 +546,7 @@ def run_multi_bee(config=default_config, num_bees=3, run_dir="multi_bee_run", se
                     log(f"  *** FIRST ARRIVAL: episode {episodes}, bee {worker_id}, step {total_steps}")
 
                 rows.append({"global_step": total_steps, "terminal": terminal, "path_m": path_m,
-                             "raw_return": payload["raw_return"]})
+                             "raw_return": payload["raw_return"], "phase": phase, "rc": rc})
                 ep_w.writerow([episodes, worker_id, caste, f"{e_before:.4f}", f"{vigor:.3f}", terminal,
                                payload["steps"], f"{path_m:.2f}", f"{payload['raw_return']:.2f}",
                                total_steps, f"{el:.0f}", int(payload["reading_on"]),
@@ -440,11 +554,13 @@ def run_multi_bee(config=default_config, num_bees=3, run_dir="multi_bee_run", se
                                int(rescue.active) if rescue is not None else 0,
                                f"{diag['forward_sum']:.3f}", f"{diag['diversity_sum']:.3f}",
                                f"{diag['explore_sum']:.3f}", f"{diag['total_sum']:.3f}",
-                               f"{diag['max_abs_step']:.3f}"])
+                               f"{diag['max_abs_step']:.3f}", phase,
+                               payload.get("scenario_seed", 0), f"{rc:.4f}"])
                 ep_f.flush()
                 log(f"  Ep {episodes:4d} | bee {worker_id} | {caste:<7} E={e_before:.2f} | "
                     f"{terminal:<14} | steps={payload['steps']:3d} | path={path_m:6.1f}m | "
-                    f"R={payload['raw_return']:7.1f} | read={int(payload['reading_on'])} "
+                    f"R={payload['raw_return']:7.1f} | P{phase} distance_covered: {rc * 100:.0f}% | "
+                    f"arrival: {arrived} | read={int(payload['reading_on'])} "
                     f"F/r={payload['shaping_ratio']:.2f} | cells={len(table.table)} | step={total_steps}")
     finally:
         log("\nShutting down workers...")
@@ -485,6 +601,7 @@ def run_multi_bee(config=default_config, num_bees=3, run_dir="multi_bee_run", se
             "pheromone_cells": len(table.table),
             "stall_rescue": {"enabled": rescue is not None, "config": rescue_cfg,
                              "activated_at_step": rescue.activated_at if rescue is not None else None},
+            "phases": phase_summaries(rows, phase1_cells),
             "worker_errors":[{"bee": w, "traceback": tb} for w, tb in errors],
         }
         with open(os.path.join(run_dir, "summary.json"), "w") as f:
@@ -501,6 +618,10 @@ def run_multi_bee(config=default_config, num_bees=3, run_dir="multi_bee_run", se
         rate = "n/a" if w["arrival_rate"] is None else f"{w['arrival_rate']:.2f}"
         log(f"  steps {w['steps']:>13}: {w['episodes']:3d} eps | arrival {rate} | "
             f"max path {w['max_path_m'] or 0:6.1f} m | {w['terminals']}")
+    if switch_step is not None:
+        log(f"\nPHASE SUMMARY | run {os.path.basename(run_dir)}")
+        for ph in summary["phases"]:
+            log("  " + "  |  ".join(f"{k}={v}" for k, v in ph.items()))
     log_f.close()
     return agent, table, tracker
 
@@ -517,11 +638,38 @@ if __name__ == "__main__":
     ap.add_argument("--bees", type=int, default=3)
     ap.add_argument("--steps", type=int, default=60000, help="total transition budget")
     ap.add_argument("--warmup", type=int, default=5000)
+    ap.add_argument("--novice-writes", action="store_true",
+                    help="NOVICE arrivals also write success traces (at NOVICE vigor 0.05). Default off = option A.")
+    ap.add_argument("--novice-success-vigor", type=float, default=None,
+                    help="NOVICE arrivals write success traces at this vigor (implies --novice-writes). "
+                         "Default None = off, or 0.05 with --novice-writes.")
+    ap.add_argument("--eta-success", type=float, default=None,
+                    help="weight of the success term in the shaping potential (default 0.5 from config.py)")
     ap.add_argument("--read-start", type=int, default=None, help="default = end of warmup")
     ap.add_argument("--half-life-frac", type=float, default=0.15)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--ckpt-every", type=int, default=10000)
     ap.add_argument("--table-every", type=int, default=10, help="episodes between table broadcasts")
+    ap.add_argument("--buffer", type=int, default=50000,
+                    help="replay buffer capacity (frozen single-bee setting is 200000)")
+    ap.add_argument("--chunk-steps", type=int, default=0,
+                    help="0 = send a whole episode at the end (old behaviour). N > 0 = send every N "
+                         "steps and pick up new weights between chunks. Not usable with --stall-rescue.")
+    ap.add_argument("--max-lag", type=int, default=0,
+                    help="0 = workers run freely. N > 0 = a worker waits while more than N transitions "
+                         "are sent but not yet received by the learner (needs --chunk-steps).")
+    ap.add_argument("--warmup-steer", type=float, default=1.0,
+                    help="warmup steering is uniform(-X, X). Default 1.0 (the multi-bee runs so far). "
+                         "The single-bee loop uses 0.3.")
+    ap.add_argument("--warmup-throttle-min", type=float, default=0.3,
+                    help="warmup throttle is uniform(X, 1.0). Default 0.3. Single-bee loop uses 0.2.")
+    ap.add_argument("--switch-step", type=int, default=None,
+                    help="at this transition count, workers move to --phase2-seed with reading OFF "
+                         "(default None = single scenario, old behaviour)")
+    ap.add_argument("--phase2-seed", type=int, default=1,
+                    help="MetaDrive start_seed (scenario) for phase 2. Seed 1 route is 280 m vs 241 m.")
+    ap.add_argument("--sync-every", type=int, default=None,
+                    help="learner updates between weight broadcasts (default 200, or 25 with chunking)")
     # Stall rescue (off unless --stall-rescue). Defaults come from stall_rescue.StallRescue.
     ap.add_argument("--stall-rescue", action="store_true",
                     help="turn on the adaptive curriculum + diversity terms after a stall is flagged")
@@ -544,7 +692,14 @@ if __name__ == "__main__":
         warmup_steps=args.warmup,
         read_start_step=args.read_start if args.read_start is not None else args.warmup,
         half_life_frac=args.half_life_frac,
+        **({"eta_success": args.eta_success} if args.eta_success is not None else {}),
     )
     run_multi_bee(cfg, num_bees=args.bees, run_dir=os.path.join(args.out_root, args.run_name),
                   seed=args.seed, ckpt_every=args.ckpt_every, table_every_episodes=args.table_every,
-                  rescue_cfg=rescue_cfg)
+                  rescue_cfg=rescue_cfg, buffer_capacity=args.buffer,
+                  chunk_steps=args.chunk_steps, max_lag=args.max_lag,
+                  warmup_steer=args.warmup_steer, warmup_throttle_min=args.warmup_throttle_min,
+                  novice_writes=args.novice_writes, novice_success_vigor=args.novice_success_vigor,
+                  switch_step=args.switch_step, phase2_seed=args.phase2_seed,
+                  sync_every_updates=(args.sync_every if args.sync_every is not None
+                                      else (25 if args.chunk_steps else 200)))

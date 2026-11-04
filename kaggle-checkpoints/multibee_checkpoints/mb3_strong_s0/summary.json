@@ -1,0 +1,114 @@
+{
+  "elapsed_s": 1652.8871011734009,
+  "steps_per_s": 36.300724929975374,
+  "transitions": 60001,
+  "updates": 55006,
+  "episodes": 278,
+  "first_arrival": {
+    "episode": 144,
+    "bee": 1,
+    "global_step": 27857
+  },
+  "arrivals": 10,
+  "terminal_counts": {
+    "arrive_dest": 10,
+    "out_of_road": 241,
+    "timeout": 27
+  },
+  "windows": [
+    {
+      "steps": "0-10000",
+      "episodes": 80,
+      "arrival_rate": 0.0,
+      "terminals": {
+        "out_of_road": 71,
+        "timeout": 9
+      },
+      "mean_path_m": 36.13397234042128,
+      "max_path_m": 96.0912723797288,
+      "mean_raw_return": 18.71980178197598
+    },
+    {
+      "steps": "10000-20000",
+      "episodes": 43,
+      "arrival_rate": 0.0,
+      "terminals": {
+        "out_of_road": 38,
+        "timeout": 5
+      },
+      "mean_path_m": 13.93122666314757,
+      "max_path_m": 49.80705180035504,
+      "mean_raw_return": -4.542069855557513
+    },
+    {
+      "steps": "20000-30000",
+      "episodes": 30,
+      "arrival_rate": 0.16666666666666666,
+      "terminals": {
+        "out_of_road": 13,
+        "timeout": 12,
+        "arrive_dest": 5
+      },
+      "mean_path_m": 80.42937573319331,
+      "max_path_m": 228.3706700419114,
+      "mean_raw_return": 75.00248563405688
+    },
+    {
+      "steps": "30000-40000",
+      "episodes": 38,
+      "arrival_rate": 0.10526315789473684,
+      "terminals": {
+        "out_of_road": 34,
+        "arrive_dest": 4
+      },
+      "mean_path_m": 139.89216218119742,
+      "max_path_m": 230.6758138865291,
+      "mean_raw_return": 126.43592172157277
+    },
+    {
+      "steps": "40000-50000",
+      "episodes": 36,
+      "arrival_rate": 0.0,
+      "terminals": {
+        "out_of_road": 35,
+        "timeout": 1
+      },
+      "mean_path_m": 130.6849992018348,
+      "max_path_m": 220.24966619246982,
+      "mean_raw_return": 115.14873601233722
+    },
+    {
+      "steps": "50000-60000",
+      "episodes": 51,
+      "arrival_rate": 0.0196078431372549,
+      "terminals": {
+        "out_of_road": 50,
+        "arrive_dest": 1
+      },
+      "mean_path_m": 112.30114055296606,
+      "max_path_m": 228.1155526600158,
+      "mean_raw_return": 96.04785396661289
+    }
+  ],
+  "per_bee": {
+    "0": {
+      "E": 0.0028130726801724225,
+      "caste": "NOVICE"
+    },
+    "1": {
+      "E": 0.007559774208261383,
+      "caste": "NOVICE"
+    },
+    "2": {
+      "E": 0.053549650644460066,
+      "caste": "NOVICE"
+    }
+  },
+  "pheromone_cells": 346,
+  "stall_rescue": {
+    "enabled": false,
+    "config": null,
+    "activated_at_step": null
+  },
+  "worker_errors": []
+}

@@ -74,6 +74,30 @@ Top-level `sandbox_bee_checkpoint.pt` and `pheromone_table.pkl` are copies of `c
 
 First multi-worker run (`mb_s0`, 3 bees, 60k steps, Kaggle): **0 arrivals**, stalled in timeouts from step 5.2k to the end, never promoted, success channel never written. Full observations and hypotheses: `docs/multi_bee_run1_observations.md`. Results are in `kaggle-checkpoints/`. Next: a no-shaping control (`--read-start 999999`), then a second seed.
 
+## Multi-bee run 2 (added 2026-11-01)
+
+`mb_rescue_s0` (same as run 1 plus `--stall-rescue`): **0 arrivals, no change.** Flag fired at step 14,213, bonuses were applied (about +3.5 per episode, max 0.07 per step), policy kept creeping. Run files lost with the Kaggle session; only the printed log survives. Details: `docs/multi_bee_run2_rescue_observations.md`. Still needed: no-shaping control, second seed.
+
+## Multi-bee run 3 (added 2026-11-01)
+
+`mb_none_s0` (shaping off, 200k buffer, no rescue): **0 arrivals, the same ~7 m timeout stall from step 5.2k.** Shaping and the 50k buffer are ruled out as the cause. The single-bee loop stalls too but leaves at about step 14.5k, so the difference is in the multi-bee loop. Details and next test (`--bees 1`): `docs/multi_bee_run3_control_observations.md`.
+
+## Multi-bee run 4 (added 2026-11-01)
+
+`mb_bee1_s0` (`--bees 1`, 30k steps, no shaping, no rescue): **0 arrivals, same stall.** So parallelism is not the cause. Remaining suspects: weights/learning only between episodes in `multi_bee_training.py`, or Kaggle versus local. Next: single-bee script on Kaggle. Details: `docs/multi_bee_run4_one_bee_observations.md`.
+
+## Multi-bee run 5 (added 2026-11-02)
+
+`mb_chunk1_s0` (`--bees 1`, chunked 25 steps, `--max-lag 100`, lag logged at about 146 updates): still stalls, but leaves the stall at step 25.9k (old multi-bee loop: never in 30k; single-bee script: about 14.5k). No arrival by 30k. One seed. Details and next test (tighter lag): `docs/multi_bee_run5_chunked_observations.md`.
+
+## Run 6: tight lag and a warmup difference (added 2026-11-02)
+
+Lag 16 (`mb_tight_s1`) still never leaves the stall, so policy lag is not the main cause. The single-bee script on Kaggle matches the local run step for step (platform is fine). **New finding:** the multi-bee warmup uses steering uniform(-1, 1), the single-bee warmup uses uniform(-0.3, 0.3); 26-29% of multi-bee warmup episodes crash within 6 m versus 0-3% in single-bee. New flags `--warmup-steer`, `--warmup-throttle-min` (defaults unchanged). Next: `--bees 1` with the single-bee warmup. Details: `docs/multi_bee_run6_tight_lag_and_warmup_finding.md`.
+
+## Run 6b: narrow warmup alone does not fix it; old-loop lag is huge (added 2026-11-02)
+
+`mb_warm_s1` (single-bee warmup, old loop): stall persists. But the logged lag grows to about 20,500 updates by 30k steps, so in the old loop the learner trains on data produced by a much older policy, which probably affected runs 1-4 too (lag was not logged then). The two fixes (lag, warmup) have never been combined. Next: both together, seeds 1 and 0. Details: `docs/multi_bee_run6_tight_lag_and_warmup_finding.md` section 5b.
+
 ## Open items
 
 - Novice success writes (option A says no; the reviewer proposed faint writes at 0.05). Decide for multi-worker.
@@ -102,3 +126,15 @@ Use `python -u` for background runs. Without it, the log is block-buffered and l
 ## Analysis scripts
 
 These live in the scratchpad, not the repo: `C:\Users\jeevika\AppData\Local\Temp\claude\C--Users-jeevika-metadrive-sim-project-bee\90eeed02-1f27-48bc-b8bd-16646579cf6b\scratchpad\`. Files: `phi_check.py`, `phi_check2.py`, `first15m.py`, `by_steps.py`, `none_variance.py`, `seed1_analysis.py`, `reasons.py`, `pilot_analysis.py`, and `outcomes_h500.txt`. The owner plans to rewrite the Φ map and the steps-aligned comparison in the repo.
+
+## Run 7 (2026-11-02)
+Both fixes together (tight lag + narrow warmup), 1 bee: s0 exits stall ~10k, first arrival 24.5k; s1 exits ~12.5k, relapses after 20k. Details: `docs/multi_bee_run7_both_fixes.md`. Next: 3-bee control vs shaping, 60k steps.
+
+## Run 8 (2026-11-03)
+3 bees, control vs pheromone (60k, seeds 0/1): first arrivals 27.1k / 32.8k (s0 ctrl/trt), none / 39.2k (s1 ctrl/trt). No consistent pheromone effect; shaping under 1% of return before first arrival. Details: `docs/multi_bee_run8_three_bees_control_vs_pheromone.md`.
+
+## Run 9 (2026-11-04)
+1-bee 60k baseline: first arrivals 29.1k / 37.8k, 77 / 69 arrivals. 3-bee control 27.1k / none, treatment 32.8k / 39.2k. No detectable gain from 3 bees or pheromones with 2 seeds; same-seed reruns differ by ~5k steps. Details: `docs/multi_bee_run9_one_bee_baseline_60k.md`.
+
+## Next (2026-11-04)
+Stronger pheromone arm (flags --novice-success-vigor, --eta-success; zip bee_multi_v8.zip), then option 3 (different start states). Metric: first arrival to reliable arrival. See end of `docs/multi_bee_run9_one_bee_baseline_60k.md`.
