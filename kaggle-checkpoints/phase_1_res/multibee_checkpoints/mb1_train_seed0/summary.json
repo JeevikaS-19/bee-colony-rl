@@ -1,0 +1,112 @@
+{
+  "elapsed_s": 1244.0541052818298,
+  "steps_per_s": 48.22941361252734,
+  "transitions": 60000,
+  "updates": 55005,
+  "episodes": 228,
+  "first_arrival": null,
+  "arrivals": 0,
+  "terminal_counts": {
+    "out_of_road": 156,
+    "timeout": 72
+  },
+  "windows": [
+    {
+      "steps": "0-10000",
+      "episodes": 79,
+      "arrival_rate": 0.0,
+      "terminals": {
+        "out_of_road": 71,
+        "timeout": 8
+      },
+      "mean_path_m": 36.88677644627217,
+      "max_path_m": 112.34557438005622,
+      "mean_raw_return": 19.19957868366337
+    },
+    {
+      "steps": "10000-20000",
+      "episodes": 60,
+      "arrival_rate": 0.0,
+      "terminals": {
+        "timeout": 5,
+        "out_of_road": 55
+      },
+      "mean_path_m": 11.144686742544936,
+      "max_path_m": 40.181802027761535,
+      "mean_raw_return": -8.533525618534616
+    },
+    {
+      "steps": "20000-30000",
+      "episodes": 20,
+      "arrival_rate": 0.0,
+      "terminals": {
+        "out_of_road": 1,
+        "timeout": 19
+      },
+      "mean_path_m": 18.19452834285938,
+      "max_path_m": 68.97960967369524,
+      "mean_raw_return": 16.840074209946494
+    },
+    {
+      "steps": "30000-40000",
+      "episodes": 24,
+      "arrival_rate": 0.0,
+      "terminals": {
+        "timeout": 12,
+        "out_of_road": 12
+      },
+      "mean_path_m": 91.96749823009952,
+      "max_path_m": 147.79903989875817,
+      "mean_raw_return": 83.98429399908514
+    },
+    {
+      "steps": "40000-50000",
+      "episodes": 20,
+      "arrival_rate": 0.0,
+      "terminals": {
+        "timeout": 17,
+        "out_of_road": 3
+      },
+      "mean_path_m": 138.4788694802957,
+      "max_path_m": 192.8195793448908,
+      "mean_raw_return": 138.48637143368953
+    },
+    {
+      "steps": "50000-60000",
+      "episodes": 25,
+      "arrival_rate": 0.0,
+      "terminals": {
+        "timeout": 11,
+        "out_of_road": 14
+      },
+      "mean_path_m": 142.95978020418843,
+      "max_path_m": 216.56836942146776,
+      "mean_raw_return": 134.6601020880604
+    }
+  ],
+  "per_bee": {
+    "0": {
+      "E": 0.0,
+      "caste": "NOVICE"
+    }
+  },
+  "pheromone_cells": 67,
+  "stall_rescue": {
+    "enabled": false,
+    "config": null,
+    "activated_at_step": null
+  },
+  "phases": [
+    {
+      "phase": 1,
+      "episodes": 228,
+      "arrivals": 0,
+      "first_arrival_step": null,
+      "avg_distance_covered_pct": 24.7,
+      "crashes": 156,
+      "timeouts": 72,
+      "table_cells_at_switch": "n/a"
+    }
+  ],
+  "worker_errors": []
+}

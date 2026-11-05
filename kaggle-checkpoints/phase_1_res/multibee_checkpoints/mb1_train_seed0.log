@@ -1,0 +1,602 @@
+================================================================================
+MULTI-BEE | 1 workers | budget 60000 steps | seed 0 | run dir /kaggle/working/multibee_checkpoints/mb1_train_seed0
+warmup 5000 | reading from step 5000 | half-life 9000 steps | penalty 20.0 | horizon 500 | learner device cuda=False
+stall rescue: OFF
+================================================================================
+[38;20m[INFO] Environment: MetaDriveEnv[0m
+[38;20m[INFO] MetaDrive version: 0.4.3[0m
+[38;20m[INFO] Sensors: [lidar: Lidar(), side_detector: SideDetector(), lane_line_detector: LaneLineDetector()][0m
+[38;20m[INFO] Render Mode: none[0m
+[38;20m[INFO] Horizon (Max steps per agent): 500[0m
+[33;20m[WARNING] Assets folder doesn't exist. Begin to download assets... (base_engine.py:773)[0m
+[38;20m[INFO] Pull assets from https://github.com/metadriverse/metadrive/releases/download/MetaDrive-0.4.3/assets.zip to /kaggle/working/py310/lib/python3.10/site-packages/metadrive/assets.zip[0m
+  0% |                                                                        |  1% |                                                                        |  2% |#                                                                       |  3% |##                                                                      |  4% |##                                                                      |  5% |###                                                                     |  6% |####                                                                    |  7% |#####                                                                   |  8% |#####                                                                   |  9% |######                                                                  | 10% |#######                                                                 | 11% |#######                                                                 | 12% |########                                                                | 13% |#########                                                               | 14% |##########                                                              | 15% |##########                                                              | 16% |###########                                                             | 17% |############                                                            | 18% |############                                                            | 19% |#############                                                           | 20% |##############                                                          | 21% |###############                                                         | 22% |###############                                                         | 23% |################                                                        | 24% |#################                                                       | 25% |##################                                                      | 26% |##################                                                      | 27% |###################                                                     | 28% |####################                                                    | 29% |####################                                                    | 30% |#####################                                                   | 31% |######################                                                  | 32% |#######################                                                 | 33% |#######################                                                 | 34% |########################                                                | 35% |#########################                                               | 36% |#########################                                               | 37% |##########################                                              | 38% |###########################                                             | 39% |############################                                            | 40% |############################                                            | 41% |#############################                                           | 42% |##############################                                          | 43% |###############################                                         | 44% |###############################                                         | 45% |################################                                        | 46% |#################################                                       | 47% |#################################                                       | 48% |##################################                                      | 49% |###################################                                     | 50% |####################################                                    | 51% |####################################                                    | 52% |#####################################                                   | 53% |######################################                                  | 54% |######################################                                  | 55% |#######################################                                 | 56% |########################################                                | 57% |#########################################                               | 58% |#########################################                               | 59% |##########################################                              | 60% |###########################################                             | 61% |############################################                            | 62% |############################################                            | 63% |#############################################                           | 64% |##############################################                          | 65% |##############################################                          | 66% |###############################################                         | 67% |################################################                        | 68% |#################################################                       | 69% |#################################################                       | 70% |##################################################                      | 71% |###################################################                     | 72% |###################################################                     | 73% |####################################################                    | 74% |#####################################################                   | 75% |######################################################                  | 76% |######################################################                  | 77% |#######################################################                 | 78% |########################################################                | 79% |########################################################                | 80% |#########################################################               | 81% |##########################################################              | 82% |###########################################################             | 83% |###########################################################             | 84% |############################################################            | 85% |#############################################################           | 86% |##############################################################          | 87% |##############################################################          | 88% |###############################################################         | 89% |################################################################        | 90% |################################################################        | 91% |#################################################################       | 92% |##################################################################      | 93% |###################################################################     | 94% |###################################################################     | 95% |####################################################################    | 96% |#####################################################################   | 97% |#####################################################################   | 98% |######################################################################  | 99% |####################################################################### |100% |########################################################################|
+[38;20m[INFO] Extracting assets.[0m
+[38;20m[INFO] Successfully download assets, version: 0.4.3. MetaDrive version: 0.4.3[0m
+[38;20m[INFO] Known Pipes: glxGraphicsPipe[0m
+[38;20m[INFO] Start Scenario Index: 0, Num Scenarios : 1[0m
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep    1 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 61 | path=  27.0m | R=    7.3 | P1 distance_covered: 13% | arrival: False | read=0 F/r=0.00 | cells=1 | step=60
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep    2 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=115 | path=  83.8m | R=   65.8 | P1 distance_covered: 37% | arrival: False | read=0 F/r=0.00 | cells=2 | step=176
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep    3 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=104 | path=  72.5m | R=   53.7 | P1 distance_covered: 32% | arrival: False | read=0 F/r=0.00 | cells=3 | step=276
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep    4 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 57 | path=  24.8m | R=    5.1 | P1 distance_covered: 12% | arrival: False | read=0 F/r=0.00 | cells=4 | step=335
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep    5 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 97 | path=  59.7m | R=   41.2 | P1 distance_covered: 27% | arrival: False | read=0 F/r=0.00 | cells=5 | step=432
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep    6 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 32 | path=   7.3m | R=  -12.8 | P1 distance_covered: 5% | arrival: False | read=0 F/r=0.00 | cells=6 | step=464
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep    7 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 93 | path=  58.6m | R=   39.3 | P1 distance_covered: 27% | arrival: False | read=0 F/r=0.00 | cells=7 | step=556
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep    8 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 78 | path=  43.5m | R=   24.4 | P1 distance_covered: 20% | arrival: False | read=0 F/r=0.00 | cells=8 | step=634
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep    9 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 31 | path=   7.3m | R=  -12.8 | P1 distance_covered: 5% | arrival: False | read=0 F/r=0.00 | cells=8 | step=667
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   10 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 96 | path=  63.8m | R=   44.9 | P1 distance_covered: 29% | arrival: False | read=0 F/r=0.00 | cells=9 | step=763
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   11 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 43 | path=  15.0m | R=   -5.0 | P1 distance_covered: 8% | arrival: False | read=0 F/r=0.00 | cells=10 | step=804
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   12 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 40 | path=  11.6m | R=   -8.5 | P1 distance_covered: 7% | arrival: False | read=0 F/r=0.00 | cells=11 | step=847
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   13 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 76 | path=  40.8m | R=   21.0 | P1 distance_covered: 19% | arrival: False | read=0 F/r=0.00 | cells=12 | step=922
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   14 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 85 | path=  44.6m | R=   24.7 | P1 distance_covered: 20% | arrival: False | read=0 F/r=0.00 | cells=13 | step=1008
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   15 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 33 | path=   7.7m | R=  -12.4 | P1 distance_covered: 5% | arrival: False | read=0 F/r=0.00 | cells=13 | step=1038
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   16 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 58 | path=  23.8m | R=    4.0 | P1 distance_covered: 12% | arrival: False | read=0 F/r=0.00 | cells=13 | step=1096
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   17 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 63 | path=  28.5m | R=    8.8 | P1 distance_covered: 14% | arrival: False | read=0 F/r=0.00 | cells=14 | step=1159
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   18 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 71 | path=  33.5m | R=   12.8 | P1 distance_covered: 15% | arrival: False | read=0 F/r=0.00 | cells=15 | step=1232
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   19 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 37 | path=  10.3m | R=   -9.8 | P1 distance_covered: 6% | arrival: False | read=0 F/r=0.00 | cells=16 | step=1268
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   20 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 53 | path=  22.3m | R=    2.4 | P1 distance_covered: 11% | arrival: False | read=0 F/r=0.00 | cells=17 | step=1320
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   21 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 46 | path=  15.3m | R=   -4.7 | P1 distance_covered: 8% | arrival: False | read=0 F/r=0.00 | cells=18 | step=1368
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   22 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 88 | path=  45.9m | R=   26.9 | P1 distance_covered: 21% | arrival: False | read=0 F/r=0.00 | cells=19 | step=1454
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   23 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 96 | path=  63.4m | R=   44.3 | P1 distance_covered: 28% | arrival: False | read=0 F/r=0.00 | cells=19 | step=1552
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   24 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 87 | path=  50.3m | R=   31.1 | P1 distance_covered: 23% | arrival: False | read=0 F/r=0.00 | cells=20 | step=1638
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   25 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 40 | path=  11.2m | R=   -8.8 | P1 distance_covered: 7% | arrival: False | read=0 F/r=0.00 | cells=20 | step=1680
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   26 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 62 | path=  28.9m | R=    9.4 | P1 distance_covered: 14% | arrival: False | read=0 F/r=0.00 | cells=20 | step=1740
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   27 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=139 | path= 112.3m | R=   94.6 | P1 distance_covered: 50% | arrival: False | read=0 F/r=0.00 | cells=21 | step=1877
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   28 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=113 | path=  80.1m | R=   62.6 | P1 distance_covered: 35% | arrival: False | read=0 F/r=0.00 | cells=22 | step=1991
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   29 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=103 | path=  69.5m | R=   50.8 | P1 distance_covered: 31% | arrival: False | read=0 F/r=0.00 | cells=23 | step=2094
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   30 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 33 | path=   8.5m | R=  -11.6 | P1 distance_covered: 6% | arrival: False | read=0 F/r=0.00 | cells=23 | step=2127
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   31 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 86 | path=  49.4m | R=   29.7 | P1 distance_covered: 22% | arrival: False | read=0 F/r=0.00 | cells=24 | step=2215
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   32 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 30 | path=   7.3m | R=  -12.9 | P1 distance_covered: 5% | arrival: False | read=0 F/r=0.00 | cells=24 | step=2246
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   33 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=106 | path=  71.0m | R=   52.9 | P1 distance_covered: 31% | arrival: False | read=0 F/r=0.00 | cells=24 | step=2351
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   34 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 73 | path=  34.2m | R=   13.7 | P1 distance_covered: 16% | arrival: False | read=0 F/r=0.00 | cells=24 | step=2422
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   35 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 28 | path=   6.3m | R=  -13.9 | P1 distance_covered: 5% | arrival: False | read=0 F/r=0.00 | cells=25 | step=2450
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   36 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 63 | path=  28.9m | R=    8.3 | P1 distance_covered: 14% | arrival: False | read=0 F/r=0.00 | cells=26 | step=2513
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   37 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=115 | path=  83.8m | R=   63.9 | P1 distance_covered: 37% | arrival: False | read=0 F/r=0.00 | cells=27 | step=2631
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   38 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 31 | path=   7.7m | R=  -12.4 | P1 distance_covered: 5% | arrival: False | read=0 F/r=0.00 | cells=27 | step=2661
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   39 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 93 | path=  56.4m | R=   37.8 | P1 distance_covered: 25% | arrival: False | read=0 F/r=0.00 | cells=28 | step=2752
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   40 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 56 | path=  24.2m | R=    4.5 | P1 distance_covered: 12% | arrival: False | read=0 F/r=0.00 | cells=28 | step=2810
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   41 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 81 | path=  43.4m | R=   24.1 | P1 distance_covered: 20% | arrival: False | read=0 F/r=0.00 | cells=28 | step=2891
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   42 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 70 | path=  33.0m | R=   12.6 | P1 distance_covered: 15% | arrival: False | read=0 F/r=0.00 | cells=29 | step=2962
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   43 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 74 | path=  39.1m | R=   19.1 | P1 distance_covered: 18% | arrival: False | read=0 F/r=0.00 | cells=30 | step=3032
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   44 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=112 | path=  77.4m | R=   58.6 | P1 distance_covered: 35% | arrival: False | read=0 F/r=0.00 | cells=31 | step=3146
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   45 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 93 | path=  59.9m | R=   41.5 | P1 distance_covered: 27% | arrival: False | read=0 F/r=0.00 | cells=31 | step=3238
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   46 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 90 | path=  52.1m | R=   32.1 | P1 distance_covered: 23% | arrival: False | read=0 F/r=0.00 | cells=32 | step=3331
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   47 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 69 | path=  32.3m | R=   12.8 | P1 distance_covered: 15% | arrival: False | read=0 F/r=0.00 | cells=33 | step=3396
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   48 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 53 | path=  18.0m | R=   -2.0 | P1 distance_covered: 10% | arrival: False | read=0 F/r=0.00 | cells=34 | step=3450
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   49 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=113 | path=  79.2m | R=   59.6 | P1 distance_covered: 35% | arrival: False | read=0 F/r=0.00 | cells=34 | step=3563
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   50 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 38 | path=  10.9m | R=   -9.2 | P1 distance_covered: 7% | arrival: False | read=0 F/r=0.00 | cells=34 | step=3601
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   51 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 49 | path=  17.7m | R=   -2.2 | P1 distance_covered: 9% | arrival: False | read=0 F/r=0.00 | cells=34 | step=3649
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   52 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 45 | path=  16.6m | R=   -3.4 | P1 distance_covered: 9% | arrival: False | read=0 F/r=0.00 | cells=34 | step=3698
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   53 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 32 | path=   7.4m | R=  -12.8 | P1 distance_covered: 5% | arrival: False | read=0 F/r=0.00 | cells=34 | step=3728
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   54 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=122 | path=  91.7m | R=   72.7 | P1 distance_covered: 41% | arrival: False | read=0 F/r=0.00 | cells=35 | step=3850
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   55 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 99 | path=  63.0m | R=   44.8 | P1 distance_covered: 28% | arrival: False | read=0 F/r=0.00 | cells=36 | step=3947
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   56 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=122 | path=  92.0m | R=   73.1 | P1 distance_covered: 41% | arrival: False | read=0 F/r=0.00 | cells=37 | step=4071
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   57 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 93 | path=  56.9m | R=   38.3 | P1 distance_covered: 26% | arrival: False | read=0 F/r=0.00 | cells=37 | step=4163
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   58 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 88 | path=  53.0m | R=   34.1 | P1 distance_covered: 24% | arrival: False | read=0 F/r=0.00 | cells=38 | step=4251
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   59 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 91 | path=  56.2m | R=   37.2 | P1 distance_covered: 25% | arrival: False | read=0 F/r=0.00 | cells=38 | step=4344
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   60 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 26 | path=   5.0m | R=  -15.1 | P1 distance_covered: 4% | arrival: False | read=0 F/r=0.00 | cells=39 | step=4370
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   61 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=100 | path=  63.6m | R=   44.6 | P1 distance_covered: 28% | arrival: False | read=0 F/r=0.00 | cells=39 | step=4471
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   62 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 86 | path=  48.9m | R=   29.0 | P1 distance_covered: 22% | arrival: False | read=0 F/r=0.00 | cells=39 | step=4556
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   63 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 64 | path=  27.1m | R=    7.5 | P1 distance_covered: 13% | arrival: False | read=0 F/r=0.00 | cells=39 | step=4617
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   64 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 27 | path=   5.7m | R=  -14.5 | P1 distance_covered: 4% | arrival: False | read=0 F/r=0.00 | cells=39 | step=4646
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   65 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=113 | path=  86.0m | R=   67.2 | P1 distance_covered: 38% | arrival: False | read=0 F/r=0.00 | cells=40 | step=4758
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   66 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=106 | path=  74.7m | R=   54.4 | P1 distance_covered: 33% | arrival: False | read=0 F/r=0.00 | cells=41 | step=4866
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   67 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 30 | path=   7.4m | R=  -12.8 | P1 distance_covered: 5% | arrival: False | read=0 F/r=0.00 | cells=41 | step=4897
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   68 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 43 | path=  14.3m | R=   -5.7 | P1 distance_covered: 8% | arrival: False | read=0 F/r=0.00 | cells=41 | step=4937
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   69 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 71 | path=  34.5m | R=   15.2 | P1 distance_covered: 16% | arrival: False | read=0 F/r=0.00 | cells=42 | step=5010
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+    [Update    500 | step   5496 |    37s] critic=   14.70 actor= -5.7952 entropy= 1.378 alpha=0.861 lag=1
+  Ep   70 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=   6.5m | R=    5.7 | P1 distance_covered: 4% | arrival: False | read=1 F/r=0.03 | cells=42 | step=5511
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+    [Update   1000 | step   5996 |    49s] critic=    6.07 actor= -8.5275 entropy= 1.372 alpha=0.741 lag=16
+  Ep   71 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=   7.5m | R=    6.9 | P1 distance_covered: 5% | arrival: False | read=1 F/r=0.03 | cells=42 | step=6011
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+    [Update   1500 | step   6496 |    60s] critic=   20.42 actor=-10.1675 entropy= 1.297 alpha=0.639 lag=16
+  Ep   72 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=   8.3m | R=    7.8 | P1 distance_covered: 5% | arrival: False | read=1 F/r=0.02 | cells=42 | step=6511
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+    [Update   2000 | step   6996 |    71s] critic=   30.12 actor=-11.7980 entropy= 1.299 alpha=0.550 lag=16
+  Ep   73 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  11.2m | R=   10.4 | P1 distance_covered: 6% | arrival: False | read=1 F/r=0.01 | cells=42 | step=7011
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+    [Update   2500 | step   7496 |    83s] critic=    9.64 actor=-13.2749 entropy= 1.338 alpha=0.474 lag=16
+  Ep   74 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=   8.4m | R=    7.9 | P1 distance_covered: 5% | arrival: False | read=1 F/r=0.02 | cells=42 | step=7511
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+    [Update   3000 | step   7996 |    94s] critic=   15.14 actor=-14.1688 entropy= 1.319 alpha=0.409 lag=16
+  Ep   75 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  11.3m | R=   10.3 | P1 distance_covered: 6% | arrival: False | read=1 F/r=0.01 | cells=42 | step=8011
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   76 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=357 | path=  12.1m | R=  -10.1 | P1 distance_covered: 6% | arrival: False | read=1 F/r=0.00 | cells=43 | step=8366
+    [Update   3500 | step   8498 |   104s] critic=   26.43 actor=-15.6478 entropy= 1.262 alpha=0.354 lag=16
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep   77 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  12.4m | R=   11.6 | P1 distance_covered: 7% | arrival: False | read=1 F/r=0.01 | cells=43 | step=8868
+    [Update   4000 | step   8998 |   115s] critic=    1.13 actor=-16.0159 entropy= 1.266 alpha=0.306 lag=18
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep   78 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  13.2m | R=   12.2 | P1 distance_covered: 7% | arrival: False | read=1 F/r=0.01 | cells=43 | step=9368
+    [Update   4500 | step   9498 |   127s] critic=    0.88 actor=-16.7843 entropy= 1.229 alpha=0.264 lag=18
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   79 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=477 | path=  15.2m | R=   -6.8 | P1 distance_covered: 7% | arrival: False | read=1 F/r=0.00 | cells=44 | step=9843
+    [Update   5000 | step   9995 |   138s] critic=   29.74 actor=-16.8035 entropy= 1.226 alpha=0.228 lag=18
+  -- checkpoint saved at step 10000
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep   80 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  11.5m | R=    9.8 | P1 distance_covered: 6% | arrival: False | read=1 F/r=0.01 | cells=44 | step=10345
+    [Update   5500 | step  10495 |   150s] critic=   10.72 actor=-17.0913 entropy= 1.189 alpha=0.198 lag=19
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   81 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=270 | path=  10.9m | R=  -11.6 | P1 distance_covered: 5% | arrival: False | read=1 F/r=0.00 | cells=45 | step=10615
+    [Update   6000 | step  10995 |   161s] critic=   29.48 actor=-17.1375 entropy= 1.238 alpha=0.171 lag=19
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep   82 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  15.1m | R=   13.3 | P1 distance_covered: 7% | arrival: False | read=1 F/r=0.01 | cells=45 | step=11115
+    [Update   6500 | step  11495 |   172s] critic=    7.41 actor=-17.6046 entropy= 1.200 alpha=0.147 lag=19
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep   83 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  12.2m | R=   10.0 | P1 distance_covered: 6% | arrival: False | read=1 F/r=0.01 | cells=45 | step=11615
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   84 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=290 | path=  12.3m | R=  -10.0 | P1 distance_covered: 6% | arrival: False | read=1 F/r=0.00 | cells=45 | step=11905
+    [Update   7000 | step  11995 |   183s] critic=   29.06 actor=-17.4574 entropy= 1.154 alpha=0.128 lag=19
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   85 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=362 | path=  11.8m | R=  -10.9 | P1 distance_covered: 6% | arrival: False | read=1 F/r=0.00 | cells=45 | step=12265
+    [Update   7500 | step  12497 |   195s] critic=   47.77 actor=-17.8043 entropy= 1.139 alpha=0.112 lag=18
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   86 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=261 | path=  13.0m | R=   -8.9 | P1 distance_covered: 6% | arrival: False | read=1 F/r=0.00 | cells=45 | step=12527
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   87 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=388 | path=  11.4m | R=  -11.4 | P1 distance_covered: 5% | arrival: False | read=1 F/r=0.00 | cells=45 | step=12913
+    [Update   8000 | step  12996 |   206s] critic=   10.65 actor=-17.3813 entropy= 0.810 alpha=0.098 lag=18
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep   88 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  11.8m | R=   10.1 | P1 distance_covered: 6% | arrival: False | read=1 F/r=0.01 | cells=45 | step=13416
+    [Update   8500 | step  13496 |   217s] critic=   27.42 actor=-16.6752 entropy= 0.912 alpha=0.085 lag=16
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   89 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=484 | path=  11.9m | R=  -10.8 | P1 distance_covered: 6% | arrival: False | read=1 F/r=0.00 | cells=45 | step=13896
+    [Update   9000 | step  13995 |   228s] critic=    8.87 actor=-17.2806 entropy= 1.017 alpha=0.074 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   90 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=360 | path=  11.4m | R=  -10.9 | P1 distance_covered: 6% | arrival: False | read=1 F/r=0.00 | cells=45 | step=14260
+    [Update   9500 | step  14495 |   240s] critic=   10.07 actor=-17.5595 entropy= 1.000 alpha=0.064 lag=19
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   91 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=397 | path=  13.2m | R=   -8.9 | P1 distance_covered: 6% | arrival: False | read=1 F/r=0.00 | cells=45 | step=14655
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   92 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=320 | path=  13.1m | R=   -8.9 | P1 distance_covered: 6% | arrival: False | read=1 F/r=0.00 | cells=45 | step=14977
+    [Update  10000 | step  14997 |   251s] critic=   10.21 actor=-16.4308 entropy= 1.052 alpha=0.056 lag=18
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   93 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=349 | path=  16.1m | R=   -5.6 | P1 distance_covered: 8% | arrival: False | read=1 F/r=0.00 | cells=46 | step=15322
+    [Update  10500 | step  15496 |   262s] critic=   21.17 actor=-16.8620 entropy= 0.764 alpha=0.049 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   94 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=413 | path=  21.6m | R=    0.6 | P1 distance_covered: 10% | arrival: False | read=1 F/r=0.00 | cells=47 | step=15736
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   95 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 89 | path=   3.9m | R=  -16.1 | P1 distance_covered: 4% | arrival: False | read=1 F/r=0.00 | cells=47 | step=15824
+    [Update  11000 | step  15998 |   274s] critic=    0.95 actor=-16.7713 entropy= 0.770 alpha=0.043 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep   96 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  31.1m | R=   31.2 | P1 distance_covered: 14% | arrival: False | read=1 F/r=0.00 | cells=47 | step=16328
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   97 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 28 | path=   2.4m | R=  -17.7 | P1 distance_covered: 3% | arrival: False | read=1 F/r=0.00 | cells=48 | step=16353
+    [Update  11500 | step  16496 |   284s] critic=    4.24 actor=-15.9169 entropy= 0.458 alpha=0.038 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   98 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=332 | path=  39.3m | R=   18.9 | P1 distance_covered: 18% | arrival: False | read=1 F/r=0.00 | cells=48 | step=16686
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep   99 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 17 | path=   1.6m | R=  -18.5 | P1 distance_covered: 3% | arrival: False | read=1 F/r=0.00 | cells=48 | step=16703
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  100 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 28 | path=   1.7m | R=  -18.3 | P1 distance_covered: 3% | arrival: False | read=1 F/r=0.00 | cells=48 | step=16730
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  101 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 33 | path=   1.4m | R=  -18.7 | P1 distance_covered: 3% | arrival: False | read=1 F/r=0.00 | cells=48 | step=16763
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  102 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 35 | path=   3.6m | R=  -16.5 | P1 distance_covered: 4% | arrival: False | read=1 F/r=0.00 | cells=48 | step=16801
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  103 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 16 | path=   1.3m | R=  -18.9 | P1 distance_covered: 3% | arrival: False | read=1 F/r=0.00 | cells=48 | step=16816
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  104 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 19 | path=   2.1m | R=  -18.1 | P1 distance_covered: 3% | arrival: False | read=1 F/r=0.00 | cells=48 | step=16832
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  105 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 21 | path=   1.6m | R=  -18.5 | P1 distance_covered: 3% | arrival: False | read=1 F/r=0.00 | cells=48 | step=16856
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  106 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 24 | path=   2.2m | R=  -17.9 | P1 distance_covered: 3% | arrival: False | read=1 F/r=0.00 | cells=48 | step=16877
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  107 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 18 | path=   1.8m | R=  -18.3 | P1 distance_covered: 3% | arrival: False | read=1 F/r=0.00 | cells=48 | step=16896
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  108 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 47 | path=   3.7m | R=  -16.2 | P1 distance_covered: 4% | arrival: False | read=1 F/r=0.00 | cells=48 | step=16944
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  109 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 15 | path=   1.3m | R=  -18.8 | P1 distance_covered: 3% | arrival: False | read=1 F/r=0.00 | cells=48 | step=16961
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  110 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 28 | path=   2.6m | R=  -17.4 | P1 distance_covered: 3% | arrival: False | read=1 F/r=0.00 | cells=48 | step=16986
+    [Update  12000 | step  16999 |   296s] critic=    1.47 actor=-16.1946 entropy= 0.248 alpha=0.035 lag=16
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  111 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=108 | path=  21.5m | R=    0.3 | P1 distance_covered: 10% | arrival: False | read=1 F/r=0.00 | cells=48 | step=17094
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  112 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=118 | path=  16.4m | R=   -5.1 | P1 distance_covered: 8% | arrival: False | read=1 F/r=0.00 | cells=48 | step=17212
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  113 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 25 | path=   2.0m | R=  -18.2 | P1 distance_covered: 3% | arrival: False | read=1 F/r=0.00 | cells=48 | step=17240
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  114 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 23 | path=   2.8m | R=  -17.4 | P1 distance_covered: 3% | arrival: False | read=1 F/r=0.00 | cells=48 | step=17260
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  115 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 29 | path=   4.3m | R=  -15.9 | P1 distance_covered: 4% | arrival: False | read=1 F/r=0.00 | cells=48 | step=17288
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  116 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 28 | path=   3.8m | R=  -16.3 | P1 distance_covered: 4% | arrival: False | read=1 F/r=0.00 | cells=48 | step=17317
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  117 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 32 | path=   3.9m | R=  -16.1 | P1 distance_covered: 4% | arrival: False | read=1 F/r=0.00 | cells=48 | step=17350
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  118 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 70 | path=  14.1m | R=   -8.8 | P1 distance_covered: 6% | arrival: False | read=1 F/r=0.00 | cells=48 | step=17422
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  119 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 16 | path=   1.4m | R=  -18.7 | P1 distance_covered: 3% | arrival: False | read=1 F/r=0.00 | cells=48 | step=17437
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  120 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 49 | path=   5.1m | R=  -14.9 | P1 distance_covered: 4% | arrival: False | read=1 F/r=0.00 | cells=48 | step=17483
+    [Update  12500 | step  17497 |   307s] critic=    4.26 actor=-15.8347 entropy= 0.275 alpha=0.032 lag=18
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  121 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 59 | path=  14.5m | R=   -8.6 | P1 distance_covered: 7% | arrival: False | read=1 F/r=0.00 | cells=48 | step=17542
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  122 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 27 | path=   2.7m | R=  -17.4 | P1 distance_covered: 3% | arrival: False | read=1 F/r=0.00 | cells=48 | step=17571
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  123 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=117 | path=  15.1m | R=   -7.3 | P1 distance_covered: 7% | arrival: False | read=1 F/r=0.00 | cells=48 | step=17688
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  124 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=105 | path=  13.3m | R=   -9.8 | P1 distance_covered: 6% | arrival: False | read=1 F/r=0.01 | cells=48 | step=17795
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  125 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 72 | path=  19.2m | R=   -2.5 | P1 distance_covered: 9% | arrival: False | read=1 F/r=0.00 | cells=49 | step=17865
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  126 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 44 | path=   9.8m | R=  -14.5 | P1 distance_covered: 4% | arrival: False | read=1 F/r=0.00 | cells=50 | step=17907
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+    [Update  13000 | step  17996 |   318s] critic=   19.15 actor=-15.2994 entropy=-0.130 alpha=0.031 lag=18
+  Ep  127 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 90 | path=  15.5m | R=   -6.6 | P1 distance_covered: 7% | arrival: False | read=1 F/r=0.00 | cells=50 | step=18001
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  128 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=147 | path=  40.2m | R=   19.8 | P1 distance_covered: 18% | arrival: False | read=1 F/r=0.00 | cells=50 | step=18146
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  129 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 91 | path=  17.2m | R=   -4.7 | P1 distance_covered: 8% | arrival: False | read=1 F/r=0.01 | cells=51 | step=18238
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  130 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 64 | path=  13.7m | R=   -8.8 | P1 distance_covered: 7% | arrival: False | read=1 F/r=0.00 | cells=51 | step=18299
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  131 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 87 | path=  12.9m | R=  -10.4 | P1 distance_covered: 6% | arrival: False | read=1 F/r=0.00 | cells=51 | step=18388
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  132 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 90 | path=  13.9m | R=   -9.5 | P1 distance_covered: 6% | arrival: False | read=1 F/r=0.00 | cells=51 | step=18480
+    [Update  13500 | step  18495 |   330s] critic=   25.59 actor=-14.9317 entropy= 0.502 alpha=0.030 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  133 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 95 | path=  12.7m | R=   -9.5 | P1 distance_covered: 6% | arrival: False | read=1 F/r=0.00 | cells=51 | step=18575
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  134 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=213 | path=  26.5m | R=    5.2 | P1 distance_covered: 12% | arrival: False | read=1 F/r=0.01 | cells=52 | step=18785
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  135 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=137 | path=  14.7m | R=   -7.3 | P1 distance_covered: 7% | arrival: False | read=1 F/r=0.01 | cells=52 | step=18923
+    [Update  14000 | step  18995 |   341s] critic=   17.54 actor=-14.6031 entropy= 0.244 alpha=0.030 lag=19
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  136 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=142 | path=  14.6m | R=   -7.3 | P1 distance_covered: 7% | arrival: False | read=1 F/r=0.01 | cells=52 | step=19065
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  137 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=173 | path=  13.0m | R=   -8.7 | P1 distance_covered: 7% | arrival: False | read=1 F/r=0.01 | cells=52 | step=19237
+    [Update  14500 | step  19495 |   352s] critic=   27.51 actor=-14.1752 entropy= 1.030 alpha=0.030 lag=18
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  138 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=327 | path=  11.9m | R=  -10.1 | P1 distance_covered: 6% | arrival: False | read=1 F/r=0.00 | cells=52 | step=19565
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  139 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=344 | path=  12.9m | R=   -9.0 | P1 distance_covered: 6% | arrival: False | read=1 F/r=0.00 | cells=52 | step=19907
+    [Update  15000 | step  19996 |   364s] critic=    0.40 actor=-13.8055 entropy= 1.018 alpha=0.030 lag=17
+  -- checkpoint saved at step 20001
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  140 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=431 | path=  15.5m | R=   -6.2 | P1 distance_covered: 8% | arrival: False | read=1 F/r=0.00 | cells=52 | step=20341
+    [Update  15500 | step  20497 |   375s] critic=    0.34 actor=-13.5650 entropy= 0.876 alpha=0.030 lag=16
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  141 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=   8.4m | R=    7.0 | P1 distance_covered: 5% | arrival: False | read=1 F/r=0.01 | cells=52 | step=20842
+    [Update  16000 | step  20997 |   385s] critic=   29.48 actor=-13.1784 entropy= 0.851 alpha=0.030 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  142 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=   4.3m | R=    3.3 | P1 distance_covered: 3% | arrival: False | read=1 F/r=0.04 | cells=52 | step=21342
+    [Update  16500 | step  21497 |   397s] critic=    9.25 actor=-12.8450 entropy= 0.740 alpha=0.030 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  143 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=   3.0m | R=    2.0 | P1 distance_covered: 3% | arrival: False | read=1 F/r=0.05 | cells=52 | step=21842
+    [Update  17000 | step  21997 |   407s] critic=   13.16 actor=-12.5652 entropy= 0.441 alpha=0.030 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  144 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=   2.3m | R=    0.9 | P1 distance_covered: 2% | arrival: False | read=1 F/r=0.06 | cells=52 | step=22342
+    [Update  17500 | step  22497 |   418s] critic=   23.27 actor=-12.2490 entropy= 0.337 alpha=0.030 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  145 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=   3.1m | R=    1.8 | P1 distance_covered: 3% | arrival: False | read=1 F/r=0.06 | cells=52 | step=22842
+    [Update  18000 | step  22997 |   428s] critic=    0.35 actor=-12.3756 entropy= 0.160 alpha=0.030 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  146 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=   3.1m | R=    2.0 | P1 distance_covered: 3% | arrival: False | read=1 F/r=0.05 | cells=52 | step=23342
+    [Update  18500 | step  23497 |   439s] critic=   14.84 actor=-12.2657 entropy= 0.354 alpha=0.030 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  147 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=   4.3m | R=    3.3 | P1 distance_covered: 3% | arrival: False | read=1 F/r=0.03 | cells=52 | step=23842
+    [Update  19000 | step  23997 |   450s] critic=    0.46 actor=-12.2498 entropy= 0.245 alpha=0.030 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  148 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=   6.6m | R=    6.1 | P1 distance_covered: 4% | arrival: False | read=1 F/r=0.01 | cells=52 | step=24342
+    [Update  19500 | step  24497 |   460s] critic=    4.24 actor=-11.7216 entropy= 0.070 alpha=0.030 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  149 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=   5.2m | R=    4.0 | P1 distance_covered: 4% | arrival: False | read=1 F/r=0.01 | cells=52 | step=24842
+    [Update  20000 | step  24997 |   471s] critic=   25.81 actor=-11.6421 entropy= 0.182 alpha=0.030 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  150 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=   5.5m | R=    4.5 | P1 distance_covered: 4% | arrival: False | read=1 F/r=0.01 | cells=52 | step=25342
+    [Update  20500 | step  25497 |   482s] critic=    0.47 actor=-11.9300 entropy= 0.312 alpha=0.030 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  151 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=   8.0m | R=    7.1 | P1 distance_covered: 5% | arrival: False | read=1 F/r=0.01 | cells=52 | step=25842
+    [Update  21000 | step  25997 |   493s] critic=   23.38 actor=-11.4322 entropy= 0.039 alpha=0.030 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  152 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=   7.1m | R=    6.5 | P1 distance_covered: 5% | arrival: False | read=1 F/r=0.00 | cells=52 | step=26342
+    [Update  21500 | step  26497 |   504s] critic=    6.25 actor=-11.3549 entropy=-0.103 alpha=0.030 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  153 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  11.4m | R=   10.8 | P1 distance_covered: 6% | arrival: False | read=1 F/r=0.00 | cells=52 | step=26842
+    [Update  22000 | step  26997 |   515s] critic=    0.93 actor=-11.1193 entropy= 0.012 alpha=0.031 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  154 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  55.9m | R=   57.3 | P1 distance_covered: 25% | arrival: False | read=1 F/r=0.00 | cells=52 | step=27342
+    [Update  22500 | step  27497 |   526s] critic=    0.59 actor=-11.2771 entropy=-0.264 alpha=0.030 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  155 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  69.0m | R=   71.4 | P1 distance_covered: 31% | arrival: False | read=1 F/r=0.00 | cells=52 | step=27842
+    [Update  23000 | step  27997 |   537s] critic=    0.87 actor=-11.0713 entropy= 0.245 alpha=0.030 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  156 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  39.8m | R=   40.9 | P1 distance_covered: 18% | arrival: False | read=1 F/r=0.00 | cells=52 | step=28342
+    [Update  23500 | step  28497 |   548s] critic=    1.97 actor=-11.1573 entropy= 0.089 alpha=0.030 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  157 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  27.5m | R=   28.1 | P1 distance_covered: 13% | arrival: False | read=1 F/r=0.00 | cells=52 | step=28842
+    [Update  24000 | step  28997 |   559s] critic=    0.61 actor=-11.0620 entropy= 0.288 alpha=0.030 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  158 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  40.3m | R=   41.3 | P1 distance_covered: 18% | arrival: False | read=1 F/r=0.00 | cells=52 | step=29342
+    [Update  24500 | step  29497 |   570s] critic=    4.33 actor=-10.7678 entropy= 0.201 alpha=0.030 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  159 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  43.6m | R=   44.8 | P1 distance_covered: 20% | arrival: False | read=1 F/r=0.00 | cells=52 | step=29842
+    [Update  25000 | step  29997 |   580s] critic=    9.09 actor=-10.8166 entropy= 0.198 alpha=0.030 lag=17
+  -- checkpoint saved at step 30002
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  160 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  51.2m | R=   52.3 | P1 distance_covered: 23% | arrival: False | read=1 F/r=0.00 | cells=52 | step=30342
+    [Update  25500 | step  30497 |   591s] critic=    8.30 actor=-10.7298 entropy= 0.271 alpha=0.030 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  161 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  38.3m | R=   39.5 | P1 distance_covered: 18% | arrival: False | read=1 F/r=0.00 | cells=52 | step=30842
+    [Update  26000 | step  30997 |   602s] critic=    7.81 actor=-10.5707 entropy= 0.056 alpha=0.030 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  162 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  22.4m | R=   22.9 | P1 distance_covered: 11% | arrival: False | read=1 F/r=0.00 | cells=52 | step=31342
+    [Update  26500 | step  31497 |   613s] critic=    7.82 actor=-10.6391 entropy= 0.402 alpha=0.030 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  163 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  26.8m | R=   27.5 | P1 distance_covered: 13% | arrival: False | read=1 F/r=0.00 | cells=52 | step=31842
+    [Update  27000 | step  31997 |   623s] critic=    9.67 actor=-10.5132 entropy= 0.265 alpha=0.030 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  164 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  15.4m | R=   15.5 | P1 distance_covered: 8% | arrival: False | read=1 F/r=0.00 | cells=52 | step=32342
+    [Update  27500 | step  32497 |   634s] critic=    0.50 actor=-10.6742 entropy= 0.304 alpha=0.030 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  165 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  43.7m | R=   45.1 | P1 distance_covered: 20% | arrival: False | read=1 F/r=0.00 | cells=52 | step=32842
+    [Update  28000 | step  32997 |   645s] critic=    4.87 actor=-10.2472 entropy=-0.051 alpha=0.030 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  166 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  67.0m | R=   68.5 | P1 distance_covered: 30% | arrival: False | read=1 F/r=0.00 | cells=52 | step=33342
+    [Update  28500 | step  33497 |   656s] critic=    3.35 actor=-10.2069 entropy= 0.172 alpha=0.030 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  167 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  69.4m | R=   70.8 | P1 distance_covered: 31% | arrival: False | read=1 F/r=0.00 | cells=52 | step=33842
+    [Update  29000 | step  33997 |   668s] critic=    7.93 actor=-10.4126 entropy=-0.171 alpha=0.030 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  168 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 134.6m | R=  138.0 | P1 distance_covered: 59% | arrival: False | read=1 F/r=0.00 | cells=52 | step=34342
+    [Update  29500 | step  34497 |   679s] critic=    7.71 actor=-10.3016 entropy=-0.053 alpha=0.032 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  169 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 102.1m | R=  104.0 | P1 distance_covered: 45% | arrival: False | read=1 F/r=0.00 | cells=52 | step=34842
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  170 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 31 | path=   5.2m | R=  -15.0 | P1 distance_covered: 4% | arrival: False | read=1 F/r=0.00 | cells=52 | step=34872
+    [Update  30000 | step  34998 |   690s] critic=    6.95 actor=-10.5791 entropy= 0.073 alpha=0.033 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  171 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 102.5m | R=  105.1 | P1 distance_covered: 45% | arrival: False | read=1 F/r=0.00 | cells=52 | step=35373
+    [Update  30500 | step  35498 |   701s] critic=    1.03 actor=-10.0246 entropy=-0.497 alpha=0.035 lag=18
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  172 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=343 | path= 137.0m | R=  119.8 | P1 distance_covered: 60% | arrival: False | read=1 F/r=0.00 | cells=53 | step=35713
+    [Update  31000 | step  35996 |   712s] critic=    2.49 actor=-10.6124 entropy= 0.095 alpha=0.038 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  173 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=457 | path= 142.6m | R=  125.8 | P1 distance_covered: 62% | arrival: False | read=1 F/r=0.00 | cells=54 | step=36171
+    [Update  31500 | step  36498 |   723s] critic=    1.81 actor=-10.6219 entropy= 0.002 alpha=0.040 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  174 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=410 | path= 137.0m | R=  118.9 | P1 distance_covered: 59% | arrival: False | read=1 F/r=0.00 | cells=54 | step=36583
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  175 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=375 | path= 146.4m | R=  129.4 | P1 distance_covered: 63% | arrival: False | read=1 F/r=0.00 | cells=55 | step=36958
+    [Update  32000 | step  36998 |   735s] critic=    3.69 actor=-10.0666 entropy=-0.035 alpha=0.041 lag=18
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  176 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=327 | path= 136.5m | R=  119.2 | P1 distance_covered: 59% | arrival: False | read=1 F/r=0.00 | cells=55 | step=37283
+    [Update  32500 | step  37495 |   746s] critic=    0.45 actor=-10.4219 entropy= 0.001 alpha=0.042 lag=18
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  177 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=409 | path= 144.4m | R=  128.1 | P1 distance_covered: 62% | arrival: False | read=1 F/r=0.00 | cells=55 | step=37690
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  178 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 29 | path=   4.5m | R=  -15.6 | P1 distance_covered: 4% | arrival: False | read=1 F/r=0.00 | cells=55 | step=37719
+    [Update  33000 | step  37998 |   757s] critic=    0.51 actor=-10.1490 entropy= 0.111 alpha=0.045 lag=19
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  179 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=374 | path= 137.9m | R=  121.5 | P1 distance_covered: 60% | arrival: False | read=1 F/r=0.00 | cells=55 | step=38093
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  180 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=381 | path= 137.5m | R=  121.1 | P1 distance_covered: 60% | arrival: False | read=1 F/r=0.00 | cells=55 | step=38477
+    [Update  33500 | step  38498 |   768s] critic=    2.02 actor=-10.5540 entropy=-0.072 alpha=0.049 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  181 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=339 | path= 127.5m | R=  109.3 | P1 distance_covered: 55% | arrival: False | read=1 F/r=0.00 | cells=56 | step=38813
+    [Update  34000 | step  38997 |   779s] critic=    2.15 actor=-10.5935 entropy= 0.160 alpha=0.051 lag=18
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  182 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 129.4m | R=  132.0 | P1 distance_covered: 56% | arrival: False | read=1 F/r=0.00 | cells=56 | step=39317
+    [Update  34500 | step  39497 |   789s] critic=    3.27 actor=-10.2199 entropy= 0.099 alpha=0.054 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  183 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=407 | path= 147.8m | R=  131.7 | P1 distance_covered: 64% | arrival: False | read=1 F/r=0.00 | cells=57 | step=39722
+    [Update  35000 | step  39999 |   800s] critic=    1.63 actor=-10.5941 entropy= 0.174 alpha=0.053 lag=18
+  -- checkpoint saved at step 40004
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  184 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 112.5m | R=  115.2 | P1 distance_covered: 49% | arrival: False | read=1 F/r=0.00 | cells=57 | step=40224
+    [Update  35500 | step  40499 |   811s] critic=    1.08 actor=-11.0052 entropy= 0.052 alpha=0.051 lag=19
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  185 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 131.7m | R=  134.8 | P1 distance_covered: 57% | arrival: False | read=1 F/r=0.00 | cells=57 | step=40724
+    [Update  36000 | step  40999 |   822s] critic=    5.23 actor=-10.1267 entropy= 0.174 alpha=0.052 lag=19
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  186 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 192.8m | R=  199.3 | P1 distance_covered: 83% | arrival: False | read=1 F/r=0.00 | cells=57 | step=41224
+    [Update  36500 | step  41499 |   833s] critic=    3.57 actor=-10.5287 entropy=-0.306 alpha=0.053 lag=19
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  187 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path=  96.6m | R=   99.7 | P1 distance_covered: 43% | arrival: False | read=1 F/r=0.00 | cells=57 | step=41724
+    [Update  37000 | step  41999 |   844s] critic=    2.22 actor=-10.4487 entropy= 0.074 alpha=0.052 lag=19
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  188 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 141.9m | R=  144.1 | P1 distance_covered: 62% | arrival: False | read=1 F/r=0.00 | cells=57 | step=42224
+    [Update  37500 | step  42499 |   856s] critic=    6.85 actor=-11.2955 entropy= 0.273 alpha=0.050 lag=19
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  189 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 134.4m | R=  137.1 | P1 distance_covered: 58% | arrival: False | read=1 F/r=0.00 | cells=57 | step=42724
+    [Update  38000 | step  42999 |   867s] critic=    4.02 actor=-10.8845 entropy=-0.029 alpha=0.048 lag=19
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  190 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 135.8m | R=  138.6 | P1 distance_covered: 59% | arrival: False | read=1 F/r=0.00 | cells=57 | step=43224
+    [Update  38500 | step  43499 |   878s] critic=    4.92 actor=-11.4107 entropy= 0.416 alpha=0.050 lag=19
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  191 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 142.4m | R=  145.8 | P1 distance_covered: 62% | arrival: False | read=1 F/r=0.00 | cells=57 | step=43724
+    [Update  39000 | step  43999 |   889s] critic=    6.03 actor=-10.8217 entropy= 0.259 alpha=0.049 lag=19
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  192 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 119.8m | R=  121.7 | P1 distance_covered: 52% | arrival: False | read=1 F/r=0.00 | cells=57 | step=44224
+    [Update  39500 | step  44499 |   900s] critic=   14.03 actor=-10.7256 entropy=-0.014 alpha=0.050 lag=19
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  193 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 126.9m | R=  129.3 | P1 distance_covered: 55% | arrival: False | read=1 F/r=0.00 | cells=57 | step=44724
+    [Update  40000 | step  44999 |   911s] critic=    0.76 actor=-11.0345 entropy= 0.023 alpha=0.050 lag=19
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  194 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=494 | path= 154.3m | R=  137.6 | P1 distance_covered: 67% | arrival: False | read=1 F/r=0.00 | cells=58 | step=45214
+    [Update  40500 | step  45498 |   923s] critic=    0.77 actor=-11.0916 entropy= 0.095 alpha=0.050 lag=18
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  195 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 150.9m | R=  155.3 | P1 distance_covered: 65% | arrival: False | read=1 F/r=0.00 | cells=58 | step=45718
+    [Update  41000 | step  45998 |   934s] critic=    5.68 actor=-10.9742 entropy=-0.117 alpha=0.050 lag=18
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  196 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 142.5m | R=  145.2 | P1 distance_covered: 62% | arrival: False | read=1 F/r=0.00 | cells=58 | step=46218
+    [Update  41500 | step  46498 |   945s] critic=    1.40 actor=-11.3400 entropy= 0.302 alpha=0.051 lag=18
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  197 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 145.9m | R=  148.9 | P1 distance_covered: 63% | arrival: False | read=1 F/r=0.00 | cells=58 | step=46718
+    [Update  42000 | step  46998 |   956s] critic=    0.67 actor=-11.8403 entropy= 0.114 alpha=0.051 lag=18
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  198 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 117.3m | R=  119.6 | P1 distance_covered: 51% | arrival: False | read=1 F/r=0.00 | cells=58 | step=47218
+    [Update  42500 | step  47498 |   967s] critic=    0.68 actor=-11.6201 entropy=-0.008 alpha=0.051 lag=18
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  199 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=487 | path= 143.4m | R=  125.7 | P1 distance_covered: 62% | arrival: False | read=1 F/r=0.00 | cells=58 | step=47703
+    [Update  43000 | step  47995 |   978s] critic=    8.24 actor=-11.6782 entropy= 0.059 alpha=0.053 lag=19
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  200 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 154.9m | R=  157.4 | P1 distance_covered: 67% | arrival: False | read=1 F/r=0.00 | cells=58 | step=48205
+    [Update  43500 | step  48495 |   989s] critic=    1.29 actor=-11.6908 entropy= 0.119 alpha=0.055 lag=19
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  201 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 140.0m | R=  142.9 | P1 distance_covered: 61% | arrival: False | read=1 F/r=0.00 | cells=58 | step=48705
+    [Update  44000 | step  48995 |  1001s] critic=   13.22 actor=-11.6287 entropy=-0.070 alpha=0.053 lag=20
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  202 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=469 | path= 150.3m | R=  133.0 | P1 distance_covered: 65% | arrival: False | read=1 F/r=0.00 | cells=59 | step=49170
+    [Update  44500 | step  49499 |  1012s] critic=   11.45 actor=-12.3353 entropy= 0.002 alpha=0.056 lag=19
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  203 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 135.4m | R=  138.3 | P1 distance_covered: 59% | arrival: False | read=1 F/r=0.00 | cells=59 | step=49674
+    [Update  45000 | step  49999 |  1023s] critic=   11.20 actor=-11.7888 entropy=-0.261 alpha=0.055 lag=19
+  -- checkpoint saved at step 50004
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  204 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 117.3m | R=  119.8 | P1 distance_covered: 51% | arrival: False | read=1 F/r=0.00 | cells=59 | step=50174
+    [Update  45500 | step  50499 |  1034s] critic=    5.63 actor=-12.3506 entropy= 0.072 alpha=0.057 lag=19
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  205 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 152.5m | R=  155.9 | P1 distance_covered: 66% | arrival: False | read=1 F/r=0.00 | cells=59 | step=50674
+    [Update  46000 | step  50999 |  1045s] critic=    2.70 actor=-11.7864 entropy= 0.200 alpha=0.057 lag=19
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  206 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=470 | path= 162.7m | R=  145.3 | P1 distance_covered: 70% | arrival: False | read=1 F/r=0.00 | cells=60 | step=51144
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  207 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 24 | path=   1.5m | R=  -18.6 | P1 distance_covered: 3% | arrival: False | read=1 F/r=0.00 | cells=60 | step=51164
+    [Update  46500 | step  51498 |  1056s] critic=    0.31 actor=-12.8662 entropy=-0.158 alpha=0.057 lag=18
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  208 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=444 | path= 148.4m | R=  131.0 | P1 distance_covered: 64% | arrival: False | read=1 F/r=0.00 | cells=61 | step=51608
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+    [Update  47000 | step  51997 |  1067s] critic=    4.26 actor=-12.3476 entropy=-0.110 alpha=0.058 lag=17
+  Ep  209 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=398 | path= 131.2m | R=  113.3 | P1 distance_covered: 57% | arrival: False | read=1 F/r=0.00 | cells=62 | step=52007
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  210 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=426 | path= 162.7m | R=  146.5 | P1 distance_covered: 70% | arrival: False | read=1 F/r=0.00 | cells=62 | step=52435
+    [Update  47500 | step  52496 |  1078s] critic=    0.66 actor=-12.5541 entropy=-0.198 alpha=0.058 lag=19
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  211 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 147.6m | R=  150.4 | P1 distance_covered: 64% | arrival: False | read=1 F/r=0.00 | cells=62 | step=52936
+    [Update  48000 | step  52996 |  1089s] critic=    9.38 actor=-13.0715 entropy=-0.078 alpha=0.060 lag=16
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  212 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 159.4m | R=  162.9 | P1 distance_covered: 68% | arrival: False | read=1 F/r=0.00 | cells=62 | step=53436
+    [Update  48500 | step  53496 |  1100s] critic=    0.61 actor=-13.3477 entropy= 0.134 alpha=0.060 lag=16
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  213 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 182.7m | R=  185.7 | P1 distance_covered: 78% | arrival: False | read=1 F/r=0.00 | cells=62 | step=53936
+    [Update  49000 | step  53996 |  1111s] critic=    0.65 actor=-13.2841 entropy=-0.075 alpha=0.061 lag=16
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  214 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 181.2m | R=  186.1 | P1 distance_covered: 78% | arrival: False | read=1 F/r=0.00 | cells=62 | step=54436
+    [Update  49500 | step  54496 |  1121s] critic=    3.62 actor=-13.3934 entropy= 0.201 alpha=0.065 lag=16
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  215 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=498 | path= 165.5m | R=  148.6 | P1 distance_covered: 71% | arrival: False | read=1 F/r=0.00 | cells=63 | step=54931
+    [Update  50000 | step  54999 |  1132s] critic=    0.86 actor=-13.2798 entropy= 0.058 alpha=0.064 lag=16
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  216 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 216.6m | R=  222.7 | P1 distance_covered: 92% | arrival: False | read=1 F/r=0.00 | cells=63 | step=55434
+    [Update  50500 | step  55499 |  1143s] critic=   10.03 actor=-13.8566 entropy= 0.026 alpha=0.063 lag=19
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  217 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 205.0m | R=  210.1 | P1 distance_covered: 87% | arrival: False | read=1 F/r=0.00 | cells=63 | step=55934
+    [Update  51000 | step  55999 |  1154s] critic=    1.95 actor=-13.5817 entropy= 0.156 alpha=0.066 lag=19
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  218 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=465 | path= 159.0m | R=  142.1 | P1 distance_covered: 68% | arrival: False | read=1 F/r=0.00 | cells=64 | step=56399
+    [Update  51500 | step  56499 |  1165s] critic=    0.82 actor=-14.1178 entropy= 0.095 alpha=0.067 lag=19
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  219 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=295 | path= 129.7m | R=  111.9 | P1 distance_covered: 57% | arrival: False | read=1 F/r=0.00 | cells=65 | step=56694
+    [Update  52000 | step  56999 |  1176s] critic=    0.41 actor=-13.5750 entropy=-0.064 alpha=0.067 lag=19
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  220 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=410 | path= 154.4m | R=  137.0 | P1 distance_covered: 67% | arrival: False | read=1 F/r=0.00 | cells=65 | step=57104
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  221 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=325 | path= 136.9m | R=  118.7 | P1 distance_covered: 59% | arrival: False | read=1 F/r=0.00 | cells=65 | step=57429
+    [Update  52500 | step  57499 |  1188s] critic=    9.47 actor=-14.1103 entropy= 0.024 alpha=0.069 lag=19
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  222 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 169.1m | R=  173.0 | P1 distance_covered: 73% | arrival: False | read=1 F/r=0.00 | cells=65 | step=57929
+    [Update  53000 | step  57999 |  1198s] critic=    9.03 actor=-14.3210 entropy=-0.044 alpha=0.070 lag=19
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  223 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=307 | path= 134.9m | R=  117.8 | P1 distance_covered: 59% | arrival: False | read=1 F/r=0.00 | cells=66 | step=58234
+    [Update  53500 | step  58496 |  1210s] critic=   10.30 actor=-14.5611 entropy= 0.269 alpha=0.072 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  224 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 202.9m | R=  206.7 | P1 distance_covered: 86% | arrival: False | read=1 F/r=0.00 | cells=66 | step=58736
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  225 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 21 | path=   2.3m | R=  -17.8 | P1 distance_covered: 3% | arrival: False | read=1 F/r=0.00 | cells=66 | step=58756
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  226 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps= 17 | path=   1.6m | R=  -18.5 | P1 distance_covered: 3% | arrival: False | read=1 F/r=0.00 | cells=66 | step=58772
+    [Update  54000 | step  58999 |  1221s] critic=    0.80 actor=-15.3458 entropy= 0.158 alpha=0.070 lag=17
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: max step [0m
+  Ep  227 | bee 0 | NOVICE  E=0.00 | timeout        | steps=500 | path= 206.7m | R=  211.8 | P1 distance_covered: 88% | arrival: False | read=1 F/r=0.00 | cells=66 | step=59274
+    [Update  54500 | step  59499 |  1232s] critic=    0.65 actor=-15.5049 entropy=-0.034 alpha=0.072 lag=19
+[38;20m[INFO] Episode ended! Scenario Index: 0 Reason: out_of_road.[0m
+  Ep  228 | bee 0 | NOVICE  E=0.00 | out_of_road    | steps=341 | path= 142.4m | R=  124.1 | P1 distance_covered: 61% | arrival: False | read=1 F/r=0.00 | cells=67 | step=59614
+    [Update  55000 | step  59995 |  1243s] critic=    0.65 actor=-15.1562 entropy=-0.140 alpha=0.072 lag=19
+  -- checkpoint saved at step 60000
+
+Shutting down workers...
+
+Run finished in 1244s (48.2 steps/s)
+Transitions 60000 | updates 55005 | episodes 228 | arrivals 0 | first arrival None
+Terminals: {'out_of_road': 156, 'timeout': 72}
+Castes: ['NOVICE'] | table cells 67
+  steps       0-10000:  79 eps | arrival 0.00 | max path  112.3 m | {'out_of_road': 71, 'timeout': 8}
+  steps   10000-20000:  60 eps | arrival 0.00 | max path   40.2 m | {'timeout': 5, 'out_of_road': 55}
+  steps   20000-30000:  20 eps | arrival 0.00 | max path   69.0 m | {'out_of_road': 1, 'timeout': 19}
+  steps   30000-40000:  24 eps | arrival 0.00 | max path  147.8 m | {'timeout': 12, 'out_of_road': 12}
+  steps   40000-50000:  20 eps | arrival 0.00 | max path  192.8 m | {'timeout': 17, 'out_of_road': 3}
+  steps   50000-60000:  25 eps | arrival 0.00 | max path  216.6 m | {'timeout': 11, 'out_of_road': 14}

@@ -138,3 +138,9 @@ Both fixes together (tight lag + narrow warmup), 1 bee: s0 exits stall ~10k, fir
 
 ## Next (2026-11-04)
 Stronger pheromone arm (flags --novice-success-vigor, --eta-success; zip bee_multi_v8.zip), then option 3 (different start states). Metric: first arrival to reliable arrival. See end of `docs/multi_bee_run9_one_bee_baseline_60k.md`.
+
+## Phase 1 (2026-11-05)
+1 bee vs 3 bees, scenario 0, 3 seeds each, 60k, reading on (`--novice-success-vigor 0.15 --eta-success 0.75`). Reliable arrival (5 of 10) reached in 1 of 3 seeds for 1 bee, 2 of 3 for 3 bees; the other 1-bee runs never arrived, and 3-bee seed 0 collapsed after an early burst. Bimodal outcomes, no detectable difference at n=3. Details: `docs/phase1_train_results.md`. Next: write `eval_policy.py` (fixed episodes per scenario seed, no table); evaluate only checkpoints from competent runs (mb1 s1, mb3 s1, mb3 s2 at 50k/60k) plus decide the checkpoint rule first.
+
+## Phase 2 plan (2026-11-05)
+Multi-scenario 2x2 (1/3 bees x pheromones on/off), seeds 0,1, 100k steps, train roads 0-4, eval roads 0,2 (trained) and 5,6,7 (held out) with `eval_policy.py`. Code added to `multi_bee_training.py` (`--scenario-seeds`, `--pheromone-per-scenario`) and `eval_policy.py`; smoke-tested only. Plan and limits: `docs/phase2_multiscenario_plan.md`.

@@ -1,0 +1,120 @@
+{
+  "elapsed_s": 1342.0564210414886,
+  "steps_per_s": 44.708999606317654,
+  "transitions": 60002,
+  "updates": 55005,
+  "episodes": 283,
+  "first_arrival": {
+    "episode": 224,
+    "bee": 0,
+    "global_step": 46775
+  },
+  "arrivals": 42,
+  "terminal_counts": {
+    "arrive_dest": 42,
+    "crash_vehicle": 11,
+    "out_of_road": 193,
+    "timeout": 37
+  },
+  "windows": [
+    {
+      "steps": "0-10000",
+      "episodes": 84,
+      "arrival_rate": 0.0,
+      "terminals": {
+        "out_of_road": 75,
+        "timeout": 9
+      },
+      "mean_path_m": 32.41290821305322,
+      "max_path_m": 92.24947494462137,
+      "mean_raw_return": 14.725847600343709
+    },
+    {
+      "steps": "10000-20000",
+      "episodes": 22,
+      "arrival_rate": 0.0,
+      "terminals": {
+        "timeout": 14,
+        "out_of_road": 8
+      },
+      "mean_path_m": 8.624380319803173,
+      "max_path_m": 10.477262621925568,
+      "mean_raw_return": -1.0894713189861522
+    },
+    {
+      "steps": "20000-30000",
+      "episodes": 25,
+      "arrival_rate": 0.0,
+      "terminals": {
+        "timeout": 12,
+        "out_of_road": 13
+      },
+      "mean_path_m": 10.815492542913855,
+      "max_path_m": 22.981712077435226,
+      "mean_raw_return": -0.767647800452635
+    },
+    {
+      "steps": "30000-40000",
+      "episodes": 42,
+      "arrival_rate": 0.0,
+      "terminals": {
+        "out_of_road": 40,
+        "timeout": 2
+      },
+      "mean_path_m": 16.761618193933568,
+      "max_path_m": 48.23481440119079,
+      "mean_raw_return": -3.677732683646002
+    },
+    {
+      "steps": "40000-50000",
+      "episodes": 65,
+      "arrival_rate": 0.15384615384615385,
+      "terminals": {
+        "out_of_road": 54,
+        "arrive_dest": 10,
+        "crash_vehicle": 1
+      },
+      "mean_path_m": 98.93887439111047,
+      "max_path_m": 227.16219237549103,
+      "mean_raw_return": 85.95823892056153
+    },
+    {
+      "steps": "50000-60000",
+      "episodes": 45,
+      "arrival_rate": 0.7111111111111111,
+      "terminals": {
+        "crash_vehicle": 10,
+        "arrive_dest": 32,
+        "out_of_road": 3
+      },
+      "mean_path_m": 222.92476691772623,
+      "max_path_m": 229.34541373212124,
+      "mean_raw_return": 231.6915403551053
+    }
+  ],
+  "per_bee": {
+    "0": {
+      "E": 0.7145355661581388,
+      "caste": "FORAGER"
+    }
+  },
+  "pheromone_cells": 364,
+  "stall_rescue": {
+    "enabled": false,
+    "config": null,
+    "activated_at_step": null
+  },
+  "phases": [
+    {
+      "phase": 1,
+      "episodes": 283,
+      "arrivals": 42,
+      "first_arrival_step": 46775,
+      "avg_distance_covered_pct": 32.2,
+      "crashes": 204,
+      "timeouts": 37,
+      "table_cells_at_switch": "n/a"
+    }
+  ],
+  "worker_errors": []
+}
